@@ -1,0 +1,3 @@
+# GoodEntry Frontend
+
+This repo hosts the source code of v1 goodentry-webapp

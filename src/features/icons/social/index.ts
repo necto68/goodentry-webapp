@@ -1,0 +1,9 @@
+export { default as book } from "./book.svg";
+export { default as discord } from "./discord.svg";
+export { default as info } from "./info.svg";
+export { default as medium } from "./medium.svg";
+export { default as policies } from "./policies.svg";
+export { default as terms } from "./terms.svg";
+export { default as twitter } from "./twitter.svg";
+export { default as twitterX } from "./twitterX.svg";
+export { default as github } from "./github.svg";

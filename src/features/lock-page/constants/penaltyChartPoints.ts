@@ -1,0 +1,1 @@
+export const LOCK_PERIOD_DAYS_AMOUNT = 120;

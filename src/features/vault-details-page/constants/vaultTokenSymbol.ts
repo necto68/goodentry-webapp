@@ -1,0 +1,1 @@
+export const vaultTokenSymbol = "GEV";
