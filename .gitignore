@@ -14,9 +14,6 @@
 # parcel cache
 **/.parcel-cache
 
-# idea config
-**/.idea
-
 # misc
 .DS_Store
 **/.env.local
