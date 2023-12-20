@@ -4,10 +4,7 @@ import type { TradePanelState } from "../../trade-panel/types/TradePanelState";
 export interface TradeModalState
   extends Pick<
     TradePanelState,
-    | "selectedPairId"
-    | "selectedTab"
-    | "selectedTickerAddress"
-    | "tickerTokenInputState"
+    "selectedPairId" | "selectedTab" | "tickerTokenInputState"
   > {
   modalType: TradeModalType;
 }

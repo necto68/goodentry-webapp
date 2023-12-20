@@ -48,13 +48,8 @@ export const positionsFetcher = async (
 
   return await Promise.all(
     positionsData.map(
-      async ({ tickerAddress, positionData }, index) =>
-        await basePositionFetcher(
-          positionsPairIds[index],
-          tickerAddress,
-          positionData,
-          account
-        )
+      async ({ positionData }, index) =>
+        await basePositionFetcher(positionsPairIds[index], positionData)
     )
   );
 };

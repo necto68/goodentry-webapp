@@ -5,22 +5,15 @@ import { useModal } from "../../shared/modal/hooks/useModal";
 import { ModalType } from "../../shared/modal/types/ModalType";
 import { TradeModalType } from "../../trade-modal/types/TradeModalType";
 import { getTabTitle } from "../helpers/formatters";
-import { useTicker } from "../hooks/useTicker";
 import { useTradePanelState } from "../stores/useTradePanelState";
 import { TabType } from "../types/TabType";
 
 export const OpenTradeModalButton = () => {
   const { pushModal } = useModal();
-  const {
-    selectedTab,
-    selectedPairId,
-    selectedTickerAddress,
-    tickerTokenInputState,
-  } = useTradePanelState();
-  const ticker = useTicker(selectedPairId, selectedTickerAddress);
+  const { selectedTab, selectedPairId, tickerTokenInputState } =
+    useTradePanelState();
 
   const isLongTab = selectedTab === TabType.LONG;
-  const { symbol = "" } = ticker ?? {};
 
   const modalType = TradeModalType.OPEN_POSITION;
 
@@ -28,7 +21,6 @@ export const OpenTradeModalButton = () => {
     const modalState = {
       selectedTab,
       selectedPairId,
-      selectedTickerAddress,
       tickerTokenInputState,
       modalType,
     };
@@ -38,12 +30,14 @@ export const OpenTradeModalButton = () => {
     pushModal,
     selectedTab,
     selectedPairId,
-    selectedTickerAddress,
     tickerTokenInputState,
     modalType,
   ]);
 
   const sideTitle = getTabTitle(selectedTab);
+
+  // TODO: v2 update
+  const symbol = "SYMBOL";
 
   return (
     <Button

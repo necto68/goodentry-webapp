@@ -1,6 +1,3 @@
-import { pairConfigs } from "../../pair/constants/pairConfigs";
-import { areAddressesEqual } from "../../web3/helpers/addresses";
-
 import { baseHistoryFetcher } from "./baseHistoryFetcher";
 
 import type { PositionHistory } from "../types/PositionHistory";
@@ -31,12 +28,8 @@ export const historyFetcher = async (
     return [];
   }
 
-  const positionsPairIds = rawHistory.map(({ asset }) => {
-    const pairConfig = pairConfigs.find(({ tickersAddresses }) =>
-      tickersAddresses.some((ticker) => areAddressesEqual(ticker, asset))
-    );
-    return pairConfig?.id ?? pairConfigs[0].id;
-  });
+  // TODO: v2 update
+  const positionsPairIds: string[] = [""];
 
   return await Promise.all(
     rawHistory

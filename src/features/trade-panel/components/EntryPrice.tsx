@@ -5,31 +5,24 @@ import {
   InfoTitle,
   InfoValue,
 } from "../../shared/modal/styles/ModalInfo";
-import { useTicker } from "../hooks/useTicker";
 import { TabType } from "../types/TabType";
 
 import type { TradePanelState } from "../types/TradePanelState";
 import type { FC } from "react";
 
-type EntryPriceProps = Pick<
-  TradePanelState,
-  "selectedPairId" | "selectedTab" | "selectedTickerAddress"
->;
+type EntryPriceProps = Pick<TradePanelState, "selectedPairId" | "selectedTab">;
 
-export const EntryPrice: FC<EntryPriceProps> = ({
-  selectedTab,
-  selectedPairId,
-  selectedTickerAddress,
-}) => {
+export const EntryPrice: FC<EntryPriceProps> = ({ selectedTab }) => {
   const prices = useAssetPrices();
-  const ticker = useTicker(selectedPairId, selectedTickerAddress);
 
   const { currentPrice } = prices ?? {};
-  const { strikePrice } = ticker ?? {};
+
+  // TODO: v2 update
+  const strikePrice = 2000;
 
   let entryPrice = null;
 
-  if (!strikePrice || !currentPrice) {
+  if (!currentPrice) {
     entryPrice = null;
   } else if (selectedTab === TabType.LONG && strikePrice < currentPrice) {
     entryPrice = currentPrice;

@@ -138,39 +138,6 @@ export const getFormattedMarginUsage = (
   );
 };
 
-export const getFormattedTickerTitle = (
-  symbol: string | undefined,
-  strikePrice: number | undefined
-) => {
-  if (symbol === undefined || strikePrice === undefined) {
-    return loadingPlaceholder;
-  }
-
-  return `${symbol}-${strikePrice}`;
-};
-
-export const getFormattedTickerStrikePrice = (
-  strikePrice: number | undefined
-) => {
-  if (strikePrice === undefined) {
-    return loadingPlaceholder;
-  }
-
-  return getFormattedFullCurrency(strikePrice);
-};
-
-export const getFormattedTickerBorrowRate = (
-  borrowRatePerHour: number | undefined
-) => {
-  if (borrowRatePerHour === undefined) {
-    return loadingPlaceholder;
-  }
-
-  return getFormattedAPY(borrowRatePerHour, {
-    minimumFractionDigits: 4,
-  });
-};
-
 export const getFormattedCurrentPrice = (
   currentPrice: number | null | undefined
 ) => {

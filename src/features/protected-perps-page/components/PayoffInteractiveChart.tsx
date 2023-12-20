@@ -2,7 +2,6 @@ import { useCallback } from "react";
 
 import { InteractiveChart } from "../../interactive-chart/components/InteractiveChart";
 import { getFormattedCurrentPrice } from "../../shared/helpers/formatters";
-import { useTicker } from "../../trade-panel/hooks/useTicker";
 import { useTradePanelState } from "../../trade-panel/stores/useTradePanelState";
 import { getChartPoints } from "../helpers/chartPoints";
 import { useAssetPrices } from "../hooks/useAssetPrices";
@@ -20,25 +19,24 @@ export const PayoffInteractiveChart: FC<PayoffInteractiveChartProps> = ({
   selectedChartPoint,
   setSelectedChartPoint,
 }) => {
-  const { selectedTab, selectedPairId, selectedTickerAddress } =
-    useTradePanelState();
+  const { selectedTab } = useTradePanelState();
 
-  const { symbol, strikePrice } =
-    useTicker(selectedPairId, selectedTickerAddress) ?? {};
+  // TODO: v2 update
+  const strikePrice = 2000;
+  const symbol = "SYMBOL";
 
   const { currentPrice } = useAssetPrices() ?? {};
 
-  const chartPoints =
-    currentPrice && strikePrice
-      ? getChartPoints(selectedTab, currentPrice, strikePrice)
-      : [];
+  const chartPoints = currentPrice
+    ? getChartPoints(selectedTab, currentPrice, strikePrice)
+    : [];
 
   const formattedCurrentPrice = currentPrice
     ? getFormattedCurrentPrice(currentPrice)
     : "";
 
   const defaultPointerTitle: [string, string] = [
-    symbol ? `${symbol} Price Now` : "",
+    `${symbol} Price Now`,
     formattedCurrentPrice,
   ];
 
@@ -48,7 +46,7 @@ export const PayoffInteractiveChart: FC<PayoffInteractiveChartProps> = ({
     (chartPoint) => {
       const { x } = chartPoint;
 
-      const title0 = symbol ? `Expected ${symbol} Price` : "";
+      const title0 = `Expected ${symbol} Price`;
       const title1 = getFormattedCurrentPrice(x);
 
       return [title0, title1];

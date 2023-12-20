@@ -11,6 +11,4 @@ export interface PairConfig {
     lendingPool: string;
     protocolDataProvider: string;
   };
-
-  tickersAddresses: string[];
 }

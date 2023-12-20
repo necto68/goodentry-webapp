@@ -1,4 +1,3 @@
-import { getFormattedTickerStrikePrice } from "../../shared/helpers/formatters";
 import {
   Container,
   InfoRow,
@@ -6,17 +5,13 @@ import {
   InfoValue,
 } from "../../shared/modal/styles/ModalInfo";
 import { EntryPrice } from "../../trade-panel/components/EntryPrice";
-import { useTicker } from "../../trade-panel/hooks/useTicker";
 import { useTradePanelState } from "../../trade-panel/stores/useTradePanelState";
 
 export const PayoffChartInfo = () => {
-  const { selectedTab, selectedPairId, selectedTickerAddress } =
-    useTradePanelState();
+  const { selectedTab, selectedPairId } = useTradePanelState();
 
-  const { strikePrice } =
-    useTicker(selectedPairId, selectedTickerAddress) ?? {};
-
-  const formattedTickerStrikePrice = getFormattedTickerStrikePrice(strikePrice);
+  // const formattedTickerStrikePrice =
+  // getFormattedTickerStrikePrice(strikePrice);
 
   return (
     <Container>
@@ -24,14 +19,10 @@ export const PayoffChartInfo = () => {
         <InfoTitle>Max Profit</InfoTitle>
         <InfoValue>Infinity</InfoValue>
       </InfoRow>
-      <EntryPrice
-        selectedPairId={selectedPairId}
-        selectedTab={selectedTab}
-        selectedTickerAddress={selectedTickerAddress}
-      />
+      <EntryPrice selectedPairId={selectedPairId} selectedTab={selectedTab} />
       <InfoRow>
         <InfoTitle>Max Loss Price</InfoTitle>
-        <InfoValue>{formattedTickerStrikePrice}</InfoValue>
+        <InfoValue>formattedTickerStrikePrice</InfoValue>
       </InfoRow>
     </Container>
   );

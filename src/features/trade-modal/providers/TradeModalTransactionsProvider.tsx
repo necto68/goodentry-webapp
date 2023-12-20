@@ -6,7 +6,6 @@ import { useLendingPoolModalQueries } from "../../lending-pool-modal/hooks/useLe
 import { getPairConfig } from "../../pair/helpers/getPairConfig";
 import { useLendingPoolQuery } from "../../queries/hooks/useLendingPoolQuery";
 import { usePositionsQuery } from "../../queries/hooks/usePositionsQuery";
-import { useTickerQuery } from "../../queries/hooks/useTickerQuery";
 import { defaultUseMutationResult } from "../../shared/constants/defaultUseMutationResult";
 import { delay } from "../../shared/helpers/utils";
 import { useModal } from "../../shared/modal/hooks/useModal";
@@ -39,8 +38,7 @@ export const TradeModalTransactionsProvider: FC<
 
   const { setIsGeWalletInfoLoading } = useIsGeWalletInfoLoadingStore();
 
-  const { selectedPairId, selectedTickerAddress, tickerTokenInputState } =
-    useTradeModalState();
+  const { selectedPairId, tickerTokenInputState } = useTradeModalState();
   const title = useTradeModalTitle();
   const lendingPool = usePairLendingPool();
 
@@ -49,11 +47,6 @@ export const TradeModalTransactionsProvider: FC<
   const lendingPoolQuery = useLendingPoolQuery({
     pairId: selectedPairId,
     lendingPoolAddress,
-  });
-
-  const tickerQuery = useTickerQuery({
-    pairId: selectedPairId,
-    tickerAddress: selectedTickerAddress,
   });
 
   const { aToken0Query, aToken1Query } = useLendingPoolModalQueries(
@@ -71,7 +64,6 @@ export const TradeModalTransactionsProvider: FC<
 
   const positionsDependantQueries = [
     lendingPoolQuery,
-    tickerQuery,
     aToken0Query,
     aToken1Query,
   ];

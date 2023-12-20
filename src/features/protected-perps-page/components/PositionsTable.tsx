@@ -4,7 +4,7 @@ import {
   getFormattedAPY,
   getFormattedFullCurrency,
 } from "../../shared/helpers/baseFormatters";
-import { getFormattedTickerTitle } from "../../shared/helpers/formatters";
+import { getZero } from "../../shared/helpers/bigjs";
 import { Table } from "../../table/components/Table";
 import { TitleCell } from "../../table/components/TitleCell";
 import { usePositions } from "../hooks/usePositions";
@@ -26,12 +26,7 @@ const columns: Column<Position>[] = [
     key: "id",
     title: "Instrument",
 
-    render: ({ ticker: { symbol, strikePrice } }) => (
-      <TitleCell
-        symbols={[symbol]}
-        title={getFormattedTickerTitle(symbol, strikePrice)}
-      />
-    ),
+    render: () => <TitleCell symbols={["SYMBOL"]} title="" />,
   },
   {
     key: "side",
@@ -53,11 +48,12 @@ const columns: Column<Position>[] = [
     render: ({ size }) => getFormattedAmount(size),
   },
   {
-    key: "ticker",
+    // TODO: v2 update
+    // key: "ticker",
     title: "Funding / 1h (USDC)",
 
-    render: ({ ticker, size }) =>
-      getFormattedAmount(size.mul(ticker.borrowRatePerHour), {
+    render: () =>
+      getFormattedAmount(getZero(), {
         maximumFractionDigits: 4,
       }),
   },

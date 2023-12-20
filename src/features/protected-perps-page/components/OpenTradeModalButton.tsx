@@ -1,13 +1,11 @@
 import { Button } from "@chakra-ui/react";
 import { useCallback, useEffect } from "react";
 
-import { usePairLendingPool } from "../../ge-wallet/hooks/usePairLendingPool";
 import { useTokenInputState } from "../../input-card/hooks/useTokenInputState";
 import { PositionSide } from "../../queries/types/Position";
 import { useModal } from "../../shared/modal/hooks/useModal";
 import { ModalType } from "../../shared/modal/types/ModalType";
 import { TradeModalType } from "../../trade-modal/types/TradeModalType";
-import { getTickerAsTokenData } from "../../trade-panel/helpers/getTickerAsTokenData";
 import { TabType } from "../../trade-panel/types/TabType";
 
 import type { Position } from "../../queries/types/Position";
@@ -22,13 +20,9 @@ export const OpenTradeModalButton: FC<OpenTradeModalButtonProps> = ({
 }) => {
   const { pushModal } = useModal();
 
-  const { ticker, side, size } = position;
+  const { side, size } = position;
 
-  const { address: selectedTickerAddress, pairId: selectedPairId } = ticker;
-  const lendingPool = usePairLendingPool(selectedPairId);
-  const tickerToken = getTickerAsTokenData(ticker, lendingPool);
-
-  const tickerTokenInputState = useTokenInputState([tickerToken]);
+  const tickerTokenInputState = useTokenInputState([]);
 
   const selectedTab = side === PositionSide.LONG ? TabType.LONG : TabType.SHORT;
   const modalType = TradeModalType.CLOSE_POSITION;
@@ -42,23 +36,15 @@ export const OpenTradeModalButton: FC<OpenTradeModalButtonProps> = ({
   }, [sizeValue, tickerTokenInputState]);
 
   const handleButtonClick = useCallback(() => {
+    // TODO: v2 update
     const modalState = {
       selectedTab,
-      selectedPairId,
-      selectedTickerAddress,
       tickerTokenInputState,
       modalType,
     };
 
     pushModal(ModalType.TRADE, modalState);
-  }, [
-    pushModal,
-    selectedTab,
-    selectedPairId,
-    selectedTickerAddress,
-    tickerTokenInputState,
-    modalType,
-  ]);
+  }, [pushModal, selectedTab, tickerTokenInputState, modalType]);
 
   return (
     <Button onClick={handleButtonClick} size="sm">

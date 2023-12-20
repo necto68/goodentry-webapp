@@ -8,7 +8,6 @@ import { useTradePanelState } from "../stores/useTradePanelState";
 import { Container } from "../styles/TradePanel";
 import { TabType } from "../types/TabType";
 
-import { Tickers } from "./Tickers";
 import { TradePanelInputCard } from "./TradePanelInputCard";
 import { TradePanelMainButton } from "./TradePanelMainButton";
 
@@ -35,7 +34,6 @@ export const TradePanel = () => {
           title0={getTabTitle(TabType.LONG)}
           title1={getTabTitle(TabType.SHORT)}
         />
-        <Tickers />
         <TradePanelInputCard />
         <TradePanelMainButton />
       </Container>
