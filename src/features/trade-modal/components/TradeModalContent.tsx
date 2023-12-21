@@ -8,7 +8,6 @@ import {
   HeaderContainer,
 } from "../styles/TradeModal";
 
-import { GeWalletInfo } from "./GeWalletInfo";
 import { TradeModalMainButton } from "./TradeModalMainButton";
 
 export const TradeModalContent = () => {
@@ -23,7 +22,6 @@ export const TradeModalContent = () => {
         <Header isLongTab={isLongTab}>{title}</Header>
       </HeaderContainer>
       <Content>
-        <GeWalletInfo />
         <TradeModalMainButton />
       </Content>
     </Container>

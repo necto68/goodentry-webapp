@@ -1,10 +1,6 @@
 import { createContext, useMemo } from "react";
 
-import { usePairLendingPool } from "../../ge-wallet/hooks/usePairLendingPool";
-import { useIsGeWalletInfoLoadingStore } from "../../ge-wallet/stores/useIsGeWalletInfoLoadingStore";
-import { useLendingPoolModalQueries } from "../../lending-pool-modal/hooks/useLendingPoolModalQueries";
 import { getPairConfig } from "../../pair/helpers/getPairConfig";
-import { useLendingPoolQuery } from "../../queries/hooks/useLendingPoolQuery";
 import { usePositionsQuery } from "../../queries/hooks/usePositionsQuery";
 import { defaultUseMutationResult } from "../../shared/constants/defaultUseMutationResult";
 import { delay } from "../../shared/helpers/utils";
@@ -17,6 +13,7 @@ import { getChainMetadata } from "../../web3/helpers/getChainMetadata";
 import { useTradeModalTitle } from "../hooks/useTradeModalTitle";
 import { useTradeModalState } from "../stores/useTradeModalState";
 
+import type { DependantQueries } from "../../shared/types/BaseTransaction";
 import type { TradeModalTransactions } from "../types/TradeModalTransactions";
 import type { ReactNode, FC } from "react";
 
@@ -36,23 +33,8 @@ export const TradeModalTransactionsProvider: FC<
   const { popModal } = useModal();
   const toast = useToast();
 
-  const { setIsGeWalletInfoLoading } = useIsGeWalletInfoLoadingStore();
-
   const { selectedPairId, tickerTokenInputState } = useTradeModalState();
   const title = useTradeModalTitle();
-  const lendingPool = usePairLendingPool();
-
-  const lendingPoolAddress = lendingPool?.address ?? "";
-
-  const lendingPoolQuery = useLendingPoolQuery({
-    pairId: selectedPairId,
-    lendingPoolAddress,
-  });
-
-  const { aToken0Query, aToken1Query } = useLendingPoolModalQueries(
-    selectedPairId,
-    lendingPoolAddress
-  );
 
   const positionsQuery = usePositionsQuery();
 
@@ -62,11 +44,7 @@ export const TradeModalTransactionsProvider: FC<
     addresses: { optionsPositionsManager },
   } = getChainMetadata(chainId);
 
-  const positionsDependantQueries = [
-    lendingPoolQuery,
-    aToken0Query,
-    aToken1Query,
-  ];
+  const positionsDependantQueries: DependantQueries = [];
 
   const onTransactionSuccess = async (transactionHash: string) => {
     await positionsQuery.refetch();
@@ -82,10 +60,6 @@ export const TradeModalTransactionsProvider: FC<
 
     tickerTokenInputState.resetState();
     popModal();
-
-    // show wallet info after
-    // all queries are refetched
-    setIsGeWalletInfoLoading(false);
   };
 
   const onTransactionError = (error: Error) => {
@@ -94,14 +68,11 @@ export const TradeModalTransactionsProvider: FC<
       title,
       description: error.message,
     });
-
-    // show wallet info after
-    // transaction failed
-    setIsGeWalletInfoLoading(false);
   };
 
+  // TODO: v2 update
   const openPositionTransaction = useOpenPositionTransaction(
-    lendingPoolAddress,
+    "",
     positionsDependantQueries,
     onTransactionSuccess,
     onTransactionError

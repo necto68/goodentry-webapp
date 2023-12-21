@@ -17,14 +17,13 @@ interface PairDetailsProps {
 }
 
 export const PairDetails: FC<PairDetailsProps> = ({ pairId }) => {
-  const { pair, assetPrices, collateralTokens } = usePairDetailsState(pairId);
+  const { pair, assetPrices } = usePairDetailsState(pairId);
 
   const { title } = pair ?? {};
   const { currentPrice = 0 } = assetPrices ?? {};
 
-  const [token0Symbol, token1Symbol] = collateralTokens.map(
-    (collateralToken) => collateralToken?.symbol
-  );
+  // TODO: v2 update
+  const [token0Symbol, token1Symbol] = ["SYMBOL", "SYMBOL"];
 
   const formattedCurrentPrice = getFormattedNumber(currentPrice);
 

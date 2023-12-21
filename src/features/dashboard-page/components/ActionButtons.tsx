@@ -7,47 +7,29 @@ import { getVaultConfig } from "../../vault/helpers/getVaultConfig";
 import { VaultStatus } from "../../vault/types/VaultStatus";
 import { TabType } from "../../vault-modal/types/TabType";
 import { Container } from "../styles/ActionButtons";
-import { AssetRowType } from "../types/PairAssetsRow";
 
-import type {
-  CollateralTokenAssetRow,
-  VaultTokenAssetRow,
-} from "../types/PairAssetsRow";
+import type { VaultTokenAssetRow } from "../types/PairAssetsRow";
 import type { FC } from "react";
 
-type ActionButtonsProps =
-  | Pick<CollateralTokenAssetRow, "pairId" | "type">
-  | Pick<VaultTokenAssetRow, "type" | "vaultId">;
+type ActionButtonsProps = Pick<VaultTokenAssetRow, "type" | "vaultId">;
 
 export const ActionButtons: FC<ActionButtonsProps> = (props) => {
   const { pushModal } = useModal();
 
-  const { type } = props;
-
-  const pairId =
-    // eslint-disable-next-line react/destructuring-assignment
-    type === AssetRowType.COLLATERAL_TOKEN ? props.pairId : undefined;
-  // eslint-disable-next-line react/destructuring-assignment
-  const vaultId = type === AssetRowType.VAULT_TOKEN ? props.vaultId : undefined;
+  const { vaultId } = props;
 
   const vaultConfig = vaultId ? getVaultConfig(vaultId) : undefined;
   const status = vaultConfig?.status;
 
   const handleClick = useCallback(
     (tabType: TabType) => {
-      const modalType =
-        type === AssetRowType.COLLATERAL_TOKEN
-          ? ModalType.GE_WALLET
-          : ModalType.EZ_VAULT;
+      const modalType = ModalType.EZ_VAULT;
 
-      const modalState =
-        type === AssetRowType.COLLATERAL_TOKEN
-          ? { selectedTab: tabType, pairId }
-          : { selectedTab: tabType, vaultId };
+      const modalState = { selectedTab: tabType, vaultId };
 
       pushModal(modalType, modalState);
     },
-    [pushModal, type, pairId, vaultId]
+    [pushModal, vaultId]
   );
 
   const handleMigrateClick = useCallback(() => {
@@ -56,7 +38,7 @@ export const ActionButtons: FC<ActionButtonsProps> = (props) => {
     pushModal(ModalType.EZ_VAULT_MIGRATION, modalState);
   }, [pushModal, vaultId]);
 
-  if (type === AssetRowType.VAULT_TOKEN && status === VaultStatus.DEPRECATED) {
+  if (status === VaultStatus.DEPRECATED) {
     return (
       <Container>
         <Button

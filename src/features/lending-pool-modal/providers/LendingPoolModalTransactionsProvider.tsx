@@ -1,6 +1,5 @@
 import { createContext, useMemo } from "react";
 
-import { useLendingPool } from "../../ge-wallet/hooks/useLendingPool";
 import { getPairConfig } from "../../pair/helpers/getPairConfig";
 import { defaultUseMutationResult } from "../../shared/constants/defaultUseMutationResult";
 import { useToast } from "../../toast/hooks/useToast";
@@ -49,11 +48,10 @@ export const LendingPoolModalTransactionsProvider: FC<
   } = useLendingPoolModalQueries(pairId, lendingPoolAddress);
 
   const { tokenData } = useLendingPoolModalTokenInputState();
-  const lendingPool = useLendingPool(pairId, lendingPoolAddress);
 
   const tokenSymbol = tokenData?.symbol ?? "";
   const tokenAddress = tokenData?.address ?? "";
-  const lendingPoolGatewayAddress = lendingPool?.gatewayAddress ?? "";
+  const lendingPoolGatewayAddress = "";
 
   const tokenApproveDependantQueries = [token0Query, token1Query];
   const lendingPoolDependantQueries = [

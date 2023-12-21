@@ -1,5 +1,4 @@
 export enum ModalType {
-  GE_WALLET = "GE_WALLET",
   TRADE = "TRADE",
   EZ_VAULT = "EZ_VAULT",
   EZ_VAULT_MIGRATION = "EZ_VAULT_MIGRATION",

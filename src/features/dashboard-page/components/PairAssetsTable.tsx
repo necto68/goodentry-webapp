@@ -9,11 +9,9 @@ import { TitleCell } from "../../table/components/TitleCell";
 import { getVaultConfig } from "../../vault/helpers/getVaultConfig";
 import { VaultStatus } from "../../vault/types/VaultStatus";
 import { MigrationTag } from "../../vaults-page/components/MigrationTag";
-import { useCollateralTokenAssetRow } from "../hooks/useCollateralTokenAssetRow";
 import { usePairDetailsState } from "../hooks/usePairDetailsState";
 import { useVaultTokenAssetRow } from "../hooks/useVaultTokenAssetRow";
 import { TitleContainer } from "../styles/PairAssetsTable";
-import { AssetRowType } from "../types/PairAssetsRow";
 
 import { ActionButtons } from "./ActionButtons";
 
@@ -30,18 +28,10 @@ const columns: Column<PairAssetRow>[] = [
     title: "Asset",
 
     render: (row) => {
-      if (row.type === AssetRowType.COLLATERAL_TOKEN) {
-        const { symbol } = row.token;
+      const { vaultId } = row;
 
-        return <TitleCell symbols={[symbol]} title={symbol} />;
-      }
-
-      // for row.type === AssetRowType.VAULT_TOKEN
-      const { vaultId, collateralTokens } = row;
-      const symbols: [string, string] = [
-        collateralTokens[0].symbol,
-        collateralTokens[1].symbol,
-      ];
+      // TODO: v2 update
+      const symbols: [string, string] = ["", ""];
       const { status } = getVaultConfig(vaultId);
 
       return (
@@ -73,52 +63,29 @@ const columns: Column<PairAssetRow>[] = [
   {
     title: "Actions",
 
-    render: (row) => {
-      if (row.type === AssetRowType.COLLATERAL_TOKEN) {
-        return <ActionButtons pairId={row.pairId} type={row.type} />;
-      }
-
-      // for row.type === AssetRowType.VAULT_TOKEN
-      return <ActionButtons type={row.type} vaultId={row.vaultId} />;
-    },
+    render: (row) => <ActionButtons type={row.type} vaultId={row.vaultId} />,
   },
 ];
 
 export const PairAssetsTable: FC<PairDetailsTableProps> = ({ pairId }) => {
-  const { collateralTokens, vaults, vaultTokens } = usePairDetailsState(pairId);
+  const { vaults, vaultTokens } = usePairDetailsState(pairId);
 
-  const [collateralToken0, collateralToken1] = collateralTokens;
   const [activeVault, deprecatedVault] = vaults;
   const [activeVaultToken, deprecatedVaultToken] = vaultTokens;
-
-  const collateralToken0Row = useCollateralTokenAssetRow(
-    pairId,
-    collateralToken0
-  );
-  const collateralToken1Row = useCollateralTokenAssetRow(
-    pairId,
-    collateralToken1
-  );
 
   const activeVaultTokenRow = useVaultTokenAssetRow(
     activeVault?.id,
     activeVault,
-    activeVaultToken,
-    collateralTokens
+    activeVaultToken
   );
+
   const deprecatedVaultTokenRow = useVaultTokenAssetRow(
     deprecatedVault?.id,
     deprecatedVault,
-    deprecatedVaultToken,
-    collateralTokens
+    deprecatedVaultToken
   );
 
-  const rows = [
-    collateralToken0Row,
-    collateralToken1Row,
-    activeVaultTokenRow,
-    deprecatedVaultTokenRow,
-  ];
+  const rows = [activeVaultTokenRow, deprecatedVaultTokenRow];
 
   return <Table columns={columns} rows={rows} />;
 };

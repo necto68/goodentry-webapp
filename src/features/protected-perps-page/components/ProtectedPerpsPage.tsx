@@ -1,6 +1,5 @@
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 
-import { GeWallet } from "../../ge-wallet/components/GeWallet";
 import { TradePanel } from "../../trade-panel/components/TradePanel";
 import { TradePanelStateProvider } from "../../trade-panel/providers/TradePanelStateProvider";
 import { useWallet } from "../../wallet/hooks/useWallet";
@@ -43,7 +42,6 @@ export const ProtectedPerpsPage = () => {
           ) : null}
         </LeftContainer>
         <RightContainer>
-          <GeWallet />
           <TradePanelStateProvider>
             <TradePanel />
             <PayoffChart />

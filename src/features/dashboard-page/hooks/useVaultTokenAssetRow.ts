@@ -7,16 +7,9 @@ import type { VaultTokenAssetRow } from "../types/PairAssetsRow";
 export const useVaultTokenAssetRow = (
   vaultId: string | undefined,
   vault: Vault | undefined,
-  vaultToken: TokenData,
-  collateralTokens: [TokenData, TokenData]
+  vaultToken: TokenData
 ): VaultTokenAssetRow | undefined => {
-  if (
-    !vaultId ||
-    !vault ||
-    !vaultToken ||
-    !collateralTokens[0] ||
-    !collateralTokens[1]
-  ) {
+  if (!vaultId || !vault || !vaultToken) {
     return undefined;
   }
 
@@ -26,7 +19,6 @@ export const useVaultTokenAssetRow = (
     type: AssetRowType.VAULT_TOKEN,
     vaultId,
     token: vaultToken,
-    collateralTokens: [collateralTokens[0], collateralTokens[1]],
     annualPercentageRate: totalAnnualPercentageYield,
   };
 };
