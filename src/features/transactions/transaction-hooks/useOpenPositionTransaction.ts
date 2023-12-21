@@ -1,11 +1,7 @@
-import { getDefaultProvider, utils } from "ethers";
+import { getDefaultProvider } from "ethers";
 import { useCallback } from "react";
 
-import { getPairConfig } from "../../pair/helpers/getPairConfig";
-import { useSelectedPairIdStore } from "../../protected-perps-page/stores/useSelectedPairIdStore";
-import { IAaveLendingPool__factory as LendingPoolFactory } from "../../smart-contracts/types";
-import { useWallet } from "../../wallet/hooks/useWallet";
-import { getChainMetadata } from "../../web3/helpers/getChainMetadata";
+import { IERC20__factory as LendingPoolFactory } from "../../smart-contracts/types";
 import { useBaseTransaction } from "../hooks/useBaseTransaction";
 
 import type {
@@ -20,18 +16,19 @@ export const useOpenPositionTransaction = (
   onTransactionSuccess?: OnTransactionSuccess,
   onTransactionError?: OnTransactionError
 ) => {
-  const { account = "" } = useWallet();
-  const { selectedPairId } = useSelectedPairIdStore();
-  const { chainId, poolId } = getPairConfig(selectedPairId);
-  const {
-    addresses: { optionsPositionsManager },
-  } = getChainMetadata(chainId);
+  // const { account = "" } = useWallet();
+  // const { selectedPairId } = useSelectedPairIdStore();
+  // const { chainId } = getPairConfig(selectedPairId);
+  // const {
+  //   addresses: { optionsPositionsManager },
+  // } = getChainMetadata(chainId);
 
+  // TODO: v2 update
   const lendingPoolContract = LendingPoolFactory.connect(
     lendingPoolAddress,
     getDefaultProvider()
   );
-  const method = "flashLoan";
+  const method = "balanceOf";
 
   const { mutation, resetTransaction, transactionHash } = useBaseTransaction(
     lendingPoolContract,
@@ -41,25 +38,9 @@ export const useOpenPositionTransaction = (
     onTransactionError
   );
 
-  const runTransaction = useCallback(
-    (swapSourceAddress: string, tickerAddress: string, amount: string) => {
-      const parameters = utils.defaultAbiCoder.encode(
-        ["uint8", "uint", "address", "address[]"],
-        [0, poolId, account, [swapSourceAddress]]
-      );
-
-      mutation.mutate([
-        optionsPositionsManager,
-        [tickerAddress],
-        [amount],
-        [2],
-        account,
-        parameters,
-        0,
-      ]);
-    },
-    [poolId, account, mutation, optionsPositionsManager]
-  );
+  const runTransaction = useCallback(() => {
+    mutation.mutate([""]);
+  }, [mutation]);
 
   return {
     mutation,

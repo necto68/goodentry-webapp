@@ -10,9 +10,9 @@ export interface BaseToken {
   totalSupply: Big;
 }
 
+// TODO: v2 update
 export interface Token extends BaseToken {
   price: number;
-  underlyingAssetAddress?: string;
 }
 
 export type TokenData = Token | undefined;

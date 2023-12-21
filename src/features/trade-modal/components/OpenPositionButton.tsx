@@ -19,7 +19,7 @@ export const OpenPositionButton = () => {
     // const amount = toTokenAmount(tickerAmount, tickerToken).toString();
 
     // TODO: v2 update
-    runTransaction("", "", "");
+    runTransaction();
   }, [runTransaction]);
 
   const title = "Open Position";

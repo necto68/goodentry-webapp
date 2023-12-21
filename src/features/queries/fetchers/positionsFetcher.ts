@@ -1,6 +1,3 @@
-import { pairConfigs } from "../../pair/constants/pairConfigs";
-import { areAddressesEqual } from "../../web3/helpers/addresses";
-
 import { basePositionFetcher } from "./basePositionFetcher";
 
 import type { Position } from "../types/Position";
@@ -38,13 +35,16 @@ export const positionsFetcher = async (
     return [];
   }
 
-  const positionsPairIds = positionsData.map(({ positionData }) => {
-    const lendingPoolAddress = positionData.vault;
-    const pairConfig = pairConfigs.find(({ addresses }) =>
-      areAddressesEqual(addresses.lendingPool, lendingPoolAddress)
-    );
-    return pairConfig?.id ?? pairConfigs[0].id;
-  });
+  // const positionsPairIds = positionsData.map(({ positionData }) => {
+  //   const lendingPoolAddress = positionData.vault;
+  //   const pairConfig = pairConfigs.find(({ addresses }) =>
+  //     areAddressesEqual(addresses.lendingPool, lendingPoolAddress)
+  //   );
+  //   return pairConfig?.id ?? pairConfigs[0].id;
+  // });
+
+  // TODO: v2 update
+  const positionsPairIds = [""];
 
   return await Promise.all(
     positionsData.map(

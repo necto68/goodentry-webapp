@@ -6,7 +6,6 @@ export interface ChainMetadata {
   addresses: {
     priceOracle: string;
     optionsPositionsManager: string;
-    lendingPoolGateway: string;
     vaultMigrationManager: string;
   };
 }
