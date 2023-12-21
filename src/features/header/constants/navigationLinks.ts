@@ -4,11 +4,11 @@ import type { NavigationLink } from "../types/NavigationLink";
 
 export const headerNavigationLinks: NavigationLink[] = [
   {
-    name: "Protected Perps",
+    name: "Legacy Protected Perps",
     href: RoutePathname.PROTECTED_PERPS,
   },
   {
-    name: "ezVaults",
+    name: "Legacy ezVaults",
     href: RoutePathname.EZ_VAULTS,
   },
   {

@@ -11,11 +11,11 @@ export const NotificationBar = () => (
     <Content>
       <InfoIcon color="brand" fontSize={18} />
       <NotificationLink
-        href="https://goodentrylabs.medium.com/"
+        href="https://degen.goodentry.io/"
         isExternal
         rel="nofollow"
       >
-        Deposits and Position Openings are Paused [Click here to read more]
+        Trading available in Degen Mode [Open Degen Now]
       </NotificationLink>
     </Content>
   </Container>
