@@ -2,7 +2,6 @@ import { fromTokenAmount } from "../../input-card/helpers/tokenAmount";
 import { getPairConfig } from "../../pair/helpers/getPairConfig";
 import { queryClient } from "../../shared/constants/queryClient";
 import { getExp, getZero, toBig } from "../../shared/helpers/bigjs";
-import { getPairQueryOptions } from "../query-options-getters/getPairQueryOptions";
 import { getTokenQueryOptions } from "../query-options-getters/getTokenQueryOptions";
 import { PositionSide } from "../types/Position";
 
@@ -22,13 +21,13 @@ export const basePositionFetcher = async (
     avgEntry,
   } = positionData;
 
-  const [{ token0Address, token1Address }] = await Promise.all([
-    queryClient.ensureQueryData(getPairQueryOptions(pairId)),
-  ]);
+  const {
+    addresses: { baseToken, quoteToken },
+  } = getPairConfig(pairId);
 
   const [token0, token1] = await Promise.all([
-    queryClient.fetchQuery(getTokenQueryOptions(chainId, token0Address)),
-    queryClient.fetchQuery(getTokenQueryOptions(chainId, token1Address)),
+    queryClient.fetchQuery(getTokenQueryOptions(chainId, baseToken)),
+    queryClient.fetchQuery(getTokenQueryOptions(chainId, quoteToken)),
   ]);
 
   const token0Amount = fromTokenAmount(toBig(positionAmount0), token0);

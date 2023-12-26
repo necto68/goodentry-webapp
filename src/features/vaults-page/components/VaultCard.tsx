@@ -47,7 +47,7 @@ export const VaultCard: FC<VaultCardProps> = ({ vaultId }) => {
 
   const { pairId, status } = getVaultConfig(vaultId);
 
-  const { title, token0Symbol, token1Symbol } = usePair(pairId) ?? {};
+  const { title, baseTokenSymbol, quoteTokenSymbol } = usePair(pairId) ?? {};
 
   const [formattedSupplyRate, formattedFeesRate] = [supplyRate, feesRate].map(
     (value) => (value ? getFormattedAPY(value) : loadingPlaceholder)
@@ -61,13 +61,14 @@ export const VaultCard: FC<VaultCardProps> = ({ vaultId }) => {
     ? formatNumberWithSuffix(totalValueLockedCap)
     : loadingPlaceholder;
 
-  const [token0Icon, token1Icon] = [token0Symbol, token1Symbol].map(
-    (symbol) => {
-      const imageSource = symbol ? getImageSourceBySymbol(symbol) : null;
+  const [baseTokenIcon, quoteTokenIcon] = [
+    baseTokenSymbol,
+    quoteTokenSymbol,
+  ].map((symbol) => {
+    const imageSource = symbol ? getImageSourceBySymbol(symbol) : null;
 
-      return imageSource ?? undefined;
-    }
-  );
+    return imageSource ?? undefined;
+  });
 
   const getAPYDetails = () => (
     <>
@@ -90,14 +91,14 @@ export const VaultCard: FC<VaultCardProps> = ({ vaultId }) => {
         </TagContainer>
         <Tokens>
           <TokenIconLeft
-            alt={token0Symbol}
+            alt={baseTokenSymbol}
             draggable={false}
-            src={token0Icon}
+            src={baseTokenIcon}
           />
           <TokenIconRight
-            alt={token1Symbol}
+            alt={quoteTokenSymbol}
             draggable={false}
-            src={token1Icon}
+            src={quoteTokenIcon}
           />
         </Tokens>
         <Title>{title}</Title>

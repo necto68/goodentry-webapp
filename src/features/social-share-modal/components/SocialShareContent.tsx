@@ -3,6 +3,7 @@ import { forwardRef } from "react";
 
 import { appLogo } from "../../icons/brand";
 import { usePair } from "../../protected-perps-page/hooks/usePair";
+import { usePairPrices } from "../../protected-perps-page/hooks/usePairPrices";
 import { PositionSide } from "../../queries/types/Position";
 import {
   getFormattedAPY,
@@ -26,11 +27,21 @@ import {
 
 const SocialShareContent = forwardRef<HTMLDivElement | null>(
   (props, reference) => {
-    const { position, currentPrice } = useSocialShareModalState();
+    const { position } = useSocialShareModalState();
 
     const { side, pairId, size, profitAndLossValue, entryPrice } = position;
 
-    const { token0Symbol = "", token1Symbol = "" } = usePair(pairId) ?? {};
+    const {
+      title = "",
+      baseTokenSymbol,
+      quoteTokenSymbol,
+    } = usePair(pairId) ?? {};
+    const { baseTokenPrice } = usePairPrices(pairId) ?? {};
+
+    const symbols: [string, string] | undefined =
+      baseTokenSymbol && quoteTokenSymbol
+        ? [baseTokenSymbol, quoteTokenSymbol]
+        : undefined;
 
     const isLongSide = side === PositionSide.LONG;
 
@@ -40,13 +51,15 @@ const SocialShareContent = forwardRef<HTMLDivElement | null>(
     );
 
     const formattedEntryPrice = getFormattedFullCurrency(entryPrice);
-    const formattedMarketPrice = getFormattedFullCurrency(currentPrice);
+    const formattedMarketPrice = baseTokenPrice
+      ? getFormattedFullCurrency(baseTokenPrice)
+      : null;
 
     return (
       <Container ref={reference}>
         <Logo src={appLogo} />
         <PairName>
-          <TitleCell symbols={[token0Symbol, token1Symbol]} title={pairId} />
+          <TitleCell symbols={symbols} title={title} />
           <Flex>
             <SideValue side={side}>{isLongSide ? "Long" : "Short"}</SideValue>
             <Leverage>10x</Leverage>

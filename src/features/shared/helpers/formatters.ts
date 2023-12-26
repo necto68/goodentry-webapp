@@ -7,18 +7,16 @@ import { getFormattedAmount, getFormattedFullCurrency } from "./baseFormatters";
 
 import type Big from "big.js";
 
-export const getFormattedCurrentPrice = (
-  currentPrice: number | null | undefined
-) => {
-  if (currentPrice === undefined) {
+export const getFormattedPrice = (price: number | null | undefined) => {
+  if (price === undefined) {
     return loadingPlaceholder;
   }
 
-  if (currentPrice === null) {
+  if (price === null) {
     return notAvailablePlaceholder;
   }
 
-  return getFormattedFullCurrency(currentPrice);
+  return getFormattedFullCurrency(price);
 };
 
 export const getFormattedTokenAmount = (amount: Big | null | undefined) => {

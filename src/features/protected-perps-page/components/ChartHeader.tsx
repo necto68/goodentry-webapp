@@ -3,8 +3,9 @@ import {
   notAvailablePlaceholder,
 } from "../../shared/constants/placeholders";
 import { getFormattedAPY } from "../../shared/helpers/baseFormatters";
-import { getFormattedCurrentPrice } from "../../shared/helpers/formatters";
+import { getFormattedPrice } from "../../shared/helpers/formatters";
 import { useAssetPrices } from "../hooks/useAssetPrices";
+import { usePairPrices } from "../hooks/usePairPrices";
 import {
   Container,
   PriceContainer,
@@ -17,15 +18,14 @@ import { ComponentContainer } from "../styles/ProtectedPerpsPage";
 import { PairSelector } from "./PairSelector";
 
 export const ChartHeader = () => {
-  const assetPrices = useAssetPrices();
+  const { baseTokenPrice } = usePairPrices() ?? {};
+  const { priceChange, highPrice, lowPrice } = useAssetPrices() ?? {};
 
-  const { currentPrice, priceChange, highPrice, lowPrice } = assetPrices ?? {};
-
-  const [formattedCurrentPrice, formattedHighPrice, formattedLowPrice] = [
-    currentPrice,
+  const [formattedBaseTokenPrice, formattedHighPrice, formattedLowPrice] = [
+    baseTokenPrice,
     highPrice,
     lowPrice,
-  ].map((price) => getFormattedCurrentPrice(price));
+  ].map((price) => getFormattedPrice(price));
 
   let formattedPriceChange = notAvailablePlaceholder;
 
@@ -46,7 +46,7 @@ export const ChartHeader = () => {
         <Container>
           <PriceContainer>
             <Title>Current Price</Title>
-            <Value>{formattedCurrentPrice}</Value>
+            <Value>{formattedBaseTokenPrice}</Value>
           </PriceContainer>
           <PriceContainer>
             <Title>24h Change</Title>

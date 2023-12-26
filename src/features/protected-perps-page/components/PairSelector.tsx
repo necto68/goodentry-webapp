@@ -10,10 +10,11 @@ export const PairSelector = () => {
 
   const options = pairs.map((pair, index) => ({
     label: pair ? pair.title : loadingPlaceholder,
+
     value: pair?.id ?? index.toString(),
 
     symbols: pair
-      ? ([pair.token0Symbol, pair.token1Symbol] as [string, string])
+      ? ([pair.baseTokenSymbol, pair.quoteTokenSymbol] as [string, string])
       : undefined,
   }));
 

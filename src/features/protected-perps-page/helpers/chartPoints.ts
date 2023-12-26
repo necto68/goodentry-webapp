@@ -5,15 +5,15 @@ import type { ChartPoint } from "../../interactive-chart/types/ChartPoint";
 
 export const getShift = (
   selectedTab: TabType,
-  currentPrice: number,
+  baseTokenPrice: number,
   strikePrice: number
 ) => {
-  if (selectedTab === TabType.LONG && strikePrice < currentPrice) {
-    return strikePrice - currentPrice;
+  if (selectedTab === TabType.LONG && strikePrice < baseTokenPrice) {
+    return strikePrice - baseTokenPrice;
   }
 
-  if (selectedTab === TabType.SHORT && strikePrice > currentPrice) {
-    return currentPrice - strikePrice;
+  if (selectedTab === TabType.SHORT && strikePrice > baseTokenPrice) {
+    return baseTokenPrice - strikePrice;
   }
 
   return 0;
@@ -21,17 +21,17 @@ export const getShift = (
 
 export const getChartPoints = (
   selectedTab: TabType,
-  currentPrice: number,
+  baseTokenPrice: number,
   strikePrice: number
 ): ChartPoint[] => {
-  // minPrice = currentPrice - 20%
-  const minPrice = currentPrice * 0.8;
+  // minPrice = baseTokenPrice - 20%
+  const minPrice = baseTokenPrice * 0.8;
 
-  // maxPrice = currentPrice + 20%
-  const maxPrice = currentPrice * 1.2;
+  // maxPrice = baseTokenPrice + 20%
+  const maxPrice = baseTokenPrice * 1.2;
   const priceInterval = (maxPrice - minPrice) / POINTS_AMOUNT;
 
-  const shift = getShift(selectedTab, currentPrice, strikePrice);
+  const shift = getShift(selectedTab, baseTokenPrice, strikePrice);
 
   const data = [];
 

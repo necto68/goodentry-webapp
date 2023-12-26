@@ -20,12 +20,14 @@ export const vaultTokenFetcher = async (
 
   const vaultContract = GoodEntryVaultFactory.connect(tokenAddress, provider);
 
-  const [baseToken, rawTotalValueLocked] = await Promise.all([
+  const [baseToken, rawReserves] = await Promise.all([
     baseTokenFetcher(chainId, tokenAddress, spenderAddress, account),
-    vaultContract.getTVL().then(toBig),
+    vaultContract.getReserves(),
   ]);
 
   const totalValueLockedDivisor = getExp(8);
+
+  const rawTotalValueLocked = toBig(rawReserves.valueX8);
   const totalValueLocked = rawTotalValueLocked.div(totalValueLockedDivisor);
 
   const price = totalValueLocked.div(baseToken.totalSupply).toNumber();

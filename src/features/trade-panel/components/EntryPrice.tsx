@@ -1,5 +1,5 @@
-import { useAssetPrices } from "../../protected-perps-page/hooks/useAssetPrices";
-import { getFormattedCurrentPrice } from "../../shared/helpers/formatters";
+import { usePairPrices } from "../../protected-perps-page/hooks/usePairPrices";
+import { getFormattedPrice } from "../../shared/helpers/formatters";
 import {
   InfoRow,
   InfoTitle,
@@ -12,27 +12,28 @@ import type { FC } from "react";
 
 type EntryPriceProps = Pick<TradePanelState, "selectedPairId" | "selectedTab">;
 
-export const EntryPrice: FC<EntryPriceProps> = ({ selectedTab }) => {
-  const prices = useAssetPrices();
-
-  const { currentPrice } = prices ?? {};
+export const EntryPrice: FC<EntryPriceProps> = ({
+  selectedTab,
+  selectedPairId,
+}) => {
+  const { baseTokenPrice } = usePairPrices(selectedPairId) ?? {};
 
   // TODO: v2 update
   const strikePrice = 2000;
 
   let entryPrice = null;
 
-  if (!currentPrice) {
+  if (!baseTokenPrice) {
     entryPrice = null;
-  } else if (selectedTab === TabType.LONG && strikePrice < currentPrice) {
-    entryPrice = currentPrice;
-  } else if (selectedTab === TabType.SHORT && strikePrice > currentPrice) {
-    entryPrice = currentPrice;
+  } else if (selectedTab === TabType.LONG && strikePrice < baseTokenPrice) {
+    entryPrice = baseTokenPrice;
+  } else if (selectedTab === TabType.SHORT && strikePrice > baseTokenPrice) {
+    entryPrice = baseTokenPrice;
   } else {
     entryPrice = strikePrice;
   }
 
-  const formattedEntryPrice = getFormattedCurrentPrice(entryPrice);
+  const formattedEntryPrice = getFormattedPrice(entryPrice);
 
   return (
     <InfoRow>

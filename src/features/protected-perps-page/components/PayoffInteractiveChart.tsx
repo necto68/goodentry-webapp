@@ -1,10 +1,11 @@
 import { useCallback } from "react";
 
 import { InteractiveChart } from "../../interactive-chart/components/InteractiveChart";
-import { getFormattedCurrentPrice } from "../../shared/helpers/formatters";
+import { getFormattedPrice } from "../../shared/helpers/formatters";
 import { useTradePanelState } from "../../trade-panel/stores/useTradePanelState";
 import { getChartPoints } from "../helpers/chartPoints";
-import { useAssetPrices } from "../hooks/useAssetPrices";
+import { usePair } from "../hooks/usePair";
+import { usePairPrices } from "../hooks/usePairPrices";
 
 import type { ChartPoint } from "../../interactive-chart/types/ChartPoint";
 import type { InteractiveChartProps } from "../../interactive-chart/types/InteractiveChartProps";
@@ -19,25 +20,25 @@ export const PayoffInteractiveChart: FC<PayoffInteractiveChartProps> = ({
   selectedChartPoint,
   setSelectedChartPoint,
 }) => {
-  const { selectedTab } = useTradePanelState();
+  const { selectedTab, selectedPairId } = useTradePanelState();
 
   // TODO: v2 update
   const strikePrice = 2000;
-  const symbol = "SYMBOL";
 
-  const { currentPrice } = useAssetPrices() ?? {};
+  const { baseTokenSymbol } = usePair(selectedPairId) ?? {};
+  const { baseTokenPrice } = usePairPrices(selectedPairId) ?? {};
 
-  const chartPoints = currentPrice
-    ? getChartPoints(selectedTab, currentPrice, strikePrice)
+  const chartPoints = baseTokenPrice
+    ? getChartPoints(selectedTab, baseTokenPrice, strikePrice)
     : [];
 
-  const formattedCurrentPrice = currentPrice
-    ? getFormattedCurrentPrice(currentPrice)
+  const formattedBaseTokenPrice = baseTokenPrice
+    ? getFormattedPrice(baseTokenPrice)
     : "";
 
   const defaultPointerTitle: [string, string] = [
-    `${symbol} Price Now`,
-    formattedCurrentPrice,
+    baseTokenSymbol ? `${baseTokenSymbol} Price Now` : "",
+    formattedBaseTokenPrice,
   ];
 
   const getSelectedPointerTitle = useCallback<
@@ -46,19 +47,19 @@ export const PayoffInteractiveChart: FC<PayoffInteractiveChartProps> = ({
     (chartPoint) => {
       const { x } = chartPoint;
 
-      const title0 = `Expected ${symbol} Price`;
-      const title1 = getFormattedCurrentPrice(x);
+      const title0 = baseTokenSymbol ? `Expected ${baseTokenSymbol} Price` : "";
+      const title1 = getFormattedPrice(x);
 
       return [title0, title1];
     },
-    [symbol]
+    [baseTokenSymbol]
   );
 
   return (
     <InteractiveChart
       chartPoints={chartPoints}
       defaultPointerTitle={defaultPointerTitle}
-      defaultPointerX={currentPrice}
+      defaultPointerX={baseTokenPrice}
       getSelectedPointerTitle={getSelectedPointerTitle}
       minHeight={115}
       selectedChartPoint={selectedChartPoint}

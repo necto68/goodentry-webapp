@@ -6,7 +6,9 @@ export interface PairConfig {
   chartSymbol: string;
 
   addresses: {
-    uniswapPool: string;
-    protocolDataProvider: string;
+    baseToken: string;
+    quoteToken: string;
+    vault: string;
+    positionManager: string;
   };
 }

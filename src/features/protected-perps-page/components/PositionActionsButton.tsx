@@ -11,7 +11,6 @@ import { HiOutlineDotsVertical } from "react-icons/hi";
 
 import { useModal } from "../../shared/modal/hooks/useModal";
 import { ModalType } from "../../shared/modal/types/ModalType";
-import { useAssetPrices } from "../hooks/useAssetPrices";
 
 import type { Position } from "../../queries/types/Position";
 import type { FC } from "react";
@@ -24,14 +23,10 @@ export const PositionActionsButton: FC<PositionActionsButtonProps> = ({
   position,
 }) => {
   const { pushModal } = useModal();
-  const assetPrices = useAssetPrices(position.pairId);
-  const { currentPrice } = assetPrices ?? {};
 
   const handleShareButtonClick = useCallback(() => {
-    if (currentPrice) {
-      pushModal(ModalType.SOCIAL_SHARE, { position, currentPrice });
-    }
-  }, [pushModal, position, currentPrice]);
+    pushModal(ModalType.SOCIAL_SHARE, { position });
+  }, [pushModal, position]);
 
   return (
     <Menu>

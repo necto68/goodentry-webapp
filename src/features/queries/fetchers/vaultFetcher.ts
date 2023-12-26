@@ -19,15 +19,17 @@ export const vaultFetcher = async (vaultId: string): Promise<Vault> => {
 
   const vaultContract = GoodEntryVaultFactory.connect(vaultAddress, provider);
 
-  const [rawTotalValueLocked, rawTotalValueLockedCap, rawFee0, rawFee1] =
+  const [rawReserves, rawTotalValueLockedCap, rawFee0, rawFee1] =
     await Promise.all([
-      vaultContract.getTVL().then(toBig),
-      vaultContract.tvlCap().then(toBig),
+      vaultContract.getReserves(),
+      vaultContract.tvlCapX8().then(toBig),
       vaultContract.getAdjustedBaseFee(true).then(toBig),
       vaultContract.getAdjustedBaseFee(false).then(toBig),
     ]);
 
   const totalValueLockedDivisor = getExp(8);
+
+  const rawTotalValueLocked = toBig(rawReserves.valueX8);
   const totalValueLocked = rawTotalValueLocked.div(totalValueLockedDivisor);
   const totalValueLockedCap = rawTotalValueLockedCap.div(
     totalValueLockedDivisor

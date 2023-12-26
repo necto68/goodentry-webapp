@@ -1,4 +1,4 @@
-import { usePair } from "../../protected-perps-page/hooks/usePair";
+import { getPairConfig } from "../../pair/helpers/getPairConfig";
 import { NATIVE_COIN_ADDRESS } from "../../queries/constants/nativeCoin";
 import { useTokenQuery } from "../../queries/hooks/useTokenQuery";
 import { useVaultQuery } from "../../queries/hooks/useVaultQuery";
@@ -9,9 +9,9 @@ import { getChainMetadata } from "../../web3/helpers/getChainMetadata";
 export const useVaultModalQueries = (vaultId: string, vaultAddress: string) => {
   const { chainId, pairId } = getVaultConfig(vaultId);
 
-  const pair = usePair(pairId);
-
-  const { token0Address = "", token1Address = "" } = pair ?? {};
+  const {
+    addresses: { baseToken, quoteToken },
+  } = getPairConfig(pairId);
 
   const {
     addresses: { vaultMigrationManager },
@@ -38,13 +38,13 @@ export const useVaultModalQueries = (vaultId: string, vaultAddress: string) => {
 
   const token0Query = useTokenQuery({
     chainId,
-    tokenAddress: token0Address,
+    tokenAddress: baseToken,
     spenderAddress: vaultAddress,
   });
 
   const token1Query = useTokenQuery({
     chainId,
-    tokenAddress: token1Address,
+    tokenAddress: quoteToken,
     spenderAddress: vaultAddress,
   });
 
