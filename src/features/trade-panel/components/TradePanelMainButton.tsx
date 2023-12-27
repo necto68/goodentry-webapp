@@ -5,7 +5,7 @@ import { ZeroBalanceMainButton } from "../../form-components/components/ZeroBala
 import { isInsufficientTokenBalance } from "../../input-card/helpers/tokenBalance";
 import { usePairChainId } from "../../protected-perps-page/hooks/usePairChainId";
 import { useWallet } from "../../wallet/hooks/useWallet";
-import { useTickerTokenInputState } from "../hooks/useTickerTokenInputState";
+import { useQuoteTokenInputState } from "../hooks/useQuoteTokenInputState";
 
 // import { OpenTradeModalButton } from "./OpenTradeModalButton";
 
@@ -13,7 +13,7 @@ export const TradePanelMainButton = () => {
   const { isConnected, chainId: selectedChainId } = useWallet();
   const chainId = usePairChainId();
 
-  const { tokenData, inputValueBig } = useTickerTokenInputState();
+  const { tokenData, inputValueBig } = useQuoteTokenInputState();
 
   const isZeroBalance = inputValueBig.lte(0);
 

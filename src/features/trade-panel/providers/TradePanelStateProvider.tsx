@@ -9,6 +9,7 @@ import {
 import { defaultTokenInputState } from "../../input-card/constants/defaultTokenInputState";
 import { useTokenInputState } from "../../input-card/hooks/useTokenInputState";
 import { useSelectedPairIdStore } from "../../protected-perps-page/stores/useSelectedPairIdStore";
+import { defaultLeverageStep } from "../constants/leverageSteps";
 import { TabType } from "../types/TabType";
 
 import type { TradePanelState } from "../types/TradePanelState";
@@ -22,7 +23,9 @@ export const TradePanelStateContext = createContext<TradePanelState>({
   selectedTab: TabType.LONG,
   setSelectedTab: () => undefined,
   selectedPairId: "",
-  tickerTokenInputState: defaultTokenInputState,
+  quoteTokenInputState: defaultTokenInputState,
+  selectedLeverage: defaultLeverageStep,
+  setSelectedLeverage: () => undefined,
 });
 
 export const TradePanelStateProvider: FC<TradePanelStateProviderProps> = ({
@@ -33,18 +36,20 @@ export const TradePanelStateProvider: FC<TradePanelStateProviderProps> = ({
   const [rawSelectedPairId, setRawSelectedPairId] =
     useState(storeSelectedPairId);
   const [rawSelectedTab, setRawSelectedTab] = useState(TabType.LONG);
+  const [selectedLeverage, setSelectedLeverage] = useState(defaultLeverageStep);
 
-  const tickerTokenInputState = useTokenInputState([]);
+  const quoteTokenInputState = useTokenInputState([]);
 
   const selectedPairId = rawSelectedPairId;
 
   const selectedTab = rawSelectedTab;
   const setSelectedTab = useCallback(
     (nextSelectedTab: TradePanelState["selectedTab"]) => {
-      tickerTokenInputState.resetState();
+      quoteTokenInputState.resetState();
+      setSelectedLeverage(defaultLeverageStep);
       setRawSelectedTab(nextSelectedTab);
     },
-    [tickerTokenInputState, setRawSelectedTab]
+    [quoteTokenInputState, setRawSelectedTab]
   );
 
   // TODO: remove this useEffect
@@ -54,18 +59,28 @@ export const TradePanelStateProvider: FC<TradePanelStateProviderProps> = ({
       setRawSelectedPairId(storeSelectedPairId);
       setRawSelectedTab(TabType.LONG);
 
-      tickerTokenInputState.resetState();
+      quoteTokenInputState.resetState();
+      setSelectedLeverage(defaultLeverageStep);
     }
-  }, [selectedPairId, storeSelectedPairId, tickerTokenInputState]);
+  }, [selectedPairId, storeSelectedPairId, quoteTokenInputState]);
 
   const value = useMemo(
     () => ({
       selectedTab,
       setSelectedTab,
       selectedPairId,
-      tickerTokenInputState,
+      quoteTokenInputState,
+      selectedLeverage,
+      setSelectedLeverage,
     }),
-    [selectedTab, setSelectedTab, selectedPairId, tickerTokenInputState]
+    [
+      selectedTab,
+      setSelectedTab,
+      selectedPairId,
+      quoteTokenInputState,
+      selectedLeverage,
+      setSelectedLeverage,
+    ]
   );
 
   return (

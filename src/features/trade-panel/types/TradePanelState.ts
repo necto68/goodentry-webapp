@@ -6,5 +6,7 @@ export interface TradePanelState {
   selectedTab: TabType;
   setSelectedTab: (tab: TabType) => void;
   selectedPairId: PairConfig["id"];
-  tickerTokenInputState: TokenInputState;
+  quoteTokenInputState: TokenInputState;
+  selectedLeverage: number;
+  setSelectedLeverage: (leverage: number) => void;
 }

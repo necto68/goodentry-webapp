@@ -20,9 +20,9 @@ export const OpenTradeModalButton: FC<OpenTradeModalButtonProps> = ({
 }) => {
   const { pushModal } = useModal();
 
-  const { side, size } = position;
+  const { side, size, pairId: selectedPairId } = position;
 
-  const tickerTokenInputState = useTokenInputState([]);
+  const quoteTokenInputState = useTokenInputState([]);
 
   const selectedTab = side === PositionSide.LONG ? TabType.LONG : TabType.SHORT;
   const modalType = TradeModalType.CLOSE_POSITION;
@@ -30,21 +30,21 @@ export const OpenTradeModalButton: FC<OpenTradeModalButtonProps> = ({
   const sizeValue = size.toString();
 
   useEffect(() => {
-    if (tickerTokenInputState.inputValue !== sizeValue) {
-      tickerTokenInputState.setInputValue(sizeValue);
+    if (quoteTokenInputState.inputValue !== sizeValue) {
+      quoteTokenInputState.setInputValue(sizeValue);
     }
-  }, [sizeValue, tickerTokenInputState]);
+  }, [sizeValue, quoteTokenInputState]);
 
   const handleButtonClick = useCallback(() => {
-    // TODO: v2 update
     const modalState = {
       selectedTab,
-      tickerTokenInputState,
+      selectedPairId,
+      quoteTokenInputState,
       modalType,
     };
 
     pushModal(ModalType.TRADE, modalState);
-  }, [pushModal, selectedTab, tickerTokenInputState, modalType]);
+  }, [pushModal, selectedTab, selectedPairId, quoteTokenInputState, modalType]);
 
   return (
     <Button onClick={handleButtonClick} size="sm">

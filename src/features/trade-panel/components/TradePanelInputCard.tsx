@@ -1,5 +1,5 @@
 import { InputCard } from "../../input-card/components/InputCard";
-import { useTickerTokenInputState } from "../hooks/useTickerTokenInputState";
+import { useQuoteTokenInputState } from "../hooks/useQuoteTokenInputState";
 
 export const TradePanelInputCard = () => {
   const {
@@ -9,7 +9,7 @@ export const TradePanelInputCard = () => {
     inputValue,
     setInputValue,
     isError,
-  } = useTickerTokenInputState();
+  } = useQuoteTokenInputState();
 
   return (
     <InputCard

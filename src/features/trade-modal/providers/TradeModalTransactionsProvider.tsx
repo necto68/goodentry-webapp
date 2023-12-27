@@ -33,7 +33,7 @@ export const TradeModalTransactionsProvider: FC<
   const { popModal } = useModal();
   const toast = useToast();
 
-  const { selectedPairId, tickerTokenInputState } = useTradeModalState();
+  const { selectedPairId, quoteTokenInputState } = useTradeModalState();
   const title = useTradeModalTitle();
 
   const positionsQuery = usePositionsQuery();
@@ -58,7 +58,7 @@ export const TradeModalTransactionsProvider: FC<
       transactionHash,
     });
 
-    tickerTokenInputState.resetState();
+    quoteTokenInputState.resetState();
     popModal();
   };
 

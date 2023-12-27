@@ -10,7 +10,7 @@ import { TabType } from "../types/TabType";
 
 export const OpenTradeModalButton = () => {
   const { pushModal } = useModal();
-  const { selectedTab, selectedPairId, tickerTokenInputState } =
+  const { selectedTab, selectedPairId, quoteTokenInputState } =
     useTradePanelState();
 
   const isLongTab = selectedTab === TabType.LONG;
@@ -21,18 +21,12 @@ export const OpenTradeModalButton = () => {
     const modalState = {
       selectedTab,
       selectedPairId,
-      tickerTokenInputState,
+      quoteTokenInputState,
       modalType,
     };
 
     pushModal(ModalType.TRADE, modalState);
-  }, [
-    pushModal,
-    selectedTab,
-    selectedPairId,
-    tickerTokenInputState,
-    modalType,
-  ]);
+  }, [pushModal, selectedTab, selectedPairId, quoteTokenInputState, modalType]);
 
   const sideTitle = getTabTitle(selectedTab);
 
