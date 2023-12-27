@@ -1,4 +1,4 @@
-import type { Token } from "../../queries/types/Token";
+import type { VaultToken } from "../../queries/types/VaultToken";
 
 export enum AssetRowType {
   VAULT_TOKEN = "VAULT_TOKEN",
@@ -7,7 +7,7 @@ export enum AssetRowType {
 export interface VaultTokenAssetRow {
   type: AssetRowType.VAULT_TOKEN;
   vaultId: string;
-  token: Token;
+  vaultToken: VaultToken;
   annualPercentageRate: number;
 }
 

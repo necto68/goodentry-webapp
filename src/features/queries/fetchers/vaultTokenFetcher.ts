@@ -5,23 +5,23 @@ import { IGoodEntryVault__factory as GoodEntryVaultFactory } from "../../smart-c
 import { areAddressesEqual } from "../../web3/helpers/addresses";
 import { getProvider } from "../../web3/helpers/getProvider";
 
-import { baseTokenFetcher } from "./baseTokenFetcher";
+import { tokenFetcher } from "./tokenFetcher";
 
 import type { ChainId } from "../../web3/types/ChainId";
-import type { Token } from "../types/Token";
+import type { VaultToken } from "../types/VaultToken";
 
 export const vaultTokenFetcher = async (
   chainId: ChainId,
   tokenAddress: string,
   spenderAddress?: string,
   account?: string
-): Promise<Token> => {
+): Promise<VaultToken> => {
   const provider = getProvider(chainId);
 
   const vaultContract = GoodEntryVaultFactory.connect(tokenAddress, provider);
 
   const [baseToken, rawReserves] = await Promise.all([
-    baseTokenFetcher(chainId, tokenAddress, spenderAddress, account),
+    tokenFetcher(chainId, tokenAddress, spenderAddress, account),
     vaultContract.getReserves(),
   ]);
 

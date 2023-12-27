@@ -13,13 +13,11 @@ export const TradePanelInputCard = () => {
 
   return (
     <InputCard
-      balanceTitle="Available Margin"
       inputValue={inputValue}
       isError={isError}
-      isShowSlider
       setInputValue={setInputValue}
       setTokenDataAddress={setTokenDataAddress}
-      title="Size"
+      title="Wager"
       tokenData={tokenData}
       tokens={tokens}
     />

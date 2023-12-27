@@ -10,6 +10,7 @@ import { defaultTokenInputState } from "../../input-card/constants/defaultTokenI
 import { useTokenInputState } from "../../input-card/hooks/useTokenInputState";
 import { useSelectedPairIdStore } from "../../protected-perps-page/stores/useSelectedPairIdStore";
 import { defaultLeverageStep } from "../constants/leverageSteps";
+import { useTradePanelQueries } from "../hooks/useTradePanelQueries";
 import { TabType } from "../types/TabType";
 
 import type { TradePanelState } from "../types/TradePanelState";
@@ -38,7 +39,10 @@ export const TradePanelStateProvider: FC<TradePanelStateProviderProps> = ({
   const [rawSelectedTab, setRawSelectedTab] = useState(TabType.LONG);
   const [selectedLeverage, setSelectedLeverage] = useState(defaultLeverageStep);
 
-  const quoteTokenInputState = useTokenInputState([]);
+  const { quoteTokenQuery } = useTradePanelQueries(rawSelectedPairId);
+  const quoteTokenData = quoteTokenQuery.data;
+
+  const quoteTokenInputState = useTokenInputState([quoteTokenData]);
 
   const selectedPairId = rawSelectedPairId;
 

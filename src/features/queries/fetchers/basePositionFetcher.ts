@@ -33,8 +33,11 @@ export const basePositionFetcher = async (
   const token0Amount = fromTokenAmount(toBig(positionAmount0), token0);
   const token1Amount = fromTokenAmount(toBig(positionAmount1), token1);
 
-  const value0 = token0Amount.mul(token0.price);
-  const value1 = token1Amount.mul(token1.price);
+  const value0 = toBig(0);
+  const value1 = toBig(0);
+
+  // const value0 = token0Amount.mul(token0.price);
+  // const value1 = token1Amount.mul(token1.price);
 
   const side = value0.gt(value1) ? PositionSide.LONG : PositionSide.SHORT;
 

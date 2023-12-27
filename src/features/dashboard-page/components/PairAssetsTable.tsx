@@ -43,14 +43,14 @@ const columns: Column<PairAssetRow>[] = [
     },
   },
   {
-    key: "token",
+    key: "vaultToken",
     title: "Balance",
-    render: ({ token }) => getFormattedTokenAmount(token.balance),
+    render: ({ vaultToken }) => getFormattedTokenAmount(vaultToken.balance),
   },
   {
     title: "Value",
 
-    render: ({ token: { balance, price } }) =>
+    render: ({ vaultToken: { balance, price } }) =>
       balance
         ? getFormattedFullCurrency(balance.mul(price).toNumber())
         : notAvailablePlaceholder,

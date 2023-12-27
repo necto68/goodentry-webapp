@@ -1,6 +1,6 @@
 import type Big from "big.js";
 
-export interface BaseToken {
+export interface Token {
   address: string;
   symbol: string;
   name: string;
@@ -8,11 +8,6 @@ export interface BaseToken {
   balance: Big | null;
   allowance: Big;
   totalSupply: Big;
-}
-
-// TODO: v2 update
-export interface Token extends BaseToken {
-  price: number;
 }
 
 export type TokenData = Token | undefined;
