@@ -2,7 +2,6 @@ import { getDefaultProvider } from "ethers";
 import { useCallback } from "react";
 
 import { IGoodEntryOptionsPositionsManager__factory as OptionsPositionsManager } from "../../smart-contracts/types";
-import { useWallet } from "../../wallet/hooks/useWallet";
 import { useBaseTransaction } from "../hooks/useBaseTransaction";
 
 import type {
@@ -17,13 +16,11 @@ export const useClosePositionTransaction = (
   onTransactionSuccess?: OnTransactionSuccess,
   onTransactionError?: OnTransactionError
 ) => {
-  const { account = "" } = useWallet();
-
   const optionsPositionsManagerContract = OptionsPositionsManager.connect(
     optionsPositionsManager,
     getDefaultProvider()
   );
-  const method = "close";
+  const method = "closePosition";
 
   const { mutation, resetTransaction, transactionHash } = useBaseTransaction(
     optionsPositionsManagerContract,
@@ -34,15 +31,10 @@ export const useClosePositionTransaction = (
   );
 
   const runTransaction = useCallback(
-    (
-      poolId: number,
-      tickerAddress: string,
-      amount: string,
-      assetAddress: string
-    ) => {
-      mutation.mutate([poolId, account, tickerAddress, amount, assetAddress]);
+    (positionId: number) => {
+      mutation.mutate([positionId]);
     },
-    [account, mutation]
+    [mutation]
   );
 
   return {

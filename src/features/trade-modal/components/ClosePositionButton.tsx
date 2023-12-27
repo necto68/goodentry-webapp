@@ -18,7 +18,7 @@ export const ClosePositionButton = () => {
 
   const handleButtonClick = useCallback(() => {
     // TODO: v2 update
-    runTransaction(0, "", "", "");
+    runTransaction(0);
   }, [runTransaction]);
 
   const title = "Close Position";

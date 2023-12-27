@@ -39,8 +39,8 @@ export const pairPricesFetcher = async (
   const priceDivisor = getExp(8);
   const [baseTokenPrice, lowerStrikePrice, upperStrikePrice] = [
     rawBaseTokenPrice,
-    rawUpperStrikePrice,
     rawLowerStrikePrice,
+    rawUpperStrikePrice,
   ].map((value) => toBig(value).div(priceDivisor).toNumber());
 
   return {

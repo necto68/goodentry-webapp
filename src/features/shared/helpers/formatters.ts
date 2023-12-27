@@ -3,7 +3,11 @@ import {
   notAvailablePlaceholder,
 } from "../constants/placeholders";
 
-import { getFormattedAmount, getFormattedFullCurrency } from "./baseFormatters";
+import {
+  getFormattedAmount,
+  getFormattedAPY,
+  getFormattedFullCurrency,
+} from "./baseFormatters";
 
 import type Big from "big.js";
 
@@ -29,4 +33,14 @@ export const getFormattedTokenAmount = (amount: Big | null | undefined) => {
   }
 
   return getFormattedAmount(amount);
+};
+
+export const getFormattedBorrowRate = (borrowRate: number | undefined) => {
+  if (borrowRate === undefined) {
+    return loadingPlaceholder;
+  }
+
+  return getFormattedAPY(borrowRate, {
+    minimumFractionDigits: 4,
+  });
 };
