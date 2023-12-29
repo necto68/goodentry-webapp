@@ -1,17 +1,26 @@
 import { Button } from "@chakra-ui/react";
 import { useCallback } from "react";
 
+import { loadingPlaceholder } from "../../shared/constants/placeholders";
 import { useModal } from "../../shared/modal/hooks/useModal";
 import { ModalType } from "../../shared/modal/types/ModalType";
 import { TradeModalType } from "../../trade-modal/types/TradeModalType";
 import { getTabTitle } from "../helpers/getTabTitle";
+import { useTradePanelQueries } from "../hooks/useTradePanelQueries";
 import { useTradePanelState } from "../stores/useTradePanelState";
 import { TabType } from "../types/TabType";
 
 export const OpenTradeModalButton = () => {
   const { pushModal } = useModal();
-  const { selectedTab, selectedPairId, quoteTokenInputState } =
-    useTradePanelState();
+  const {
+    selectedTab,
+    selectedPairId,
+    quoteTokenInputState,
+    selectedLeverage,
+  } = useTradePanelState();
+
+  const { baseTokenQuery } = useTradePanelQueries(selectedPairId);
+  const baseTokenData = baseTokenQuery.data;
 
   const isLongTab = selectedTab === TabType.LONG;
 
@@ -22,16 +31,23 @@ export const OpenTradeModalButton = () => {
       selectedTab,
       selectedPairId,
       quoteTokenInputState,
+      selectedLeverage,
       modalType,
     };
 
     pushModal(ModalType.TRADE, modalState);
-  }, [pushModal, selectedTab, selectedPairId, quoteTokenInputState, modalType]);
+  }, [
+    pushModal,
+    selectedTab,
+    selectedPairId,
+    quoteTokenInputState,
+    selectedLeverage,
+    modalType,
+  ]);
 
   const sideTitle = getTabTitle(selectedTab);
 
-  // TODO: v2 update
-  const symbol = "SYMBOL";
+  const symbol = baseTokenData ? baseTokenData.symbol : loadingPlaceholder;
 
   return (
     <Button

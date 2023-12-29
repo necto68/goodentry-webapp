@@ -4,8 +4,13 @@ import { useTokenQuery } from "../../queries/hooks/useTokenQuery";
 export const useTradePanelQueries = (pairId: string) => {
   const {
     chainId,
-    addresses: { quoteToken, positionManager },
+    addresses: { baseToken, quoteToken, positionManager },
   } = getPairConfig(pairId);
+
+  const baseTokenQuery = useTokenQuery({
+    chainId,
+    tokenAddress: baseToken,
+  });
 
   const quoteTokenQuery = useTokenQuery({
     chainId,
@@ -14,6 +19,7 @@ export const useTradePanelQueries = (pairId: string) => {
   });
 
   return {
+    baseTokenQuery,
     quoteTokenQuery,
   };
 };
