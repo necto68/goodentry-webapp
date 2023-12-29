@@ -5,25 +5,35 @@ import {
   getFormattedBorrowRate,
   getFormattedPrice,
 } from "../../shared/helpers/formatters";
+import { getPositionSize } from "../helpers/getPositionSize";
 import { useTradePanelState } from "../stores/useTradePanelState";
 import { Container, Content, Value } from "../styles/StrikePrice";
 import { TabType } from "../types/TabType";
 
 export const StrikePrice = () => {
-  const { selectedTab } = useTradePanelState();
+  const {
+    selectedTab,
+    selectedPairId,
+    quoteTokenInputState,
+    selectedLeverage,
+  } = useTradePanelState();
   const { lowerStrikePrice, upperStrikePrice } = usePairPrices() ?? {};
-  const { lowerOptionBorrowRate, upperOptionBorrowRate } =
-    useOptionBorrowRates() ?? {};
+
+  const positionSize = getPositionSize(quoteTokenInputState, selectedLeverage);
+  const { lowerOptionHourlyBorrowRate, upperOptionHourlyBorrowRate } =
+    useOptionBorrowRates(selectedPairId, positionSize) ?? {};
 
   const isLongTab = selectedTab === TabType.LONG;
 
   const strikePrice = isLongTab ? upperStrikePrice : lowerStrikePrice;
-  const optionBorrowRate = isLongTab
-    ? upperOptionBorrowRate
-    : lowerOptionBorrowRate;
+  const optionHourlyBorrowRate = isLongTab
+    ? upperOptionHourlyBorrowRate
+    : lowerOptionHourlyBorrowRate;
 
   const formattedStrikePrice = getFormattedPrice(strikePrice);
-  const formattedBorrowRate = getFormattedBorrowRate(optionBorrowRate);
+  const formattedHourlyBorrowRate = getFormattedBorrowRate(
+    optionHourlyBorrowRate
+  );
 
   return (
     <InputContainer>
@@ -34,7 +44,7 @@ export const StrikePrice = () => {
       <Container>
         <Content>
           <Value>{formattedStrikePrice}</Value>
-          <Value>{formattedBorrowRate}</Value>
+          <Value>{formattedHourlyBorrowRate}</Value>
         </Content>
       </Container>
     </InputContainer>

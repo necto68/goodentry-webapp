@@ -1,9 +1,16 @@
-import { useOptionBorrowRatesQuery } from "../../queries/hooks/useOptionBorrowRatesQuery";
-import { useSelectedPairIdStore } from "../stores/useSelectedPairIdStore";
+import { useDebounce } from "usehooks-ts";
 
-export const useOptionBorrowRates = (pairId?: string) => {
-  const { selectedPairId } = useSelectedPairIdStore();
-  const optionBorrowRates = useOptionBorrowRatesQuery(pairId ?? selectedPairId);
+import { useOptionBorrowRatesQuery } from "../../queries/hooks/useOptionBorrowRatesQuery";
+
+import type Big from "big.js";
+
+export const useOptionBorrowRates = (pairId: string, positionSize: Big) => {
+  const debouncedPositionSize = useDebounce(positionSize, 500);
+
+  const optionBorrowRates = useOptionBorrowRatesQuery(
+    pairId,
+    debouncedPositionSize
+  );
 
   return optionBorrowRates.data;
 };

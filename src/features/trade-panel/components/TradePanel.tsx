@@ -3,7 +3,7 @@ import { BiTrendingUp, BiTrendingDown } from "react-icons/bi";
 
 import { Switcher } from "../../form-components/components/Switcher";
 import { ComponentContainer } from "../../protected-perps-page/styles/ProtectedPerpsPage";
-import { getTabTitle } from "../helpers/formatters";
+import { getTabTitle } from "../helpers/getTabTitle";
 import { useTradePanelState } from "../stores/useTradePanelState";
 import { Container } from "../styles/TradePanel";
 import { TabType } from "../types/TabType";

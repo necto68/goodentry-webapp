@@ -1,4 +1,4 @@
-import { getTabTitle } from "../../trade-panel/helpers/formatters";
+import { getTabTitle } from "../../trade-panel/helpers/getTabTitle";
 import { useTradeModalState } from "../stores/useTradeModalState";
 import { TradeModalType } from "../types/TradeModalType";
 

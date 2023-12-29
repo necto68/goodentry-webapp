@@ -4,7 +4,7 @@ import { useCallback } from "react";
 import { useModal } from "../../shared/modal/hooks/useModal";
 import { ModalType } from "../../shared/modal/types/ModalType";
 import { TradeModalType } from "../../trade-modal/types/TradeModalType";
-import { getTabTitle } from "../helpers/formatters";
+import { getTabTitle } from "../helpers/getTabTitle";
 import { useTradePanelState } from "../stores/useTradePanelState";
 import { TabType } from "../types/TabType";
 

@@ -1,4 +1,4 @@
 export interface OptionBorrowRates {
-  lowerOptionBorrowRate: number;
-  upperOptionBorrowRate: number;
+  lowerOptionHourlyBorrowRate: number | null;
+  upperOptionHourlyBorrowRate: number | null;
 }
