@@ -1,7 +1,7 @@
 import { getDefaultProvider } from "ethers";
 import { useCallback } from "react";
 
-import { IGoodEntryOptionsPositionsManager__factory as OptionsPositionsManager } from "../../smart-contracts/types";
+import { IGoodEntryPositionManager__factory as PositionManagerFactory } from "../../smart-contracts/types";
 import { useBaseTransaction } from "../hooks/useBaseTransaction";
 
 import type {
@@ -11,19 +11,19 @@ import type {
 } from "../../shared/types/BaseTransaction";
 
 export const useClosePositionTransaction = (
-  optionsPositionsManager: string,
+  positionManagerAddress: string,
   dependantQueries?: DependantQueries,
   onTransactionSuccess?: OnTransactionSuccess,
   onTransactionError?: OnTransactionError
 ) => {
-  const optionsPositionsManagerContract = OptionsPositionsManager.connect(
-    optionsPositionsManager,
+  const positionManagerContract = PositionManagerFactory.connect(
+    positionManagerAddress,
     getDefaultProvider()
   );
   const method = "closePosition";
 
   const { mutation, resetTransaction, transactionHash } = useBaseTransaction(
-    optionsPositionsManagerContract,
+    positionManagerContract,
     method,
     dependantQueries,
     onTransactionSuccess,

@@ -9,7 +9,6 @@ import { useToast } from "../../toast/hooks/useToast";
 import { ToastType } from "../../toast/types/ToastType";
 import { useClosePositionTransaction } from "../../transactions/transaction-hooks/useClosePositionTransaction";
 import { useOpenPositionTransaction } from "../../transactions/transaction-hooks/useOpenPositionTransaction";
-import { getChainMetadata } from "../../web3/helpers/getChainMetadata";
 import { useTradeModalTitle } from "../hooks/useTradeModalTitle";
 import { useTradeModalState } from "../stores/useTradeModalState";
 
@@ -41,12 +40,14 @@ export const TradeModalTransactionsProvider: FC<
   const { chainId } = getPairConfig(selectedPairId);
 
   const {
-    addresses: { optionsPositionsManager },
-  } = getChainMetadata(chainId);
+    addresses: { positionManager },
+  } = getPairConfig(selectedPairId);
 
   const positionsDependantQueries: DependantQueries = [];
 
   const onTransactionSuccess = async (transactionHash: string) => {
+    // TODO: v2 update
+    // remove later
     await positionsQuery.refetch();
     await delay(2000);
     await positionsQuery.refetch();
@@ -79,7 +80,7 @@ export const TradeModalTransactionsProvider: FC<
   );
 
   const closePositionTransaction = useClosePositionTransaction(
-    optionsPositionsManager,
+    positionManager,
     positionsDependantQueries,
     onTransactionSuccess,
     onTransactionError

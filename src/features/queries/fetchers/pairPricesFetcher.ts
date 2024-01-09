@@ -2,7 +2,8 @@ import { getPairConfig } from "../../pair/helpers/getPairConfig";
 import { getExp, toBig } from "../../shared/helpers/bigjs";
 import {
   IGoodEntryVault__factory as VaultFactory,
-  IGoodEntryStrikePriceManager__factory as StrikePriceManager,
+  IGoodEntryStrikePriceManager__factory as StrikePriceManagerFactory,
+  IGoodEntryPriceOracle__factory as PriceOracleFactory,
 } from "../../smart-contracts/types";
 import { getChainMetadata } from "../../web3/helpers/getChainMetadata";
 import { getProvider } from "../../web3/helpers/getProvider";
@@ -14,33 +15,47 @@ export const pairPricesFetcher = async (
 ): Promise<PairPrices> => {
   const {
     chainId,
-    addresses: { vault },
+    addresses: { baseToken, vault },
   } = getPairConfig(pairId);
 
   const {
-    addresses: { strikePriceManager },
+    addresses: { priceOracle, strikePriceManager },
   } = getChainMetadata(chainId);
 
   const provider = getProvider(chainId);
 
   const vaultContract = VaultFactory.connect(vault, provider);
-  const strikePriceManagerContract = StrikePriceManager.connect(
+  const strikePriceManagerContract = StrikePriceManagerFactory.connect(
     strikePriceManager,
     provider
   );
+  const priceOracleContract = PriceOracleFactory.connect(priceOracle, provider);
 
   const [rawBaseTokenPrice] = await Promise.all([vaultContract.getBasePrice()]);
 
-  const [rawLowerStrikePrice, rawUpperStrikePrice] = await Promise.all([
-    strikePriceManagerContract.getStrikeBelow(rawBaseTokenPrice),
-    strikePriceManagerContract.getStrikeAbove(rawBaseTokenPrice),
-  ]);
+  const [rawFirstLowerStrikePrice, rawFirstUpperStrikePrice, rawVolatility] =
+    await Promise.all([
+      strikePriceManagerContract.getStrikeBelow(rawBaseTokenPrice),
+      strikePriceManagerContract.getStrikeAbove(rawBaseTokenPrice),
+      priceOracleContract.getAdjustedVolatility(baseToken, 0),
+    ]);
+
+  const [rawSecondLowerStrikePrice, rawSecondUpperStrikePrice] =
+    await Promise.all([
+      strikePriceManagerContract.getStrikeStrictlyBelow(
+        rawFirstLowerStrikePrice
+      ),
+      strikePriceManagerContract.getStrikeStrictlyAbove(
+        rawFirstUpperStrikePrice
+      ),
+    ]);
 
   const priceDivisor = getExp(8);
-  const [baseTokenPrice, lowerStrikePrice, upperStrikePrice] = [
+  const [baseTokenPrice, lowerStrikePrice, upperStrikePrice, volatility] = [
     rawBaseTokenPrice,
-    rawLowerStrikePrice,
-    rawUpperStrikePrice,
+    rawSecondLowerStrikePrice,
+    rawSecondUpperStrikePrice,
+    rawVolatility,
   ].map((value) => toBig(value).div(priceDivisor).toNumber());
 
   return {
@@ -48,5 +63,6 @@ export const pairPricesFetcher = async (
     baseTokenPrice,
     lowerStrikePrice,
     upperStrikePrice,
+    volatility,
   };
 };

@@ -2,7 +2,7 @@ import { toTokenAmount } from "../../input-card/helpers/tokenAmount";
 import { getPairConfig } from "../../pair/helpers/getPairConfig";
 import { queryClient } from "../../shared/constants/queryClient";
 import { getExp, toBig } from "../../shared/helpers/bigjs";
-import { IGoodEntryOptionsPositionsManager__factory as OptionsPositionManagerFactory } from "../../smart-contracts/types";
+import { IGoodEntryPositionManager__factory as PositionManagerFactory } from "../../smart-contracts/types";
 import { getProvider } from "../../web3/helpers/getProvider";
 import { getPairPricesQueryOptions } from "../query-options-getters/getPairPricesQueryOptions";
 import { getTokenQueryOptions } from "../query-options-getters/getTokenQueryOptions";
@@ -34,7 +34,7 @@ export const optionBorrowRatesFetcher = async (
 
   const provider = getProvider(chainId);
 
-  const optionsPositionManagerContract = OptionsPositionManagerFactory.connect(
+  const positionManagerContract = PositionManagerFactory.connect(
     positionManager,
     provider
   );
@@ -69,13 +69,13 @@ export const optionBorrowRatesFetcher = async (
   const secondsToExpiry = 60 * 60 * hoursToExpiry;
 
   const [rawLowerOptionPrice, rawUpperOptionPrice] = await Promise.all([
-    optionsPositionManagerContract.getOptionPrice(
+    positionManagerContract.getOptionPrice(
       false,
       rawLowerStrikePrice.toString(),
       quoteTokenNotionalAmount.toString(),
       secondsToExpiry
     ),
-    optionsPositionManagerContract.getOptionPrice(
+    positionManagerContract.getOptionPrice(
       true,
       rawUpperStrikePrice.toString(),
       baseTokenNotionalAmount.toString(),

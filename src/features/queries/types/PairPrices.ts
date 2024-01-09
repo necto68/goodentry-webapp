@@ -3,4 +3,5 @@ export interface PairPrices {
   baseTokenPrice: number;
   lowerStrikePrice: number;
   upperStrikePrice: number;
+  volatility: number;
 }

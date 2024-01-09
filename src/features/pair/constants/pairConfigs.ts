@@ -10,9 +10,9 @@ export const pairConfigs: PairConfig[] = [
 
     addresses: {
       baseToken: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
-      quoteToken: "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
-      vault: "0x36003A975bFC56f650590C26B1479ba423217931",
-      positionManager: "0x8c037eF65e1B3d2094AC75c301e2b1e6eA7e3D67",
+      quoteToken: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      vault: "0xd666156C473Cc9539CAaCc112B3A3590a895C861",
+      positionManager: "0x0f652aAd7993D48bd6E876829aEDC068507a6cE3",
     },
   },
   {
@@ -21,10 +21,10 @@ export const pairConfigs: PairConfig[] = [
     chartSymbol: "ARBUSDT",
 
     addresses: {
-      vault: "0xd5fE1A54fA642400ef559d866247cCE66049141B",
       baseToken: "0x912CE59144191C1204E64559FE8253a0e49E6548",
-      quoteToken: "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
-      positionManager: "0x8D905e2F41430795293aca990b83798a91aF1D53",
+      quoteToken: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      vault: "0x419ae989a629Cc71834BDf6E3e8E33c9c3ED3Bb4",
+      positionManager: "0x73cfCbD36C0bb5574f6062279b6076C5e321A4E2",
     },
   },
 ];

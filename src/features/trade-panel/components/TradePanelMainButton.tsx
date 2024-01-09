@@ -12,23 +12,28 @@ import {
   minQuoteTokenAmount,
 } from "../constants/openPosition";
 import { getPositionSize } from "../helpers/getPositionSize";
+import { useMaxPositionSize } from "../hooks/useMaxPositionSize";
 import { useTradePanelState } from "../stores/useTradePanelState";
 
 import { OpenTradeModalButton } from "./OpenTradeModalButton";
 
-// eslint-disable-next-line complexity,sonarjs/cognitive-complexity
+// eslint-disable-next-line complexity
 export const TradePanelMainButton = () => {
   const { isConnected, chainId: selectedChainId } = useWallet();
   const chainId = usePairChainId();
 
   const { quoteTokenInputState, selectedLeverage } = useTradePanelState();
-  const { tokenData, inputValueBig, isError, error } = quoteTokenInputState;
+  const maxPositionSize = useMaxPositionSize();
 
+  const { tokenData, inputValueBig, isError, error } = quoteTokenInputState;
   const positionSize = getPositionSize(quoteTokenInputState, selectedLeverage);
 
   const isZeroBalance = inputValueBig.lte(0);
   const isInsufficientQuoteTokenAmount = inputValueBig.lt(minQuoteTokenAmount);
   const isInsufficientPositionSize = positionSize.lt(minPositionSize);
+  const isMaxPositionSizeReached = maxPositionSize
+    ? positionSize.gt(maxPositionSize)
+    : false;
   const isInsufficientQuoteTokenBalanceIncludingExerciseFee =
     isInsufficientTokenBalance(inputValueBig.add(exerciseFee), tokenData);
 
@@ -44,32 +49,24 @@ export const TradePanelMainButton = () => {
     return <ZeroBalanceMainButton />;
   }
 
-  if (isInsufficientQuoteTokenAmount && tokenData) {
-    return (
-      <ErrorMainButton
-        title={`Min Wager Size: ${minQuoteTokenAmount} ${tokenData.symbol}`}
-      />
-    );
+  if (isInsufficientQuoteTokenAmount) {
+    return <ErrorMainButton title="Insufficient Wager" />;
   }
 
-  if (isInsufficientPositionSize && tokenData) {
-    return (
-      <ErrorMainButton
-        title={`Min Position Size: ${minPositionSize} ${tokenData.symbol}`}
-      />
-    );
+  if (isInsufficientPositionSize) {
+    return <ErrorMainButton title="Insufficient Position Size" />;
   }
 
   if (isError) {
     return <TokenErrorMainButton error={error} tokenData={tokenData} />;
   }
 
-  if (isInsufficientQuoteTokenBalanceIncludingExerciseFee && tokenData) {
-    return (
-      <ErrorMainButton
-        title={`Exercise Fee: ${exerciseFee} ${tokenData.symbol}`}
-      />
-    );
+  if (isInsufficientQuoteTokenBalanceIncludingExerciseFee) {
+    return <ErrorMainButton title="Insufficient Balance (Exercise Fee)" />;
+  }
+
+  if (isMaxPositionSizeReached) {
+    return <ErrorMainButton title="Max Position Size Reached" />;
   }
 
   return <OpenTradeModalButton />;

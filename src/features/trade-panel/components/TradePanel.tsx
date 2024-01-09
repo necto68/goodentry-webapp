@@ -10,6 +10,7 @@ import { TabType } from "../types/TabType";
 
 import { LeverageSlider } from "./LeverageSlider";
 import { StrikePrice } from "./StrikePrice";
+import { TradePanelInfo } from "./TradePanelInfo";
 import { TradePanelInputCard } from "./TradePanelInputCard";
 import { TradePanelMainButton } from "./TradePanelMainButton";
 
@@ -39,6 +40,7 @@ export const TradePanel = () => {
         <StrikePrice />
         <TradePanelInputCard />
         <LeverageSlider />
+        <TradePanelInfo />
         <TradePanelMainButton />
       </Container>
     </ComponentContainer>
