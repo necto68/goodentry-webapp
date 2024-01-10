@@ -21,7 +21,7 @@ export const StrikePrice = () => {
 
   const positionSize = getPositionSize(quoteTokenInputState, selectedLeverage);
   const { lowerOptionHourlyBorrowRate, upperOptionHourlyBorrowRate } =
-    useOptionBorrowRates(selectedPairId, positionSize) ?? {};
+    useOptionBorrowRates(selectedPairId, positionSize, selectedLeverage) ?? {};
 
   const isLongTab = selectedTab === TabType.LONG;
 

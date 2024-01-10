@@ -63,6 +63,7 @@ module.exports = {
     "react/jsx-no-bind": 0,
     "etc/no-enum": 0,
     "etc/no-commented-out-code": 1,
+    "etc/no-misused-generics": 0,
     "react/require-default-props": 0,
     "react/no-multi-comp": 0,
     "func-style": [2, "expression"],

@@ -4,10 +4,10 @@ import { queryClient } from "../../shared/constants/queryClient";
 import { getExp, toBig } from "../../shared/helpers/bigjs";
 import { IGoodEntryPositionManager__factory as PositionManagerFactory } from "../../smart-contracts/types";
 import { getProvider } from "../../web3/helpers/getProvider";
-import { getPairPricesQueryOptions } from "../query-options-getters/getPairPricesQueryOptions";
 import { getTokenQueryOptions } from "../query-options-getters/getTokenQueryOptions";
 
 import type { OptionBorrowRates } from "../types/OptionBorrowRates";
+import type { PairPrices } from "../types/PairPrices";
 import type Big from "big.js";
 
 const defaultOptionBorrowRates = {
@@ -17,9 +17,11 @@ const defaultOptionBorrowRates = {
 
 export const optionBorrowRatesFetcher = async (
   pairId: string,
-  positionSize: Big
+  positionSize: Big,
+  leverage: number,
+  pairPrices: PairPrices | undefined
 ): Promise<OptionBorrowRates> => {
-  if (positionSize.lte(0)) {
+  if (positionSize.lte(0) || !pairPrices) {
     return defaultOptionBorrowRates;
   }
 
@@ -39,18 +41,15 @@ export const optionBorrowRatesFetcher = async (
     provider
   );
 
-  const [
-    baseToken,
-    quoteToken,
-    { baseTokenPrice, lowerStrikePrice, upperStrikePrice },
-  ] = await Promise.all([
+  const { baseTokenPrice, lowerStrikePrice, upperStrikePrice } = pairPrices;
+
+  const [baseToken, quoteToken] = await Promise.all([
     queryClient.ensureQueryData(
       getTokenQueryOptions(chainId, baseTokenAddress)
     ),
     queryClient.ensureQueryData(
       getTokenQueryOptions(chainId, quoteTokenAddress)
     ),
-    queryClient.fetchQuery(getPairPricesQueryOptions(pairId)),
   ]);
 
   const baseTokenNotionalAmount = toTokenAmount(
@@ -88,11 +87,17 @@ export const optionBorrowRatesFetcher = async (
     rawUpperOptionPrice,
   ].map((value) => toBig(value).div(priceDivisor).toNumber());
 
+  // add high leverage multiplier if leverage >= 500
+  const highLeverageMultiplier = 1 + 0.008 * (leverage - 250);
+  const borrowRateMultiplier = leverage >= 500 ? highLeverageMultiplier : 1;
+
   const lowerOptionHourlyBorrowRate =
-    lowerOptionPrice / lowerStrikePrice / hoursToExpiry;
+    (lowerOptionPrice / lowerStrikePrice / hoursToExpiry) *
+    borrowRateMultiplier;
 
   const upperOptionHourlyBorrowRate =
-    upperOptionPrice / upperStrikePrice / hoursToExpiry;
+    (upperOptionPrice / upperStrikePrice / hoursToExpiry) *
+    borrowRateMultiplier;
 
   return {
     lowerOptionHourlyBorrowRate,
