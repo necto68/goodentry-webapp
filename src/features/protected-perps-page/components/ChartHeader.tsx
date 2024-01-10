@@ -34,7 +34,9 @@ export const ChartHeader = () => {
   } else if (priceChange === null) {
     formattedPriceChange = notAvailablePlaceholder;
   } else {
-    formattedPriceChange = getFormattedAPY(priceChange);
+    formattedPriceChange = getFormattedAPY(priceChange, {
+      signDisplay: "exceptZero",
+    });
   }
 
   const isPositive = priceChange ? priceChange > 0 : false;

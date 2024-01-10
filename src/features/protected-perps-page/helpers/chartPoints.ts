@@ -24,11 +24,11 @@ export const getChartPoints = (
   baseTokenPrice: number,
   strikePrice: number
 ): ChartPoint[] => {
-  // minPrice = baseTokenPrice - 20%
-  const minPrice = baseTokenPrice * 0.8;
+  // minPrice = baseTokenPrice - 5%
+  const minPrice = baseTokenPrice * 0.95;
 
-  // maxPrice = baseTokenPrice + 20%
-  const maxPrice = baseTokenPrice * 1.2;
+  // maxPrice = baseTokenPrice + 5%
+  const maxPrice = baseTokenPrice * 1.05;
   const priceInterval = (maxPrice - minPrice) / POINTS_AMOUNT;
 
   const shift = getShift(selectedTab, baseTokenPrice, strikePrice);

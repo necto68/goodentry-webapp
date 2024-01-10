@@ -1,11 +1,11 @@
 import { InputContainer, InputTitle } from "../../input-card/styles/InputCard";
 import { useOptionBorrowRates } from "../../protected-perps-page/hooks/useOptionBorrowRates";
-import { usePairPrices } from "../../protected-perps-page/hooks/usePairPrices";
 import {
   getFormattedBorrowRate,
   getFormattedPrice,
 } from "../../shared/helpers/formatters";
 import { getPositionSize } from "../helpers/getPositionSize";
+import { useTradePanelStrikePrice } from "../hooks/useTradePanelStrikePrice";
 import { useTradePanelState } from "../stores/useTradePanelState";
 import { Container, Content, Value } from "../styles/StrikePrice";
 import { TabType } from "../types/TabType";
@@ -17,15 +17,16 @@ export const StrikePrice = () => {
     quoteTokenInputState,
     selectedLeverage,
   } = useTradePanelState();
-  const { lowerStrikePrice, upperStrikePrice } = usePairPrices() ?? {};
+
+  const strikePrice = useTradePanelStrikePrice();
 
   const positionSize = getPositionSize(quoteTokenInputState, selectedLeverage);
+
   const { lowerOptionHourlyBorrowRate, upperOptionHourlyBorrowRate } =
     useOptionBorrowRates(selectedPairId, positionSize, selectedLeverage) ?? {};
 
   const isLongTab = selectedTab === TabType.LONG;
 
-  const strikePrice = isLongTab ? upperStrikePrice : lowerStrikePrice;
   const optionHourlyBorrowRate = isLongTab
     ? upperOptionHourlyBorrowRate
     : lowerOptionHourlyBorrowRate;

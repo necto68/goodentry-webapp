@@ -2,6 +2,7 @@ import { useCallback } from "react";
 
 import { InteractiveChart } from "../../interactive-chart/components/InteractiveChart";
 import { getFormattedPrice } from "../../shared/helpers/formatters";
+import { useTradePanelStrikePrice } from "../../trade-panel/hooks/useTradePanelStrikePrice";
 import { useTradePanelState } from "../../trade-panel/stores/useTradePanelState";
 import { getChartPoints } from "../helpers/chartPoints";
 import { usePair } from "../hooks/usePair";
@@ -21,16 +22,14 @@ export const PayoffInteractiveChart: FC<PayoffInteractiveChartProps> = ({
   setSelectedChartPoint,
 }) => {
   const { selectedTab, selectedPairId } = useTradePanelState();
-
-  // TODO: v2 update
-  const strikePrice = 2000;
-
   const { baseTokenSymbol } = usePair(selectedPairId) ?? {};
   const { baseTokenPrice } = usePairPrices(selectedPairId) ?? {};
+  const strikePrice = useTradePanelStrikePrice();
 
-  const chartPoints = baseTokenPrice
-    ? getChartPoints(selectedTab, baseTokenPrice, strikePrice)
-    : [];
+  const chartPoints =
+    baseTokenPrice && strikePrice
+      ? getChartPoints(selectedTab, baseTokenPrice, strikePrice)
+      : [];
 
   const formattedBaseTokenPrice = baseTokenPrice
     ? getFormattedPrice(baseTokenPrice)
