@@ -8,6 +8,10 @@ import {
   HeaderContainer,
 } from "../styles/TradeModal";
 
+import { CollateralInfo } from "./CollateralInfo";
+import { PairInfo } from "./PairInfo";
+import { PositionInfo } from "./PositionInfo";
+import { StrikePriceInfo } from "./StrikePriceInfo";
 import { TradeModalMainButton } from "./TradeModalMainButton";
 
 export const TradeModalContent = () => {
@@ -22,6 +26,10 @@ export const TradeModalContent = () => {
         <Header isLongTab={isLongTab}>{title}</Header>
       </HeaderContainer>
       <Content>
+        <PairInfo />
+        <StrikePriceInfo />
+        <PositionInfo />
+        <CollateralInfo />
         <TradeModalMainButton />
       </Content>
     </Container>

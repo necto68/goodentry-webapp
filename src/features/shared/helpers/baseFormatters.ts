@@ -182,3 +182,9 @@ export const getFormattedDurationParts = (
   [days, hours, minutes, seconds].map((value) =>
     value.toString().padStart(2, "0")
   );
+
+export const getFormattedLeverage = (leverage: number) => {
+  const formattedLeverageValue = getFormattedNumber(leverage);
+
+  return `${formattedLeverageValue}×`;
+};

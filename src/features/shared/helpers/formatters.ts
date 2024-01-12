@@ -1,3 +1,4 @@
+import { getDurationBetweenTimestamps } from "../../public-sale-page/helpers/getDurationBetweenTimestamps";
 import {
   loadingPlaceholder,
   notAvailablePlaceholder,
@@ -10,7 +11,6 @@ import {
   getFormattedFullCurrency,
 } from "./baseFormatters";
 
-import type { getDurationBetweenTimestamps } from "../../public-sale-page/helpers/getDurationBetweenTimestamps";
 import type Big from "big.js";
 
 export const getFormattedPrice = (price: number | null | undefined) => {
@@ -54,18 +54,18 @@ export const getFormattedBorrowRate = (
 };
 
 export const getFormattedRunway = (
-  runwayDuration:
-    | ReturnType<typeof getDurationBetweenTimestamps>
-    | null
-    | undefined
+  runwayInSeconds: number | null | undefined
 ) => {
-  if (runwayDuration === undefined) {
+  if (runwayInSeconds === undefined) {
     return loadingPlaceholder;
   }
 
-  if (runwayDuration === null) {
+  if (runwayInSeconds === null) {
     return notAvailablePlaceholder;
   }
+
+  const toTimestamp = runwayInSeconds * 1000;
+  const runwayDuration = getDurationBetweenTimestamps(0, toTimestamp);
 
   const { days, hours, minutes, seconds } = runwayDuration;
 

@@ -7,19 +7,13 @@ import {
 import { useCallback } from "react";
 
 import { InputContainer, InputTitle } from "../../input-card/styles/InputCard";
-import { useOptionBorrowRates } from "../../protected-perps-page/hooks/useOptionBorrowRates";
-import { getDurationBetweenTimestamps } from "../../public-sale-page/helpers/getDurationBetweenTimestamps";
-import {
-  loadingPlaceholder,
-  notAvailablePlaceholder,
-} from "../../shared/constants/placeholders";
+import { getFormattedLeverage } from "../../shared/helpers/baseFormatters";
 import { getFormattedRunway } from "../../shared/helpers/formatters";
 import { leverageSteps } from "../constants/leverageSteps";
-import { getPositionSize } from "../helpers/getPositionSize";
 import { getRunwayInSeconds } from "../helpers/getRunwayInSeconds";
+import { useTradePanelOptionHourlyBorrowRate } from "../hooks/useTradePanelOptionHourlyBorrowRate";
 import { useTradePanelState } from "../stores/useTradePanelState";
 import { Container, Content, Value } from "../styles/StrikePrice";
-import { TabType } from "../types/TabType";
 
 export const LeverageSlider = () => {
   const {
@@ -30,36 +24,21 @@ export const LeverageSlider = () => {
     setSelectedLeverage,
   } = useTradePanelState();
 
-  const positionSize = getPositionSize(quoteTokenInputState, selectedLeverage);
+  const optionHourlyBorrowRate = useTradePanelOptionHourlyBorrowRate(
+    selectedTab,
+    selectedPairId,
+    quoteTokenInputState,
+    selectedLeverage
+  );
 
-  const { lowerOptionHourlyBorrowRate, upperOptionHourlyBorrowRate } =
-    useOptionBorrowRates(selectedPairId, positionSize, selectedLeverage) ?? {};
+  const runwayInSeconds = getRunwayInSeconds(
+    quoteTokenInputState,
+    selectedLeverage,
+    optionHourlyBorrowRate
+  );
 
-  const isLongTab = selectedTab === TabType.LONG;
-
-  const optionHourlyBorrowRate = isLongTab
-    ? upperOptionHourlyBorrowRate
-    : lowerOptionHourlyBorrowRate;
-
-  let formattedRunway = "";
-
-  if (optionHourlyBorrowRate === undefined) {
-    formattedRunway = loadingPlaceholder;
-  } else if (optionHourlyBorrowRate === null) {
-    formattedRunway = notAvailablePlaceholder;
-  } else {
-    const runwayInSeconds = getRunwayInSeconds(
-      quoteTokenInputState,
-      positionSize,
-      optionHourlyBorrowRate
-    );
-
-    const toTimestamp = runwayInSeconds ? runwayInSeconds * 1000 : 0;
-
-    const runwayDuration = getDurationBetweenTimestamps(0, toTimestamp);
-
-    formattedRunway = getFormattedRunway(runwayDuration);
-  }
+  const formattedRunway = getFormattedRunway(runwayInSeconds);
+  const formattedSelectedLeverage = getFormattedLeverage(selectedLeverage);
 
   const selectedLeverageIndex = leverageSteps.indexOf(selectedLeverage);
   const sliderValue = selectedLeverageIndex < 0 ? 0 : selectedLeverageIndex;
@@ -70,8 +49,6 @@ export const LeverageSlider = () => {
     },
     [setSelectedLeverage]
   );
-
-  const formattedSelectedLeverage = `${selectedLeverage}×`;
 
   return (
     <InputContainer>

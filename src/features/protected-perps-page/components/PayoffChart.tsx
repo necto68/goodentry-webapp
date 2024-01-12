@@ -4,6 +4,7 @@ import { notAvailablePlaceholder } from "../../shared/constants/placeholders";
 import { getFormattedAPY } from "../../shared/helpers/baseFormatters";
 import { InfoRow } from "../../shared/modal/styles/ModalInfo";
 import { useTradePanelStrikePrice } from "../../trade-panel/hooks/useTradePanelStrikePrice";
+import { useTradePanelState } from "../../trade-panel/stores/useTradePanelState";
 import { Container, Title, ColorValue, Value } from "../styles/PayoffChart";
 
 import { PayoffChartInfo } from "./PayoffChartInfo";
@@ -12,7 +13,8 @@ import { PayoffInteractiveChart } from "./PayoffInteractiveChart";
 import type { ChartPoint } from "../../interactive-chart/types/ChartPoint";
 
 export const PayoffChart = () => {
-  const strikePrice = useTradePanelStrikePrice();
+  const { selectedTab, selectedPairId } = useTradePanelState();
+  const strikePrice = useTradePanelStrikePrice(selectedTab, selectedPairId);
 
   const [selectedChartPoint, setSelectedChartPoint] =
     useState<ChartPoint | null>(null);

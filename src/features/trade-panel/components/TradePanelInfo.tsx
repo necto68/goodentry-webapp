@@ -1,42 +1,35 @@
 import { loadingPlaceholder } from "../../shared/constants/placeholders";
-import { getFormattedNumber } from "../../shared/helpers/baseFormatters";
+import { getFormattedAmount } from "../../shared/helpers/baseFormatters";
+import { toBig } from "../../shared/helpers/bigjs";
 import {
   Container,
   InfoRow,
   InfoTitle,
   InfoValue,
 } from "../../shared/modal/styles/ModalInfo";
-import { exerciseFee, minPositionSize } from "../constants/openPosition";
-import { getPositionSize } from "../helpers/getPositionSize";
+import { minPositionSize } from "../constants/openPosition";
 import { useMaxPositionSize } from "../hooks/useMaxPositionSize";
 import { useTradePanelState } from "../stores/useTradePanelState";
+
+import { ExerciseFeeInfo } from "./ExerciseFeeInfo";
+import { PositionSizeInfo } from "./PositionSizeInfo";
 
 export const TradePanelInfo = () => {
   const { quoteTokenInputState, selectedLeverage } = useTradePanelState();
   const maxPositionSize = useMaxPositionSize();
 
   const { tokenData } = quoteTokenInputState;
-  const positionSize = getPositionSize(quoteTokenInputState, selectedLeverage);
 
-  const formattedPositionSizeValue = getFormattedNumber(
-    positionSize.toNumber()
+  const formattedMinPositionSizeValue = getFormattedAmount(
+    toBig(minPositionSize)
   );
-  const formattedMinPositionSizeValue = getFormattedNumber(minPositionSize);
   const formattedMaxPositionSizeValue = maxPositionSize
-    ? getFormattedNumber(maxPositionSize.toNumber())
+    ? getFormattedAmount(maxPositionSize)
     : undefined;
-  const formattedExerciseFeeValue = getFormattedNumber(exerciseFee);
 
-  const [
-    formattedPositionSize,
-    formattedMinPositionSize,
-    formattedMaxPositionSize,
-    formattedExerciseFee,
-  ] = [
-    formattedPositionSizeValue,
+  const [formattedMinPositionSize, formattedMaxPositionSize] = [
     formattedMinPositionSizeValue,
     formattedMaxPositionSizeValue,
-    formattedExerciseFeeValue,
   ].map((formattedValue) =>
     formattedValue && tokenData
       ? `${formattedValue} ${tokenData.symbol}`
@@ -45,10 +38,10 @@ export const TradePanelInfo = () => {
 
   return (
     <Container>
-      <InfoRow>
-        <InfoTitle>Position Size</InfoTitle>
-        <InfoValue>{formattedPositionSize}</InfoValue>
-      </InfoRow>
+      <PositionSizeInfo
+        quoteTokenInputState={quoteTokenInputState}
+        selectedLeverage={selectedLeverage}
+      />
       <InfoRow>
         <InfoTitle>Min Position Size</InfoTitle>
         <InfoValue>{formattedMinPositionSize}</InfoValue>
@@ -57,10 +50,7 @@ export const TradePanelInfo = () => {
         <InfoTitle>Max Position Size</InfoTitle>
         <InfoValue>{formattedMaxPositionSize}</InfoValue>
       </InfoRow>
-      <InfoRow>
-        <InfoTitle>Exercise Fee</InfoTitle>
-        <InfoValue>{formattedExerciseFee}</InfoValue>
-      </InfoRow>
+      <ExerciseFeeInfo quoteTokenInputState={quoteTokenInputState} />
     </Container>
   );
 };

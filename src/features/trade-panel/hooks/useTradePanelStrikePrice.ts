@@ -1,9 +1,12 @@
 import { usePairPrices } from "../../protected-perps-page/hooks/usePairPrices";
-import { useTradePanelState } from "../stores/useTradePanelState";
 import { TabType } from "../types/TabType";
 
-export const useTradePanelStrikePrice = () => {
-  const { selectedTab, selectedPairId } = useTradePanelState();
+import type { TradePanelState } from "../types/TradePanelState";
+
+export const useTradePanelStrikePrice = (
+  selectedTab: TradePanelState["selectedTab"],
+  selectedPairId: TradePanelState["selectedPairId"]
+) => {
   const { lowerStrikePrice, upperStrikePrice } =
     usePairPrices(selectedPairId) ?? {};
 

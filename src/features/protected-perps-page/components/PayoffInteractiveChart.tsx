@@ -24,7 +24,7 @@ export const PayoffInteractiveChart: FC<PayoffInteractiveChartProps> = ({
   const { selectedTab, selectedPairId } = useTradePanelState();
   const { baseTokenSymbol } = usePair(selectedPairId) ?? {};
   const { baseTokenPrice } = usePairPrices(selectedPairId) ?? {};
-  const strikePrice = useTradePanelStrikePrice();
+  const strikePrice = useTradePanelStrikePrice(selectedTab, selectedPairId);
 
   const chartPoints =
     baseTokenPrice && strikePrice

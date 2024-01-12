@@ -1,14 +1,23 @@
 import { getZero } from "../../shared/helpers/bigjs";
 
+import { getPositionSize } from "./getPositionSize";
+
 import type { OptionBorrowRates } from "../../queries/types/OptionBorrowRates";
 import type { TradePanelState } from "../types/TradePanelState";
-import type Big from "big.js";
 
 export const getRunwayInSeconds = (
   quoteTokenInputState: TradePanelState["quoteTokenInputState"],
-  positionSize: Big,
-  optionHourlyBorrowRate: OptionBorrowRates["lowerOptionHourlyBorrowRate"]
+  selectedLeverage: TradePanelState["selectedLeverage"],
+  optionHourlyBorrowRate:
+    | OptionBorrowRates["lowerOptionHourlyBorrowRate"]
+    | undefined
 ) => {
+  if (optionHourlyBorrowRate === undefined) {
+    return undefined;
+  }
+
+  const positionSize = getPositionSize(quoteTokenInputState, selectedLeverage);
+
   if (positionSize.lte(0) || optionHourlyBorrowRate === null) {
     return null;
   }

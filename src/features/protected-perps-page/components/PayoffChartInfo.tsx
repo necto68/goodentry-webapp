@@ -1,4 +1,3 @@
-import { loadingPlaceholder } from "../../shared/constants/placeholders";
 import { getFormattedPrice } from "../../shared/helpers/formatters";
 import {
   Container,
@@ -7,13 +6,13 @@ import {
   InfoValue,
 } from "../../shared/modal/styles/ModalInfo";
 import { useTradePanelStrikePrice } from "../../trade-panel/hooks/useTradePanelStrikePrice";
+import { useTradePanelState } from "../../trade-panel/stores/useTradePanelState";
 
 export const PayoffChartInfo = () => {
-  const strikePrice = useTradePanelStrikePrice();
+  const { selectedTab, selectedPairId } = useTradePanelState();
+  const strikePrice = useTradePanelStrikePrice(selectedTab, selectedPairId);
 
-  const formattedEntryPrice = strikePrice
-    ? getFormattedPrice(strikePrice)
-    : loadingPlaceholder;
+  const formattedEntryPrice = getFormattedPrice(strikePrice);
 
   return (
     <Container>
