@@ -16,6 +16,7 @@ import {
 
 import { StrategyOverview } from "./StrategyOverview";
 import { VaultDetailsHeader } from "./VaultDetailsHeader";
+import { VaultIncentiveModal } from "./VaultIncentiveModal";
 import { VaultModal } from "./VaultModal";
 import { VaultPerformance } from "./VaultPerformance";
 
@@ -45,7 +46,8 @@ export const VaultDetailsPage = () => {
             withdraw from the ezVault(s) at any moment.
           </Description>
           <StrategyOverview />
-          {status === VaultStatus.ACTIVE && (
+          {(status === VaultStatus.ACTIVE ||
+            status === VaultStatus.ACTIVE_REWARDS) && (
             <>
               <Title>Performance</Title>
               <VaultPerformance />
@@ -73,7 +75,10 @@ export const VaultDetailsPage = () => {
             integrity of the smart contracts.
           </Description>
         </VaultDescription>
-        <VaultModal />
+        <Flex direction="column" gap="4">
+          <VaultModal />
+          <VaultIncentiveModal />
+        </Flex>
       </VaultDefaultBody>
     </Flex>
   );

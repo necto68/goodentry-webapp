@@ -4,15 +4,15 @@ import { useParams } from "react-router-dom";
 import { getImageSourceBySymbol } from "../../icons/helpers/getImageSourceBySymbol";
 import { usePair } from "../../protected-perps-page/hooks/usePair";
 import { loadingPlaceholder } from "../../shared/constants/placeholders";
+import { InfoRow } from "../../shared/modal/styles/ModalInfo";
 import { formatNumberWithSuffix } from "../../vault/helpers/formatNumberWithSuffix";
 import { getVaultConfig } from "../../vault/helpers/getVaultConfig";
 import { VaultStatus } from "../../vault/types/VaultStatus";
-import { MigrationTag } from "../../vaults-page/components/MigrationTag";
 import { RewardsTag } from "../../vaults-page/components/RewardsTag";
 import {
   InfoDescription,
-  InfoRow,
-  InfoValue,
+  InfoValueBold,
+  NoTag,
   VaultInfo,
 } from "../../vaults-page/styles/VaultCard";
 import { useVault } from "../hooks/useVault";
@@ -37,14 +37,10 @@ export const VaultDetailsHeader = () => {
 
   const { title, baseTokenSymbol, quoteTokenSymbol } = usePair(pairId) ?? {};
 
-  const { totalValueLocked, totalValueLockedCap } = vault ?? {};
+  const { totalValueLocked } = vault ?? {};
 
   const formattedTvl = totalValueLocked
     ? formatNumberWithSuffix(totalValueLocked)
-    : loadingPlaceholder;
-
-  const formattedMaxTvl = totalValueLockedCap
-    ? formatNumberWithSuffix(totalValueLockedCap)
     : loadingPlaceholder;
 
   const [baseTokenIcon, quoteTokenIcon] = [
@@ -62,10 +58,10 @@ export const VaultDetailsHeader = () => {
         <Content>
           <VaultBrief>
             <Flex>
-              {status === VaultStatus.DEPRECATED ? (
-                <MigrationTag />
-              ) : (
+              {status === VaultStatus.ACTIVE_REWARDS ? (
                 <RewardsTag />
+              ) : (
+                <NoTag />
               )}
             </Flex>
             <PairTitle>
@@ -84,11 +80,7 @@ export const VaultDetailsHeader = () => {
             <VaultInfo>
               <InfoRow>
                 <InfoDescription>Current Deposits</InfoDescription>
-                <InfoValue>{formattedTvl}</InfoValue>
-              </InfoRow>
-              <InfoRow>
-                <InfoDescription>Max Capacity</InfoDescription>
-                <InfoValue>{formattedMaxTvl}</InfoValue>
+                <InfoValueBold>{formattedTvl}</InfoValueBold>
               </InfoRow>
             </VaultInfo>
           </VaultBrief>

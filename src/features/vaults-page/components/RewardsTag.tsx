@@ -5,6 +5,6 @@ import { Container } from "../styles/RewardsTag";
 export const RewardsTag = () => (
   <Container>
     <BsLightningChargeFill />
-    Rewards
+    ARB incentives
   </Container>
 );

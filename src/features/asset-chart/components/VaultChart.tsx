@@ -121,7 +121,7 @@ export const VaultChart: React.FC<{ readonly data: number[] }> = ({ data }) => {
     series: [
       {
         type: "area",
-        name: "APY",
+        name: "Fees APR",
         data,
         color: "#0FFD6A",
         lineWidth: 2,

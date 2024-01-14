@@ -70,8 +70,8 @@ const columns: Column<PairAssetRow>[] = [
 export const PairAssetsTable: FC<PairDetailsTableProps> = ({ pairId }) => {
   const { vaults, vaultTokens } = usePairDetailsState(pairId);
 
-  const [activeVault, deprecatedVault] = vaults;
-  const [activeVaultToken, deprecatedVaultToken] = vaultTokens;
+  const [activeVault] = vaults;
+  const [activeVaultToken] = vaultTokens;
 
   const activeVaultTokenRow = useVaultTokenAssetRow(
     activeVault?.id,
@@ -79,13 +79,7 @@ export const PairAssetsTable: FC<PairDetailsTableProps> = ({ pairId }) => {
     activeVaultToken
   );
 
-  const deprecatedVaultTokenRow = useVaultTokenAssetRow(
-    deprecatedVault?.id,
-    deprecatedVault,
-    deprecatedVaultToken
-  );
-
-  const rows = [activeVaultTokenRow, deprecatedVaultTokenRow];
+  const rows = [activeVaultTokenRow];
 
   return <Table columns={columns} rows={rows} />;
 };

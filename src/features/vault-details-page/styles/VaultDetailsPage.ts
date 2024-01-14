@@ -8,7 +8,7 @@ export const Container = tw.div`flex flex-col justify-center items-center bg-bg-
   max-w-full min-w-full min-h-[314px]
   py-2 px-4 md:py-6 md:px-12 gap-2 transition duration-150 shadow-glow`;
 
-export const Content = tw.div`flex flex-col-reverse items-center sm:flex-row max-w-[1024px] w-full justify-between`;
+export const Content = tw.div`flex flex-col-reverse items-start sm:flex-row max-w-[1024px] w-full justify-between`;
 
 export const VaultBrief = tw.div`flex flex-col justify-between p-2 relative max-w-[478px] w-full gap-3`;
 

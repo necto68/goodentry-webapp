@@ -1,9 +1,9 @@
+// import { NotificationBar } from "../../header/components/NotificationBar";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 import { DashboardPage } from "../../dashboard-page/components/DashboardPage";
 import { Footer } from "../../footer/components/Footer";
 import { Header } from "../../header/components/Header";
-import { NotificationBar } from "../../header/components/NotificationBar";
 import { LockPage } from "../../lock-page/components/LockPage";
 import { ProtectedPerpsPage } from "../../protected-perps-page/components/ProtectedPerpsPage";
 import { PublicSalePage } from "../../public-sale-page/components/PublicSalePage";
@@ -28,7 +28,7 @@ export const Root = () => {
     <Container>
       <BrowserRouter>
         <Modal />
-        <NotificationBar />
+        {/* <NotificationBar /> */}
         <Header />
         <Routes>
           <Route

@@ -1,3 +1,4 @@
+import { useVaultApiData } from "../../vault-details-page/hooks/useVaultApiData";
 import { AssetRowType } from "../types/PairAssetsRow";
 
 import type { Vault } from "../../queries/types/Vault";
@@ -9,16 +10,16 @@ export const useVaultTokenAssetRow = (
   vault: Vault | undefined,
   vaultToken: VaultToken | undefined
 ): VaultTokenAssetRow | undefined => {
+  const { totalApr = 0 } = useVaultApiData(vaultId ?? "") ?? {};
+
   if (!vaultId || !vault || !vaultToken) {
     return undefined;
   }
-
-  const { totalAnnualPercentageYield } = vault;
 
   return {
     type: AssetRowType.VAULT_TOKEN,
     vaultId,
     vaultToken,
-    annualPercentageRate: totalAnnualPercentageYield,
+    annualPercentageRate: totalApr,
   };
 };

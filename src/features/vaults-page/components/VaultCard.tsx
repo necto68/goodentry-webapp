@@ -1,5 +1,6 @@
 import { InfoIcon } from "@chakra-ui/icons";
 import { Tooltip } from "@chakra-ui/react";
+import { useCallback } from "react";
 import { generatePath, Link } from "react-router-dom";
 
 import { MyShareInfo } from "../../ez-vault-modal/components/MyShareInfo";
@@ -8,16 +9,18 @@ import { usePair } from "../../protected-perps-page/hooks/usePair";
 import { RoutePathname } from "../../root/types/RoutePathname";
 import { loadingPlaceholder } from "../../shared/constants/placeholders";
 import { getFormattedAPY } from "../../shared/helpers/baseFormatters";
+import { InfoRow } from "../../shared/modal/styles/ModalInfo";
 import { formatNumberWithSuffix } from "../../vault/helpers/formatNumberWithSuffix";
 import { getVaultConfig } from "../../vault/helpers/getVaultConfig";
 import { VaultStatus } from "../../vault/types/VaultStatus";
 import { useVault } from "../../vault-details-page/hooks/useVault";
+import { useVaultApiData } from "../../vault-details-page/hooks/useVaultApiData";
 import {
   Container,
   InfoDescription,
-  InfoRow,
-  InfoValue,
+  InfoValueBold,
   InfoValueBrand,
+  NoTag,
   Separator,
   TagContainer,
   Title,
@@ -27,7 +30,6 @@ import {
   VaultInfo,
 } from "../styles/VaultCard";
 
-import { MigrationTag } from "./MigrationTag";
 import { RewardsTag } from "./RewardsTag";
 
 import type { FC } from "react";
@@ -37,29 +39,23 @@ export interface VaultCardProps {
 }
 
 export const VaultCard: FC<VaultCardProps> = ({ vaultId }) => {
-  const {
-    supplyRate,
-    feesRate,
-    totalValueLocked,
-    totalValueLockedCap,
-    totalAnnualPercentageYield = 0,
-  } = useVault(vaultId) ?? {};
+  const { totalValueLocked } = useVault(vaultId) ?? {};
 
   const { pairId, status } = getVaultConfig(vaultId);
 
-  const { title, baseTokenSymbol, quoteTokenSymbol } = usePair(pairId) ?? {};
+  const { avgApr, incentiveApr, totalApr } = useVaultApiData(vaultId) ?? {};
 
-  const [formattedSupplyRate, formattedFeesRate] = [supplyRate, feesRate].map(
-    (value) => (value ? getFormattedAPY(value) : loadingPlaceholder)
-  );
+  const { title, baseTokenSymbol, quoteTokenSymbol } = usePair(pairId) ?? {};
 
   const formattedTvl = totalValueLocked
     ? formatNumberWithSuffix(totalValueLocked)
     : loadingPlaceholder;
 
-  const formattedMaxTvl = totalValueLockedCap
-    ? formatNumberWithSuffix(totalValueLockedCap)
-    : loadingPlaceholder;
+  const [formattedApr, formattedIncentivesApr, formattedTotalApr] = [
+    avgApr,
+    incentiveApr,
+    totalApr,
+  ].map((value) => (value ? getFormattedAPY(value) : loadingPlaceholder));
 
   const [baseTokenIcon, quoteTokenIcon] = [
     baseTokenSymbol,
@@ -70,24 +66,25 @@ export const VaultCard: FC<VaultCardProps> = ({ vaultId }) => {
     return imageSource ?? undefined;
   });
 
-  const getAPYDetails = () => (
-    <>
-      <p>Supply Interest: {formattedSupplyRate}</p>
-      <p>V3 Fees (7d annualized): {formattedFeesRate}</p>
-    </>
-  );
-
   const path = generatePath(RoutePathname.EZ_VAULT_DETAILS, { vaultId });
+
+  const getTooltipContent = useCallback(
+    () => (
+      <>
+        <p>Fees APR: {formattedApr}</p>
+        {status === VaultStatus.ACTIVE_REWARDS ? (
+          <p>Incentive APR: {formattedIncentivesApr}</p>
+        ) : null}
+      </>
+    ),
+    [status, formattedApr, formattedIncentivesApr]
+  );
 
   return (
     <Link to={path}>
       <Container>
         <TagContainer>
-          {status === VaultStatus.DEPRECATED ? (
-            <MigrationTag />
-          ) : (
-            <RewardsTag />
-          )}
+          {status === VaultStatus.ACTIVE_REWARDS ? <RewardsTag /> : <NoTag />}
         </TagContainer>
         <Tokens>
           <TokenIconLeft
@@ -106,21 +103,15 @@ export const VaultCard: FC<VaultCardProps> = ({ vaultId }) => {
           <InfoRow>
             <InfoDescription>
               Projected APR
-              <Tooltip label={getAPYDetails()} placement="top">
+              <Tooltip label={getTooltipContent()} placement="top">
                 <InfoIcon />
               </Tooltip>
             </InfoDescription>
-            <InfoValueBrand>
-              {getFormattedAPY(totalAnnualPercentageYield)}
-            </InfoValueBrand>
+            <InfoValueBrand>{formattedTotalApr}</InfoValueBrand>
           </InfoRow>
           <InfoRow>
             <InfoDescription>TVL</InfoDescription>
-            <InfoValue>{formattedTvl}</InfoValue>
-          </InfoRow>
-          <InfoRow>
-            <InfoDescription>Max Capacity</InfoDescription>
-            <InfoValue>{formattedMaxTvl}</InfoValue>
+            <InfoValueBold>{formattedTvl}</InfoValueBold>
           </InfoRow>
           <Separator />
           <MyShareInfo vaultId={vaultId} />

@@ -1,4 +1,5 @@
 export enum VaultStatus {
   ACTIVE = "ACTIVE",
+  ACTIVE_REWARDS = "ACTIVE_REWARDS",
   DEPRECATED = "DEPRECATED",
 }
