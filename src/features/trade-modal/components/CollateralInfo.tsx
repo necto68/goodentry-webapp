@@ -7,18 +7,19 @@ import {
   InfoValue,
 } from "../../shared/modal/styles/ModalInfo";
 import { ExerciseFeeInfo } from "../../trade-panel/components/ExerciseFeeInfo";
-import { exerciseFee } from "../../trade-panel/constants/openPosition";
+import { getCollateralAmountIncludingFee } from "../../trade-panel/helpers/getCollateralAmountIncludingFee";
 import { useTradeModalState } from "../stores/useTradeModalState";
 
 export const CollateralInfo = () => {
   const { quoteTokenInputState } = useTradeModalState();
 
   const { tokenData, inputValueBig } = quoteTokenInputState;
-  const collateralValue = inputValueBig.add(exerciseFee);
 
-  const formattedCollateralValue = getFormattedAmount(collateralValue);
+  const collateralAmount = getCollateralAmountIncludingFee(inputValueBig);
+
+  const formattedCollateralAmount = getFormattedAmount(collateralAmount);
   const formattedCollateral = tokenData
-    ? `${formattedCollateralValue} ${tokenData.symbol}`
+    ? `${formattedCollateralAmount} ${tokenData.symbol}`
     : loadingPlaceholder;
 
   return (

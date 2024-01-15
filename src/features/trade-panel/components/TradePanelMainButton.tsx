@@ -7,10 +7,10 @@ import { isInsufficientTokenBalance } from "../../input-card/helpers/tokenBalanc
 import { usePairChainId } from "../../protected-perps-page/hooks/usePairChainId";
 import { useWallet } from "../../wallet/hooks/useWallet";
 import {
-  exerciseFee,
   minPositionSize,
   minQuoteTokenAmount,
 } from "../constants/openPosition";
+import { getCollateralAmountIncludingFee } from "../helpers/getCollateralAmountIncludingFee";
 import { getPositionSize } from "../helpers/getPositionSize";
 import { useMaxPositionSize } from "../hooks/useMaxPositionSize";
 import { useTradePanelState } from "../stores/useTradePanelState";
@@ -27,6 +27,7 @@ export const TradePanelMainButton = () => {
 
   const { tokenData, inputValueBig, isError, error } = quoteTokenInputState;
   const positionSize = getPositionSize(quoteTokenInputState, selectedLeverage);
+  const collateralAmount = getCollateralAmountIncludingFee(inputValueBig);
 
   const isZeroBalance = inputValueBig.lte(0);
   const isInsufficientQuoteTokenAmount = inputValueBig.lt(minQuoteTokenAmount);
@@ -34,8 +35,8 @@ export const TradePanelMainButton = () => {
   const isMaxPositionSizeReached = maxPositionSize
     ? positionSize.gt(maxPositionSize)
     : false;
-  const isInsufficientQuoteTokenBalanceIncludingExerciseFee =
-    isInsufficientTokenBalance(inputValueBig.add(exerciseFee), tokenData);
+  const isInsufficientQuoteTokenBalanceIncludingFee =
+    isInsufficientTokenBalance(collateralAmount, tokenData);
 
   if (!isConnected) {
     return <ConnectWalletMainButton />;
@@ -61,7 +62,7 @@ export const TradePanelMainButton = () => {
     return <TokenErrorMainButton error={error} tokenData={tokenData} />;
   }
 
-  if (isInsufficientQuoteTokenBalanceIncludingExerciseFee) {
+  if (isInsufficientQuoteTokenBalanceIncludingFee) {
     return <ErrorMainButton title="Insufficient Balance (Exercise Fee)" />;
   }
 

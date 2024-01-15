@@ -1,5 +1,5 @@
 import { isInsufficientTokenAllowance } from "../../input-card/helpers/tokenBalance";
-import { exerciseFee } from "../../trade-panel/constants/openPosition";
+import { getCollateralAmountIncludingFee } from "../../trade-panel/helpers/getCollateralAmountIncludingFee";
 
 import type { useTradePanelQueries } from "../../trade-panel/hooks/useTradePanelQueries";
 import type { TradePanelState } from "../../trade-panel/types/TradePanelState";
@@ -16,7 +16,7 @@ export const isInsufficientTokenAllowanceForOpenPosition = (
 
   // check allowance for inputValueBig + exerciseFee
   // because opening position transaction will include fee
-  const collateralValue = inputValueBig.add(exerciseFee);
+  const collateralAmount = getCollateralAmountIncludingFee(inputValueBig);
 
-  return isInsufficientTokenAllowance(collateralValue, quoteTokenData);
+  return isInsufficientTokenAllowance(collateralAmount, quoteTokenData);
 };
