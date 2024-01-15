@@ -87,9 +87,9 @@ export const optionBorrowRatesFetcher = async (
     rawUpperOptionPrice,
   ].map((value) => toBig(value).div(priceDivisor).toNumber());
 
-  // add high leverage multiplier if leverage >= 500
+  // add high leverage multiplier if leverage > 250
   const highLeverageMultiplier = 1 + 0.008 * (leverage - 250);
-  const borrowRateMultiplier = leverage >= 500 ? highLeverageMultiplier : 1;
+  const borrowRateMultiplier = leverage > 250 ? highLeverageMultiplier : 1;
 
   const lowerOptionHourlyBorrowRate =
     (lowerOptionPrice / lowerStrikePrice / hoursToExpiry) *

@@ -1,7 +1,7 @@
 import { getDefaultProvider } from "ethers";
 import { useCallback } from "react";
 
-import { IERC20__factory as LendingPoolFactory } from "../../smart-contracts/types";
+import { IGoodEntryPositionManager__factory as PositionManagerFactory } from "../../smart-contracts/types";
 import { useBaseTransaction } from "../hooks/useBaseTransaction";
 
 import type {
@@ -11,36 +11,32 @@ import type {
 } from "../../shared/types/BaseTransaction";
 
 export const useOpenPositionTransaction = (
-  lendingPoolAddress: string,
+  positionManagerAddress: string,
   dependantQueries?: DependantQueries,
   onTransactionSuccess?: OnTransactionSuccess,
   onTransactionError?: OnTransactionError
 ) => {
-  // const { account = "" } = useWallet();
-  // const { selectedPairId } = useSelectedPairIdStore();
-  // const { chainId } = getPairConfig(selectedPairId);
-  // const {
-  //   addresses: { optionsPositionsManager },
-  // } = getChainMetadata(chainId);
-
-  // TODO: v2 update
-  const lendingPoolContract = LendingPoolFactory.connect(
-    lendingPoolAddress,
+  const positionManagerContract = PositionManagerFactory.connect(
+    positionManagerAddress,
     getDefaultProvider()
   );
-  const method = "balanceOf";
+
+  const method = "openStreamingPosition";
 
   const { mutation, resetTransaction, transactionHash } = useBaseTransaction(
-    lendingPoolContract,
+    positionManagerContract,
     method,
     dependantQueries,
     onTransactionSuccess,
     onTransactionError
   );
 
-  const runTransaction = useCallback(() => {
-    mutation.mutate([""]);
-  }, [mutation]);
+  const runTransaction = useCallback(
+    (isLongTab: boolean, notionalAmount: string, collateralAmount: string) => {
+      mutation.mutate([isLongTab, notionalAmount, collateralAmount]);
+    },
+    [mutation]
+  );
 
   return {
     mutation,

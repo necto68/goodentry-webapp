@@ -3,10 +3,10 @@ import { createContext, useMemo } from "react";
 import { getPairConfig } from "../../pair/helpers/getPairConfig";
 import { usePositionsQuery } from "../../queries/hooks/usePositionsQuery";
 import { defaultUseMutationResult } from "../../shared/constants/defaultUseMutationResult";
-import { delay } from "../../shared/helpers/utils";
 import { useModal } from "../../shared/modal/hooks/useModal";
 import { useToast } from "../../toast/hooks/useToast";
 import { ToastType } from "../../toast/types/ToastType";
+import { useTradePanelQueries } from "../../trade-panel/hooks/useTradePanelQueries";
 import { useClosePositionTransaction } from "../../transactions/transaction-hooks/useClosePositionTransaction";
 import { useOpenPositionTransaction } from "../../transactions/transaction-hooks/useOpenPositionTransaction";
 import { useTradeModalTitle } from "../hooks/useTradeModalTitle";
@@ -35,6 +35,7 @@ export const TradeModalTransactionsProvider: FC<
   const { selectedPairId, quoteTokenInputState } = useTradeModalState();
   const title = useTradeModalTitle();
 
+  const { quoteTokenQuery } = useTradePanelQueries(selectedPairId);
   const positionsQuery = usePositionsQuery();
 
   const { chainId } = getPairConfig(selectedPairId);
@@ -43,15 +44,12 @@ export const TradeModalTransactionsProvider: FC<
     addresses: { positionManager },
   } = getPairConfig(selectedPairId);
 
-  const positionsDependantQueries: DependantQueries = [];
+  const positionsDependantQueries: DependantQueries = [
+    quoteTokenQuery,
+    positionsQuery,
+  ];
 
-  const onTransactionSuccess = async (transactionHash: string) => {
-    // TODO: v2 update
-    // remove later
-    await positionsQuery.refetch();
-    await delay(2000);
-    await positionsQuery.refetch();
-
+  const onTransactionSuccess = (transactionHash: string) => {
     toast({
       type: ToastType.SUCCESS,
       title,
@@ -71,9 +69,8 @@ export const TradeModalTransactionsProvider: FC<
     });
   };
 
-  // TODO: v2 update
   const openPositionTransaction = useOpenPositionTransaction(
-    "",
+    positionManager,
     positionsDependantQueries,
     onTransactionSuccess,
     onTransactionError
