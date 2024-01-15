@@ -1,12 +1,15 @@
 import { createContext, useMemo } from "react";
 
 import { getPairConfig } from "../../pair/helpers/getPairConfig";
+import { usePairOpenInterestQuery } from "../../queries/hooks/usePairOpenInterestQuery";
+import { usePairPricesQuery } from "../../queries/hooks/usePairPricesQuery";
 import { usePositionsQuery } from "../../queries/hooks/usePositionsQuery";
 import { defaultUseMutationResult } from "../../shared/constants/defaultUseMutationResult";
 import { useModal } from "../../shared/modal/hooks/useModal";
 import { useToast } from "../../toast/hooks/useToast";
 import { ToastType } from "../../toast/types/ToastType";
 import { useTradePanelQueries } from "../../trade-panel/hooks/useTradePanelQueries";
+import { useTokenApproveTransaction } from "../../transactions/hooks/useTokenApproveTransaction";
 import { useClosePositionTransaction } from "../../transactions/transaction-hooks/useClosePositionTransaction";
 import { useOpenPositionTransaction } from "../../transactions/transaction-hooks/useOpenPositionTransaction";
 import { useTradeModalTitle } from "../hooks/useTradeModalTitle";
@@ -22,6 +25,7 @@ interface TradeModalTransactionsProviderProps {
 
 export const TradeModalTransactionsContext =
   createContext<TradeModalTransactions>({
+    tokenApproveTransaction: defaultUseMutationResult,
     openPositionTransaction: defaultUseMutationResult,
     closePositionTransaction: defaultUseMutationResult,
   });
@@ -36,6 +40,8 @@ export const TradeModalTransactionsProvider: FC<
   const title = useTradeModalTitle();
 
   const { quoteTokenQuery } = useTradePanelQueries(selectedPairId);
+  const pairPricesQuery = usePairPricesQuery(selectedPairId);
+  const pairOpenInterestQuery = usePairOpenInterestQuery(selectedPairId);
   const positionsQuery = usePositionsQuery();
 
   const { chainId } = getPairConfig(selectedPairId);
@@ -44,10 +50,27 @@ export const TradeModalTransactionsProvider: FC<
     addresses: { positionManager },
   } = getPairConfig(selectedPairId);
 
+  const { tokenData } = quoteTokenInputState;
+  const tokenSymbol = tokenData?.symbol ?? "";
+  const tokenAddress = tokenData?.address ?? "";
+
+  const tokenApproveDependantQueries: DependantQueries = [quoteTokenQuery];
+
   const positionsDependantQueries: DependantQueries = [
-    quoteTokenQuery,
+    ...tokenApproveDependantQueries,
+    pairPricesQuery,
+    pairOpenInterestQuery,
     positionsQuery,
   ];
+
+  const onApproveTransactionSuccess = (transactionHash: string) => {
+    toast({
+      type: ToastType.SUCCESS,
+      title: `Approve ${tokenSymbol}`,
+      chainId,
+      transactionHash,
+    });
+  };
 
   const onTransactionSuccess = (transactionHash: string) => {
     toast({
@@ -61,6 +84,14 @@ export const TradeModalTransactionsProvider: FC<
     popModal();
   };
 
+  const onApproveTransactionError = (error: Error) => {
+    toast({
+      type: ToastType.ERROR,
+      title: `Approve ${tokenSymbol}`,
+      description: error.message,
+    });
+  };
+
   const onTransactionError = (error: Error) => {
     toast({
       type: ToastType.ERROR,
@@ -68,6 +99,13 @@ export const TradeModalTransactionsProvider: FC<
       description: error.message,
     });
   };
+
+  const tokenApproveTransaction = useTokenApproveTransaction(
+    tokenAddress,
+    tokenApproveDependantQueries,
+    onApproveTransactionSuccess,
+    onApproveTransactionError
+  );
 
   const openPositionTransaction = useOpenPositionTransaction(
     positionManager,
@@ -85,10 +123,11 @@ export const TradeModalTransactionsProvider: FC<
 
   const value = useMemo(
     () => ({
+      tokenApproveTransaction,
       openPositionTransaction,
       closePositionTransaction,
     }),
-    [openPositionTransaction, closePositionTransaction]
+    [tokenApproveTransaction, openPositionTransaction, closePositionTransaction]
   );
 
   return (
