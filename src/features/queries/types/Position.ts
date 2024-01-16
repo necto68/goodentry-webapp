@@ -1,4 +1,3 @@
-import type { PairConfig } from "../../pair/types/PairConfig";
 import type Big from "big.js";
 
 export enum PositionSide {
@@ -6,12 +5,16 @@ export enum PositionSide {
   SHORT = "SHORT",
 }
 export interface Position {
-  id: string;
-  pairId: PairConfig["id"];
+  id: number;
+  pairId: string;
   side: PositionSide;
-  size: Big;
   entryPrice: number;
+  initialCollateral: Big;
+  leverage: number;
+  positionSize: Big;
+  optionHourlyBorrowRate: number;
+  runwayInSeconds: number;
   profitAndLossValue: Big;
-  token0Amount: Big;
-  token1Amount: Big;
+  feesAccumulated: Big;
+  feesMin: Big;
 }

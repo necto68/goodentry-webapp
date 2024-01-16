@@ -3,10 +3,13 @@ import {
   getFormattedAmount,
   getFormattedAPY,
   getFormattedFullCurrency,
+  getFormattedLeverage,
 } from "../../shared/helpers/baseFormatters";
-import { getZero } from "../../shared/helpers/bigjs";
+import {
+  getFormattedBorrowRate,
+  getFormattedRunway,
+} from "../../shared/helpers/formatters";
 import { Table } from "../../table/components/Table";
-import { TitleCell } from "../../table/components/TitleCell";
 import { usePositions } from "../hooks/usePositions";
 import {
   ColorText,
@@ -15,6 +18,7 @@ import {
   ActionsContainer,
 } from "../styles/PositionsTable";
 
+import { AssetCell } from "./AssetCell";
 import { OpenTradeModalButton } from "./OpenTradeModalButton";
 import { PositionActionsButton } from "./PositionActionsButton";
 
@@ -23,10 +27,10 @@ import type { Column } from "../../table/types/Column";
 
 const columns: Column<Position>[] = [
   {
-    key: "id",
-    title: "Instrument",
+    key: "pairId",
+    title: "Asset",
 
-    render: () => <TitleCell symbols={["SYMBOL"]} title="" />,
+    render: ({ pairId }) => <AssetCell pairId={pairId} />,
   },
   {
     key: "side",
@@ -43,37 +47,63 @@ const columns: Column<Position>[] = [
     },
   },
   {
-    key: "size",
-    title: "Size (USDC)",
-    render: ({ size }) => getFormattedAmount(size),
-  },
-  {
-    // TODO: v2 update
-    // key: "ticker",
-    title: "Funding / 1h (USDC)",
-
-    render: () =>
-      getFormattedAmount(getZero(), {
-        maximumFractionDigits: 4,
-      }),
-  },
-  {
     key: "entryPrice",
     title: "Entry Price",
     render: ({ entryPrice }) => getFormattedFullCurrency(entryPrice),
+  },
+  {
+    key: "initialCollateral",
+    title: "Wager (Leverage)",
+
+    render: ({ initialCollateral, leverage }) => {
+      const formattedInitialCollateral = getFormattedAmount(initialCollateral);
+      const formattedLeverage = getFormattedLeverage(leverage);
+
+      return (
+        <ProfitAndLossRow>
+          <ProfitAndLossCell>
+            <span>{formattedInitialCollateral}</span>
+            <span>{formattedLeverage}</span>
+          </ProfitAndLossCell>
+        </ProfitAndLossRow>
+      );
+    },
+  },
+  {
+    key: "positionSize",
+    title: "Position Size",
+
+    render: ({ positionSize }) => getFormattedAmount(positionSize),
+  },
+  {
+    key: "optionHourlyBorrowRate",
+    title: "Funding / 1h",
+
+    render: ({ optionHourlyBorrowRate }) =>
+      getFormattedBorrowRate(optionHourlyBorrowRate),
+  },
+  {
+    key: "runwayInSeconds",
+    title: "Runway",
+    render: ({ runwayInSeconds }) => getFormattedRunway(runwayInSeconds),
   },
   {
     key: "profitAndLossValue",
     title: "PNL",
 
     render: (position) => {
-      const { size, profitAndLossValue } = position;
+      const { initialCollateral, profitAndLossValue } = position;
       const isPositive = profitAndLossValue.gt(0);
       const formattedProfitAndLossValue = getFormattedFullCurrency(
         profitAndLossValue.toNumber()
       );
+
+      const profitAndLossPercentValue = initialCollateral.gt(0)
+        ? profitAndLossValue.div(initialCollateral).toNumber()
+        : 0;
+
       const formattedProfitAndLossPercent = getFormattedAPY(
-        size.gt(0) ? profitAndLossValue.div(size).toNumber() : 0
+        profitAndLossPercentValue
       );
 
       return (
@@ -102,7 +132,7 @@ const columns: Column<Position>[] = [
   },
 ];
 
-const getRowKey = (row: Position) => `${row.id}_${row.size.toString()}`;
+const getRowKey = (row: Position) => `${row.id}_${row.pairId}`;
 
 export const PositionsTable = () => {
   const rows = usePositions();

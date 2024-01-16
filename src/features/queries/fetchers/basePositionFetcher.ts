@@ -2,66 +2,117 @@ import { fromTokenAmount } from "../../input-card/helpers/tokenAmount";
 import { getPairConfig } from "../../pair/helpers/getPairConfig";
 import { queryClient } from "../../shared/constants/queryClient";
 import { getExp, getZero, toBig } from "../../shared/helpers/bigjs";
+import { IGoodEntryPositionManager__factory as PositionManagerFactory } from "../../smart-contracts/types";
+import { exerciseFee } from "../../trade-panel/constants/openPosition";
+import { getProvider } from "../../web3/helpers/getProvider";
 import { getTokenQueryOptions } from "../query-options-getters/getTokenQueryOptions";
 import { PositionSide } from "../types/Position";
 
 import type { Position } from "../types/Position";
-import type { PositionResponseData } from "../types/PositionsResponse";
 
 export const basePositionFetcher = async (
   pairId: string,
-  positionData: PositionResponseData
+  basePositionPrice: number,
+  positionId: number
 ): Promise<Position> => {
-  const { chainId } = getPairConfig(pairId);
-
   const {
-    amount0: positionAmount0,
-    amount1: positionAmount1,
-    entryUsd,
-    avgEntry,
-  } = positionData;
-
-  const {
-    addresses: { baseToken, quoteToken },
+    chainId,
+    addresses: {
+      baseToken: baseTokenAddress,
+      quoteToken: quoteTokenAddress,
+      positionManager,
+    },
   } = getPairConfig(pairId);
 
-  const [token0, token1] = await Promise.all([
-    queryClient.fetchQuery(getTokenQueryOptions(chainId, baseToken)),
-    queryClient.fetchQuery(getTokenQueryOptions(chainId, quoteToken)),
+  const provider = getProvider(chainId);
+
+  const positionManagerContract = PositionManagerFactory.connect(
+    positionManager,
+    provider
+  );
+
+  const [baseToken, quoteToken, position, fees] = await Promise.all([
+    queryClient.ensureQueryData(
+      getTokenQueryOptions(chainId, baseTokenAddress)
+    ),
+    queryClient.ensureQueryData(
+      getTokenQueryOptions(chainId, quoteTokenAddress)
+    ),
+    positionManagerContract.getPosition(positionId),
+    positionManagerContract.getFeesAccumulatedAndMin(positionId),
   ]);
 
-  const token0Amount = fromTokenAmount(toBig(positionAmount0), token0);
-  const token1Amount = fromTokenAmount(toBig(positionAmount1), token1);
+  const [feesAccumulated, feesMin] = [fees.feesAccumulated, fees.feesMin].map(
+    (fee) => fromTokenAmount(toBig(fee), quoteToken)
+  );
 
-  const value0 = toBig(0);
-  const value1 = toBig(0);
+  const priceDivisor = getExp(8);
 
-  // const value0 = token0Amount.mul(token0.price);
-  // const value1 = token1Amount.mul(token1.price);
+  const id = positionId;
+  const side = position.isCall ? PositionSide.LONG : PositionSide.SHORT;
+  const isLongPosition = side === PositionSide.LONG;
 
-  const side = value0.gt(value1) ? PositionSide.LONG : PositionSide.SHORT;
+  const entryPrice = toBig(position.strike).div(priceDivisor).toNumber();
 
-  const size = entryUsd ? toBig(entryUsd).div(getExp(8)) : getZero();
+  const collateralAmount = fromTokenAmount(
+    toBig(position.collateralAmount),
+    quoteToken
+  );
 
-  // const profitAndLossValue = value0
-  //   .add(value1)
-  //   .sub(
-  //     debtTokenBalance
-  //       .div(ticker.tickerToken.totalSupply)
-  //       .mul(tickerToken0Value.add(tickerToken1Value))
-  //   );
+  const initialCollateral = collateralAmount.sub(exerciseFee);
+  const currentCollateral = initialCollateral.sub(feesAccumulated);
 
-  const entryPrice = avgEntry ? toBig(avgEntry).toNumber() : 0;
+  const notionalAmount = fromTokenAmount(
+    toBig(position.notionalAmount),
+    isLongPosition ? baseToken : quoteToken
+  );
+
+  const positionSize = isLongPosition
+    ? notionalAmount.mul(entryPrice)
+    : notionalAmount;
+
+  const leverage = positionSize.div(initialCollateral).round().toNumber();
+
+  let profitAndLossValue = getZero();
+
+  if (isLongPosition && basePositionPrice > entryPrice) {
+    profitAndLossValue = profitAndLossValue.add(
+      notionalAmount.mul(basePositionPrice - entryPrice)
+    );
+  } else if (!isLongPosition && basePositionPrice < entryPrice) {
+    profitAndLossValue = profitAndLossValue.add(
+      notionalAmount.div(entryPrice).mul(entryPrice - basePositionPrice)
+    );
+  } else {
+    profitAndLossValue = getZero();
+  }
+
+  profitAndLossValue = profitAndLossValue.sub(feesAccumulated);
+
+  // divide by 10e10 because of scaling
+  // then divide by quoteToken.decimals
+  const fundingRate = toBig(position.data)
+    .div(getExp(10))
+    .div(getExp(quoteToken.decimals));
+
+  const optionHourlyBorrowRate = fundingRate
+    .mul(3600)
+    .div(positionSize)
+    .toNumber();
+  const runwayInSeconds = currentCollateral.div(fundingRate).toNumber();
 
   return {
-    // TODO: v2 update
-    id: "id",
+    id,
     pairId,
     side,
-    size,
     entryPrice,
-    profitAndLossValue: getZero(),
-    token0Amount,
-    token1Amount,
+    initialCollateral,
+    leverage,
+    positionSize,
+    optionHourlyBorrowRate,
+    runwayInSeconds,
+    profitAndLossValue,
+    feesAccumulated,
+    feesMin,
   };
 };

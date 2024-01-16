@@ -40,7 +40,3 @@ export interface AccountData {
     [tickerAddress: string]: PositionResponseData;
   };
 }
-
-export interface PositionsResponse {
-  [account: string]: AccountData | undefined;
-}
