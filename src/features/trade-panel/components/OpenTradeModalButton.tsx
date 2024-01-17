@@ -4,49 +4,39 @@ import { useCallback } from "react";
 import { loadingPlaceholder } from "../../shared/constants/placeholders";
 import { useModal } from "../../shared/modal/hooks/useModal";
 import { ModalType } from "../../shared/modal/types/ModalType";
-import { getTabTitle } from "../helpers/getTabTitle";
+import { getPositionSideTitle } from "../helpers/getPositionSideTitle";
+import { isPositionSideLong } from "../helpers/isPositionSideLong";
 import { useTradePanelQueries } from "../hooks/useTradePanelQueries";
 import { useTradePanelState } from "../stores/useTradePanelState";
-import { TabType } from "../types/TabType";
 
 export const OpenTradeModalButton = () => {
   const { pushModal } = useModal();
-  const {
-    selectedTab,
-    selectedPairId,
-    quoteTokenInputState,
-    selectedLeverage,
-  } = useTradePanelState();
+  const { positionSide, pairId, quoteTokenInputState, leverage } =
+    useTradePanelState();
 
-  const { baseTokenQuery } = useTradePanelQueries(selectedPairId);
+  const { baseTokenQuery } = useTradePanelQueries(pairId);
   const baseTokenData = baseTokenQuery.data;
 
-  const sideTitle = getTabTitle(selectedTab);
+  const positionSideTitle = getPositionSideTitle(positionSide);
   const symbol = baseTokenData ? baseTokenData.symbol : loadingPlaceholder;
 
-  const isLongTab = selectedTab === TabType.LONG;
+  const isLong = isPositionSideLong(positionSide);
 
   const handleButtonClick = useCallback(() => {
     const modalState = {
-      selectedTab,
-      selectedPairId,
+      positionSide,
+      pairId,
       quoteTokenInputState,
-      selectedLeverage,
+      leverage,
     };
 
     pushModal(ModalType.OPEN_POSITION, modalState);
-  }, [
-    pushModal,
-    selectedTab,
-    selectedPairId,
-    quoteTokenInputState,
-    selectedLeverage,
-  ]);
+  }, [pushModal, positionSide, pairId, quoteTokenInputState, leverage]);
 
   return (
     <Button
       onClick={handleButtonClick}
-      variant={isLongTab ? "brand" : "error"}
-    >{`${sideTitle} ${symbol}`}</Button>
+      variant={isLong ? "brand" : "error"}
+    >{`${positionSideTitle} ${symbol}`}</Button>
   );
 };

@@ -1,21 +1,21 @@
 import { useOptionBorrowRates } from "../../protected-perps-page/hooks/useOptionBorrowRates";
 import { getPositionSize } from "../helpers/getPositionSize";
-import { TabType } from "../types/TabType";
+import { isPositionSideLong } from "../helpers/isPositionSideLong";
 
 import type { TradePanelState } from "../types/TradePanelState";
 
 export const useTradePanelOptionHourlyBorrowRate = (
-  selectedTab: TradePanelState["selectedTab"],
-  selectedPairId: TradePanelState["selectedPairId"],
+  positionSide: TradePanelState["positionSide"],
+  pairId: TradePanelState["pairId"],
   quoteTokenInputState: TradePanelState["quoteTokenInputState"],
-  selectedLeverage: TradePanelState["selectedLeverage"]
+  leverage: TradePanelState["leverage"]
 ) => {
-  const positionSize = getPositionSize(quoteTokenInputState, selectedLeverage);
+  const positionSize = getPositionSize(quoteTokenInputState, leverage);
 
   const { lowerOptionHourlyBorrowRate, upperOptionHourlyBorrowRate } =
-    useOptionBorrowRates(selectedPairId, positionSize, selectedLeverage) ?? {};
+    useOptionBorrowRates(pairId, positionSize, leverage) ?? {};
 
-  const isLongTab = selectedTab === TabType.LONG;
+  const isLong = isPositionSideLong(positionSide);
 
-  return isLongTab ? upperOptionHourlyBorrowRate : lowerOptionHourlyBorrowRate;
+  return isLong ? upperOptionHourlyBorrowRate : lowerOptionHourlyBorrowRate;
 };

@@ -8,7 +8,7 @@ export const Switcher: FC<SwitcherProps> = ({
   title1,
   icon0,
   icon1,
-  selectedTab,
+  tab,
   onTabClick,
 }) => (
   <ButtonGroup isAttached size="sm">
@@ -17,7 +17,7 @@ export const Switcher: FC<SwitcherProps> = ({
       onClick={() => {
         onTabClick(0);
       }}
-      variant={selectedTab === 0 ? "brand" : "solid"}
+      variant={tab === 0 ? "brand" : "solid"}
       w="full"
     >
       {title0}
@@ -27,7 +27,7 @@ export const Switcher: FC<SwitcherProps> = ({
       onClick={() => {
         onTabClick(1);
       }}
-      variant={selectedTab === 1 ? "error" : "solid"}
+      variant={tab === 1 ? "error" : "solid"}
       w="full"
     >
       {title1}

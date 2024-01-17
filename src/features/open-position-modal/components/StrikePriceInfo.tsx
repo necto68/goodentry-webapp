@@ -15,24 +15,20 @@ import { useTradePanelStrikePrice } from "../../trade-panel/hooks/useTradePanelS
 import { useOpenPositionModalState } from "../stores/useOpenPositionModalState";
 
 export const StrikePriceInfo = () => {
-  const {
-    selectedTab,
-    selectedPairId,
-    quoteTokenInputState,
-    selectedLeverage,
-  } = useOpenPositionModalState();
+  const { positionSide, pairId, quoteTokenInputState, leverage } =
+    useOpenPositionModalState();
 
-  const strikePrice = useTradePanelStrikePrice(selectedTab, selectedPairId);
+  const strikePrice = useTradePanelStrikePrice(positionSide, pairId);
   const optionHourlyBorrowRate = useTradePanelOptionHourlyBorrowRate(
-    selectedTab,
-    selectedPairId,
+    positionSide,
+    pairId,
     quoteTokenInputState,
-    selectedLeverage
+    leverage
   );
 
   const runwayInSeconds = getRunwayInSeconds(
     quoteTokenInputState,
-    selectedLeverage,
+    leverage,
     optionHourlyBorrowRate
   );
 

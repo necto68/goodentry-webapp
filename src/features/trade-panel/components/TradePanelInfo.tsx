@@ -15,7 +15,7 @@ import { ExerciseFeeInfo } from "./ExerciseFeeInfo";
 import { PositionSizeInfo } from "./PositionSizeInfo";
 
 export const TradePanelInfo = () => {
-  const { quoteTokenInputState, selectedLeverage } = useTradePanelState();
+  const { quoteTokenInputState, leverage } = useTradePanelState();
   const maxPositionSize = useMaxPositionSize();
 
   const { tokenData } = quoteTokenInputState;
@@ -39,8 +39,8 @@ export const TradePanelInfo = () => {
   return (
     <Container>
       <PositionSizeInfo
+        leverage={leverage}
         quoteTokenInputState={quoteTokenInputState}
-        selectedLeverage={selectedLeverage}
       />
       <InfoRow>
         <InfoTitle>Min Position Size</InfoTitle>

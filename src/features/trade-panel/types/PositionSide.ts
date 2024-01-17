@@ -1,4 +1,4 @@
-export enum TabType {
+export enum PositionSide {
   LONG = "LONG",
   SHORT = "SHORT",
 }

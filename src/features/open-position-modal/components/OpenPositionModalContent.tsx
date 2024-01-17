@@ -1,6 +1,6 @@
+import { isPositionSideLong } from "../../trade-panel/helpers/isPositionSideLong";
 import { useTradeModalTitle } from "../../trade-panel/hooks/useTradeModalTitle";
-import { PositionActionType } from "../../trade-panel/types/PositionActionType";
-import { TabType } from "../../trade-panel/types/TabType";
+import { PositionAction } from "../../trade-panel/types/PositionAction";
 import { useOpenPositionModalState } from "../stores/useOpenPositionModalState";
 import {
   Container,
@@ -16,15 +16,10 @@ import { PositionInfo } from "./PositionInfo";
 import { StrikePriceInfo } from "./StrikePriceInfo";
 
 export const OpenPositionModalContent = () => {
-  const { selectedTab, selectedPairId } = useOpenPositionModalState();
+  const { positionSide, pairId } = useOpenPositionModalState();
 
-  const title = useTradeModalTitle(
-    PositionActionType.OPEN,
-    selectedTab,
-    selectedPairId
-  );
-
-  const isLong = selectedTab === TabType.LONG;
+  const title = useTradeModalTitle(PositionAction.OPEN, positionSide, pairId);
+  const isLong = isPositionSideLong(positionSide);
 
   return (
     <Container>

@@ -5,7 +5,7 @@ import { TokenErrorMainButton } from "../../form-components/components/TokenErro
 import { WrongNetworkMainButton } from "../../form-components/components/WrongNetworkMainButton";
 import { ZeroBalanceMainButton } from "../../form-components/components/ZeroBalanceMainButton";
 import { isInsufficientTokenAllowance } from "../../input-card/helpers/tokenBalance";
-import { usePairChainId } from "../../protected-perps-page/hooks/usePairChainId";
+import { getVaultConfig } from "../../vault/helpers/getVaultConfig";
 import { useVault } from "../../vault-details-page/hooks/useVault";
 import { useWallet } from "../../wallet/hooks/useWallet";
 import { useVaultModalTokenInputState } from "../hooks/useVaultModalTokenInputState";
@@ -19,11 +19,11 @@ import { VaultActionButton } from "./VaultActionButton";
 // eslint-disable-next-line sonarjs/cognitive-complexity,complexity
 export const VaultMainButton = () => {
   const { isConnected, chainId: selectedChainId } = useWallet();
-  const chainId = usePairChainId();
 
   const { selectedTab, vaultId } = useVaultModalState();
-
   const vault = useVault(vaultId);
+
+  const { chainId } = getVaultConfig(vaultId);
   const { isMaxCapReached = false } = vault ?? {};
 
   const isDepositTab = selectedTab === TabType.DEPOSIT;

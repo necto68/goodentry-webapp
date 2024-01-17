@@ -13,13 +13,12 @@ import { PositionSizeInfo } from "../../trade-panel/components/PositionSizeInfo"
 import { useOpenPositionModalState } from "../stores/useOpenPositionModalState";
 
 export const PositionInfo = () => {
-  const { quoteTokenInputState, selectedLeverage } =
-    useOpenPositionModalState();
+  const { quoteTokenInputState, leverage } = useOpenPositionModalState();
 
   const { tokenData, inputValueBig } = quoteTokenInputState;
 
   const formattedQuoteTokenAmountValue = getFormattedAmount(inputValueBig);
-  const formattedLeverage = getFormattedLeverage(selectedLeverage);
+  const formattedLeverage = getFormattedLeverage(leverage);
 
   const formattedQuoteTokenAmount = tokenData
     ? `${formattedQuoteTokenAmountValue} ${tokenData.symbol}`
@@ -36,8 +35,8 @@ export const PositionInfo = () => {
         <InfoValue>{formattedLeverage}</InfoValue>
       </InfoRow>
       <PositionSizeInfo
+        leverage={leverage}
         quoteTokenInputState={quoteTokenInputState}
-        selectedLeverage={selectedLeverage}
       />
     </Container>
   );

@@ -6,6 +6,7 @@ import { getFormattedAPY } from "../../shared/helpers/baseFormatters";
 import { getFormattedPrice } from "../../shared/helpers/formatters";
 import { useAssetPrices } from "../hooks/useAssetPrices";
 import { usePairPrices } from "../hooks/usePairPrices";
+import { usePairIdStore } from "../stores/usePairIdStore";
 import {
   Container,
   PriceContainer,
@@ -18,8 +19,9 @@ import { ComponentContainer } from "../styles/ProtectedPerpsPage";
 import { PairSelector } from "./PairSelector";
 
 export const ChartHeader = () => {
-  const { baseTokenPrice } = usePairPrices() ?? {};
-  const { priceChange, highPrice, lowPrice } = useAssetPrices() ?? {};
+  const { pairId } = usePairIdStore();
+  const { baseTokenPrice } = usePairPrices(pairId) ?? {};
+  const { priceChange, highPrice, lowPrice } = useAssetPrices(pairId) ?? {};
 
   const [formattedBaseTokenPrice, formattedHighPrice, formattedLowPrice] = [
     baseTokenPrice,

@@ -17,7 +17,7 @@ export const LockSwitcher = () => {
       icon0={<BiSolidLockAlt size={18} />}
       icon1={<BiSolidLockOpenAlt size={18} />}
       onTabClick={handleTabClick}
-      selectedTab={isLockTab ? 0 : 1}
+      tab={isLockTab ? 0 : 1}
       title0="Lock"
       title1="Unlock"
     />

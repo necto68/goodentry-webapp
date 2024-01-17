@@ -8,10 +8,10 @@ import {
 
 import { defaultTokenInputState } from "../../input-card/constants/defaultTokenInputState";
 import { useTokenInputState } from "../../input-card/hooks/useTokenInputState";
-import { useSelectedPairIdStore } from "../../protected-perps-page/stores/useSelectedPairIdStore";
+import { usePairIdStore } from "../../protected-perps-page/stores/usePairIdStore";
 import { defaultLeverageStep } from "../constants/leverageSteps";
 import { useTradePanelQueries } from "../hooks/useTradePanelQueries";
-import { TabType } from "../types/TabType";
+import { PositionSide } from "../types/PositionSide";
 
 import type { TradePanelState } from "../types/TradePanelState";
 import type { ReactNode, FC } from "react";
@@ -21,69 +21,68 @@ interface TradePanelStateProviderProps {
 }
 
 export const TradePanelStateContext = createContext<TradePanelState>({
-  selectedTab: TabType.LONG,
-  setSelectedTab: () => undefined,
-  selectedPairId: "",
+  positionSide: PositionSide.LONG,
+  setPositionSide: () => undefined,
+  pairId: "",
   quoteTokenInputState: defaultTokenInputState,
-  selectedLeverage: defaultLeverageStep,
-  setSelectedLeverage: () => undefined,
+  leverage: defaultLeverageStep,
+  setLeverage: () => undefined,
 });
 
 export const TradePanelStateProvider: FC<TradePanelStateProviderProps> = ({
   children,
 }) => {
-  const { selectedPairId: storeSelectedPairId } = useSelectedPairIdStore();
+  const { pairId: storePairId } = usePairIdStore();
 
-  const [rawSelectedPairId, setRawSelectedPairId] =
-    useState(storeSelectedPairId);
-  const [rawSelectedTab, setRawSelectedTab] = useState(TabType.LONG);
-  const [selectedLeverage, setSelectedLeverage] = useState(defaultLeverageStep);
+  const [rawPairId, setRawPairId] = useState(storePairId);
+  const [rawPositionSide, setRawPositionSide] = useState(PositionSide.LONG);
+  const [leverage, setLeverage] = useState(defaultLeverageStep);
 
-  const { quoteTokenQuery } = useTradePanelQueries(rawSelectedPairId);
+  const { quoteTokenQuery } = useTradePanelQueries(rawPairId);
   const quoteTokenData = quoteTokenQuery.data;
 
   const quoteTokenInputState = useTokenInputState([quoteTokenData]);
 
-  const selectedPairId = rawSelectedPairId;
+  const pairId = rawPairId;
 
-  const selectedTab = rawSelectedTab;
-  const setSelectedTab = useCallback(
-    (nextSelectedTab: TradePanelState["selectedTab"]) => {
+  const positionSide = rawPositionSide;
+  const setPositionSide = useCallback(
+    (nextPositionSide: TradePanelState["positionSide"]) => {
       quoteTokenInputState.resetState();
-      setSelectedLeverage(defaultLeverageStep);
-      setRawSelectedTab(nextSelectedTab);
+      setLeverage(defaultLeverageStep);
+      setRawPositionSide(nextPositionSide);
     },
-    [quoteTokenInputState, setRawSelectedTab]
+    [quoteTokenInputState, setRawPositionSide]
   );
 
   // TODO: remove this useEffect
-  //  when we have a better way to manage state for selectedPairId
+  //  when we have a better way to manage state for pairId
   useEffect(() => {
-    if (selectedPairId !== storeSelectedPairId) {
-      setRawSelectedPairId(storeSelectedPairId);
-      setRawSelectedTab(TabType.LONG);
+    if (pairId !== storePairId) {
+      setRawPairId(storePairId);
+      setRawPositionSide(PositionSide.LONG);
 
       quoteTokenInputState.resetState();
-      setSelectedLeverage(defaultLeverageStep);
+      setLeverage(defaultLeverageStep);
     }
-  }, [selectedPairId, storeSelectedPairId, quoteTokenInputState]);
+  }, [pairId, storePairId, quoteTokenInputState]);
 
   const value = useMemo(
     () => ({
-      selectedTab,
-      setSelectedTab,
-      selectedPairId,
+      positionSide,
+      setPositionSide,
+      pairId,
       quoteTokenInputState,
-      selectedLeverage,
-      setSelectedLeverage,
+      leverage,
+      setLeverage,
     }),
     [
-      selectedTab,
-      setSelectedTab,
-      selectedPairId,
+      positionSide,
+      setPositionSide,
+      pairId,
       quoteTokenInputState,
-      selectedLeverage,
-      setSelectedLeverage,
+      leverage,
+      setLeverage,
     ]
   );
 

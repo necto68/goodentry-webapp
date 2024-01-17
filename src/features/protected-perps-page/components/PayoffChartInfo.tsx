@@ -9,8 +9,8 @@ import { useTradePanelStrikePrice } from "../../trade-panel/hooks/useTradePanelS
 import { useTradePanelState } from "../../trade-panel/stores/useTradePanelState";
 
 export const PayoffChartInfo = () => {
-  const { selectedTab, selectedPairId } = useTradePanelState();
-  const strikePrice = useTradePanelStrikePrice(selectedTab, selectedPairId);
+  const { positionSide, pairId } = useTradePanelState();
+  const strikePrice = useTradePanelStrikePrice(positionSide, pairId);
 
   const formattedEntryPrice = getFormattedPrice(strikePrice);
 

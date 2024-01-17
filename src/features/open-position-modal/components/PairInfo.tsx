@@ -5,14 +5,14 @@ import {
   InfoTitle,
   InfoValue,
 } from "../../shared/modal/styles/ModalInfo";
-import { getTabTitle } from "../../trade-panel/helpers/getTabTitle";
+import { getPositionSideTitle } from "../../trade-panel/helpers/getPositionSideTitle";
 import { useOpenPositionModalState } from "../stores/useOpenPositionModalState";
 
 export const PairInfo = () => {
-  const { selectedTab, selectedPairId } = useOpenPositionModalState();
-  const { title } = usePair(selectedPairId) ?? {};
+  const { positionSide, pairId } = useOpenPositionModalState();
+  const { title } = usePair(pairId) ?? {};
 
-  const sideTitle = getTabTitle(selectedTab);
+  const positionSideTitle = getPositionSideTitle(positionSide);
 
   return (
     <Container>
@@ -22,7 +22,7 @@ export const PairInfo = () => {
       </InfoRow>
       <InfoRow>
         <InfoTitle>Side</InfoTitle>
-        <InfoValue>{sideTitle}</InfoValue>
+        <InfoValue>{positionSideTitle}</InfoValue>
       </InfoRow>
     </Container>
   );

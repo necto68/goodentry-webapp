@@ -1,23 +1,23 @@
-import { getTabTitle } from "../helpers/getTabTitle";
-import { PositionActionType } from "../types/PositionActionType";
+import { getPositionSideTitle } from "../helpers/getPositionSideTitle";
+import { PositionAction } from "../types/PositionAction";
 
 import { useTradePanelQueries } from "./useTradePanelQueries";
 
-import type { TabType } from "../types/TabType";
+import type { PositionSide } from "../types/PositionSide";
 
 export const useTradeModalTitle = (
-  positionActionType: PositionActionType,
-  tabType: TabType,
+  positionAction: PositionAction,
+  positionSide: PositionSide,
   pairId: string
 ) => {
   const { baseTokenQuery } = useTradePanelQueries(pairId);
 
   const baseTokenData = baseTokenQuery.data;
 
-  const positionActionTypeTitle =
-    positionActionType === PositionActionType.OPEN ? "Open" : "Close";
-  const sideTitle = getTabTitle(tabType);
+  const positionActionTitle =
+    positionAction === PositionAction.OPEN ? "Open" : "Close";
+  const positionSideTitle = getPositionSideTitle(positionSide);
   const symbol = baseTokenData ? baseTokenData.symbol : "";
 
-  return `${positionActionTypeTitle} ${sideTitle} ${symbol} Position`;
+  return `${positionActionTitle} ${positionSideTitle} ${symbol} Position`;
 };

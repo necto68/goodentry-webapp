@@ -2,8 +2,8 @@ import { fromTokenAmount } from "../../input-card/helpers/tokenAmount";
 import { getPairConfig } from "../../pair/helpers/getPairConfig";
 import { queryClient } from "../../shared/constants/queryClient";
 import { toBig } from "../../shared/helpers/bigjs";
+import { PositionSide } from "../../trade-panel/types/PositionSide";
 import { getTokenQueryOptions } from "../query-options-getters/getTokenQueryOptions";
-import { PositionSide } from "../types/Position";
 import { TransactionType } from "../types/PositionsResponse";
 
 import type { PositionHistory } from "../types/PositionHistory";

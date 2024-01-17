@@ -1,16 +1,13 @@
 import { usePairPrices } from "../../protected-perps-page/hooks/usePairPrices";
-import { TabType } from "../types/TabType";
+import { isPositionSideLong } from "../helpers/isPositionSideLong";
 
 import type { TradePanelState } from "../types/TradePanelState";
 
 export const useTradePanelStrikePrice = (
-  selectedTab: TradePanelState["selectedTab"],
-  selectedPairId: TradePanelState["selectedPairId"]
+  positionSide: TradePanelState["positionSide"],
+  pairId: TradePanelState["pairId"]
 ) => {
-  const { lowerStrikePrice, upperStrikePrice } =
-    usePairPrices(selectedPairId) ?? {};
+  const { lowerStrikePrice, upperStrikePrice } = usePairPrices(pairId) ?? {};
 
-  const isLongTab = selectedTab === TabType.LONG;
-
-  return isLongTab ? upperStrikePrice : lowerStrikePrice;
+  return isPositionSideLong(positionSide) ? upperStrikePrice : lowerStrikePrice;
 };

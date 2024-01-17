@@ -13,8 +13,8 @@ import { PayoffInteractiveChart } from "./PayoffInteractiveChart";
 import type { ChartPoint } from "../../interactive-chart/types/ChartPoint";
 
 export const PayoffChart = () => {
-  const { selectedTab, selectedPairId } = useTradePanelState();
-  const strikePrice = useTradePanelStrikePrice(selectedTab, selectedPairId);
+  const { positionSide, pairId } = useTradePanelState();
+  const strikePrice = useTradePanelStrikePrice(positionSide, pairId);
 
   const [selectedChartPoint, setSelectedChartPoint] =
     useState<ChartPoint | null>(null);

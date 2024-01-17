@@ -4,7 +4,7 @@ import { TokenErrorMainButton } from "../../form-components/components/TokenErro
 import { WrongNetworkMainButton } from "../../form-components/components/WrongNetworkMainButton";
 import { ZeroBalanceMainButton } from "../../form-components/components/ZeroBalanceMainButton";
 import { isInsufficientTokenBalance } from "../../input-card/helpers/tokenBalance";
-import { usePairChainId } from "../../protected-perps-page/hooks/usePairChainId";
+import { getPairConfig } from "../../pair/helpers/getPairConfig";
 import { useWallet } from "../../wallet/hooks/useWallet";
 import {
   minPositionSize,
@@ -20,13 +20,14 @@ import { OpenTradeModalButton } from "./OpenTradeModalButton";
 // eslint-disable-next-line complexity
 export const TradePanelMainButton = () => {
   const { isConnected, chainId: selectedChainId } = useWallet();
-  const chainId = usePairChainId();
 
-  const { quoteTokenInputState, selectedLeverage } = useTradePanelState();
+  const { pairId, quoteTokenInputState, leverage } = useTradePanelState();
   const maxPositionSize = useMaxPositionSize();
 
+  const { chainId } = getPairConfig(pairId);
+
   const { tokenData, inputValueBig, isError, error } = quoteTokenInputState;
-  const positionSize = getPositionSize(quoteTokenInputState, selectedLeverage);
+  const positionSize = getPositionSize(quoteTokenInputState, leverage);
   const collateralAmount = getCollateralAmountIncludingFee(inputValueBig);
 
   const isZeroBalance = inputValueBig.lte(0);

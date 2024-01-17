@@ -1,13 +1,10 @@
+import type { PositionSide } from "../../trade-panel/types/PositionSide";
 import type Big from "big.js";
 
-export enum PositionSide {
-  LONG = "LONG",
-  SHORT = "SHORT",
-}
 export interface Position {
   id: number;
   pairId: string;
-  side: PositionSide;
+  positionSide: PositionSide;
   entryPrice: number;
   initialCollateral: Big;
   leverage: number;

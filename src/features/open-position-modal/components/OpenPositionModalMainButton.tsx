@@ -13,12 +13,11 @@ import { OpenPositionButton } from "./OpenPositionButton";
 export const OpenPositionModalMainButton = () => {
   const { isConnected, chainId: selectedChainId } = useWallet();
 
-  const { selectedPairId, quoteTokenInputState } = useOpenPositionModalState();
-
+  const { pairId, quoteTokenInputState } = useOpenPositionModalState();
   const { tokenApproveTransaction } = useOpenPositionModalTransactions();
-  const { quoteTokenQuery } = useTradePanelQueries(selectedPairId);
+  const { quoteTokenQuery } = useTradePanelQueries(pairId);
 
-  const { chainId } = getPairConfig(selectedPairId);
+  const { chainId } = getPairConfig(pairId);
 
   const { isLoading: isTokenApproveMutationLoading } =
     tokenApproveTransaction.mutation;

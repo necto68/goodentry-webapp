@@ -4,9 +4,10 @@ import { queryClient } from "../../shared/constants/queryClient";
 import { getExp, getZero, toBig } from "../../shared/helpers/bigjs";
 import { IGoodEntryPositionManager__factory as PositionManagerFactory } from "../../smart-contracts/types";
 import { exerciseFee } from "../../trade-panel/constants/openPosition";
+import { isPositionSideLong } from "../../trade-panel/helpers/isPositionSideLong";
+import { PositionSide } from "../../trade-panel/types/PositionSide";
 import { getProvider } from "../../web3/helpers/getProvider";
 import { getTokenQueryOptions } from "../query-options-getters/getTokenQueryOptions";
-import { PositionSide } from "../types/Position";
 
 import type { Position } from "../types/Position";
 
@@ -49,8 +50,8 @@ export const basePositionFetcher = async (
   const priceDivisor = getExp(8);
 
   const id = positionId;
-  const side = position.isCall ? PositionSide.LONG : PositionSide.SHORT;
-  const isLongPosition = side === PositionSide.LONG;
+  const positionSide = position.isCall ? PositionSide.LONG : PositionSide.SHORT;
+  const isLong = isPositionSideLong(positionSide);
 
   const entryPrice = toBig(position.strike).div(priceDivisor).toNumber();
 
@@ -64,22 +65,19 @@ export const basePositionFetcher = async (
 
   const notionalAmount = fromTokenAmount(
     toBig(position.notionalAmount),
-    isLongPosition ? baseToken : quoteToken
+    isLong ? baseToken : quoteToken
   );
 
-  const positionSize = isLongPosition
-    ? notionalAmount.mul(entryPrice)
-    : notionalAmount;
-
+  const positionSize = isLong ? notionalAmount.mul(entryPrice) : notionalAmount;
   const leverage = positionSize.div(initialCollateral).round().toNumber();
 
   let profitAndLossValue = getZero();
 
-  if (isLongPosition && basePositionPrice > entryPrice) {
+  if (isLong && basePositionPrice > entryPrice) {
     profitAndLossValue = profitAndLossValue.add(
       notionalAmount.mul(basePositionPrice - entryPrice)
     );
-  } else if (!isLongPosition && basePositionPrice < entryPrice) {
+  } else if (!isLong && basePositionPrice < entryPrice) {
     profitAndLossValue = profitAndLossValue.add(
       notionalAmount.div(entryPrice).mul(entryPrice - basePositionPrice)
     );
@@ -104,7 +102,7 @@ export const basePositionFetcher = async (
   return {
     id,
     pairId,
-    side,
+    positionSide,
     entryPrice,
     initialCollateral,
     leverage,

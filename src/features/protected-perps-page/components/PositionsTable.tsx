@@ -1,4 +1,3 @@
-import { PositionSide } from "../../queries/types/Position";
 import {
   getFormattedAmount,
   getFormattedAPY,
@@ -10,6 +9,8 @@ import {
   getFormattedRunway,
 } from "../../shared/helpers/formatters";
 import { Table } from "../../table/components/Table";
+import { getPositionSideTitle } from "../../trade-panel/helpers/getPositionSideTitle";
+import { isPositionSideLong } from "../../trade-panel/helpers/isPositionSideLong";
 import { usePositions } from "../hooks/usePositions";
 import {
   ColorText,
@@ -33,17 +34,14 @@ const columns: Column<Position>[] = [
     render: ({ pairId }) => <AssetCell pairId={pairId} />,
   },
   {
-    key: "side",
+    key: "positionSide",
     title: "Side",
 
-    render: ({ side }) => {
-      const isPositive = side === PositionSide.LONG;
+    render: ({ positionSide }) => {
+      const isLong = isPositionSideLong(positionSide);
+      const positionSideTitle = getPositionSideTitle(positionSide);
 
-      return (
-        <ColorText isPositive={isPositive}>
-          {isPositive ? "Long" : "Short"}
-        </ColorText>
-      );
+      return <ColorText isPositive={isLong}>{positionSideTitle}</ColorText>;
     },
   },
   {

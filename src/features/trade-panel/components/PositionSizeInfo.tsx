@@ -10,16 +10,16 @@ import { getPositionSize } from "../helpers/getPositionSize";
 import type { TradePanelState } from "../types/TradePanelState";
 import type { FC } from "react";
 
-interface PositionSizeInfoProps {
-  readonly quoteTokenInputState: TradePanelState["quoteTokenInputState"];
-  readonly selectedLeverage: TradePanelState["selectedLeverage"];
-}
+type PositionSizeInfoProps = Pick<
+  TradePanelState,
+  "leverage" | "quoteTokenInputState"
+>;
 
 export const PositionSizeInfo: FC<PositionSizeInfoProps> = ({
   quoteTokenInputState,
-  selectedLeverage,
+  leverage,
 }) => {
-  const positionSize = getPositionSize(quoteTokenInputState, selectedLeverage);
+  const positionSize = getPositionSize(quoteTokenInputState, leverage);
 
   const { tokenData } = quoteTokenInputState;
 

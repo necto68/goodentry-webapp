@@ -10,7 +10,7 @@ import { useToast } from "../../toast/hooks/useToast";
 import { ToastType } from "../../toast/types/ToastType";
 import { useTradeModalTitle } from "../../trade-panel/hooks/useTradeModalTitle";
 import { useTradePanelQueries } from "../../trade-panel/hooks/useTradePanelQueries";
-import { PositionActionType } from "../../trade-panel/types/PositionActionType";
+import { PositionAction } from "../../trade-panel/types/PositionAction";
 import { useTokenApproveTransaction } from "../../transactions/hooks/useTokenApproveTransaction";
 import { useOpenPositionTransaction } from "../../transactions/transaction-hooks/useOpenPositionTransaction";
 import { useOpenPositionModalState } from "../stores/useOpenPositionModalState";
@@ -35,24 +35,20 @@ export const OpenPositionModalTransactionsProvider: FC<
   const { popModal } = useModal();
   const toast = useToast();
 
-  const { selectedTab, selectedPairId, quoteTokenInputState } =
+  const { positionSide, pairId, quoteTokenInputState } =
     useOpenPositionModalState();
-  const title = useTradeModalTitle(
-    PositionActionType.OPEN,
-    selectedTab,
-    selectedPairId
-  );
+  const title = useTradeModalTitle(PositionAction.OPEN, positionSide, pairId);
 
-  const { quoteTokenQuery } = useTradePanelQueries(selectedPairId);
-  const pairPricesQuery = usePairPricesQuery(selectedPairId);
-  const pairOpenInterestQuery = usePairOpenInterestQuery(selectedPairId);
+  const { quoteTokenQuery } = useTradePanelQueries(pairId);
+  const pairPricesQuery = usePairPricesQuery(pairId);
+  const pairOpenInterestQuery = usePairOpenInterestQuery(pairId);
   const positionsQuery = usePositionsQuery();
 
-  const { chainId } = getPairConfig(selectedPairId);
+  const { chainId } = getPairConfig(pairId);
 
   const {
     addresses: { positionManager },
-  } = getPairConfig(selectedPairId);
+  } = getPairConfig(pairId);
 
   const { tokenData } = quoteTokenInputState;
   const tokenSymbol = tokenData?.symbol ?? "";

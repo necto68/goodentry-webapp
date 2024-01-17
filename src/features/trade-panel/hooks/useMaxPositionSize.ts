@@ -1,20 +1,20 @@
 import { usePairOpenInterest } from "../../protected-perps-page/hooks/usePairOpenInterest";
 import { usePairPrices } from "../../protected-perps-page/hooks/usePairPrices";
+import { isPositionSideLong } from "../helpers/isPositionSideLong";
 import { useTradePanelState } from "../stores/useTradePanelState";
-import { TabType } from "../types/TabType";
 
 export const useMaxPositionSize = () => {
-  const { selectedPairId, selectedTab } = useTradePanelState();
+  const { pairId, positionSide } = useTradePanelState();
 
-  const { baseTokenPrice } = usePairPrices(selectedPairId) ?? {};
+  const { baseTokenPrice } = usePairPrices(pairId) ?? {};
   const {
     longOpenInterest,
     shortOpenInterest,
     longMaxOpenInterest,
     shortMaxOpenInterest,
-  } = usePairOpenInterest(selectedPairId) ?? {};
+  } = usePairOpenInterest(pairId) ?? {};
 
-  const isLongTab = selectedTab === TabType.LONG;
+  const isLong = isPositionSideLong(positionSide);
 
   const longMaxPositionSize =
     longMaxOpenInterest && longOpenInterest && baseTokenPrice
@@ -25,5 +25,5 @@ export const useMaxPositionSize = () => {
       ? shortMaxOpenInterest.sub(shortOpenInterest)
       : undefined;
 
-  return isLongTab ? longMaxPositionSize : shortMaxPositionSize;
+  return isLong ? longMaxPositionSize : shortMaxPositionSize;
 };

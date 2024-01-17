@@ -17,7 +17,7 @@ export const VaultSwitcher = () => {
       icon0={<BiArrowToBottom size={18} />}
       icon1={<BiArrowFromBottom size={18} />}
       onTabClick={handleTabClick}
-      selectedTab={isDepositTab ? 0 : 1}
+      tab={isDepositTab ? 0 : 1}
       title0="Deposit"
       title1="Withdraw"
     />

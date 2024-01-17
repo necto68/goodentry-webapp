@@ -4,24 +4,18 @@ import {
   Header,
   HeaderContainer,
 } from "../../open-position-modal/styles/OpenPositionModal";
-import { PositionSide } from "../../queries/types/Position";
+import { isPositionSideLong } from "../../trade-panel/helpers/isPositionSideLong";
 import { useTradeModalTitle } from "../../trade-panel/hooks/useTradeModalTitle";
-import { PositionActionType } from "../../trade-panel/types/PositionActionType";
-import { TabType } from "../../trade-panel/types/TabType";
+import { PositionAction } from "../../trade-panel/types/PositionAction";
 import { useClosePositionModalState } from "../stores/useClosePositionModalState";
 
 import { ClosePositionModalMainButton } from "./ClosePositionModalMainButton";
 
 export const ClosePositionModalContent = () => {
-  const { pairId, side } = useClosePositionModalState();
+  const { pairId, positionSide } = useClosePositionModalState();
+  const title = useTradeModalTitle(PositionAction.CLOSE, positionSide, pairId);
 
-  const title = useTradeModalTitle(
-    PositionActionType.OPEN,
-    side === PositionSide.LONG ? TabType.LONG : TabType.SHORT,
-    pairId
-  );
-
-  const isLong = side === PositionSide.LONG;
+  const isLong = isPositionSideLong(positionSide);
 
   return (
     <Container>

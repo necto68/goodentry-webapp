@@ -7,7 +7,7 @@ import type { TradePanelState } from "../types/TradePanelState";
 
 export const getRunwayInSeconds = (
   quoteTokenInputState: TradePanelState["quoteTokenInputState"],
-  selectedLeverage: TradePanelState["selectedLeverage"],
+  leverage: TradePanelState["leverage"],
   optionHourlyBorrowRate:
     | OptionBorrowRates["lowerOptionHourlyBorrowRate"]
     | undefined
@@ -16,7 +16,7 @@ export const getRunwayInSeconds = (
     return undefined;
   }
 
-  const positionSize = getPositionSize(quoteTokenInputState, selectedLeverage);
+  const positionSize = getPositionSize(quoteTokenInputState, leverage);
 
   if (positionSize.lte(0) || optionHourlyBorrowRate === null) {
     return null;

@@ -9,19 +9,15 @@ import { useTradePanelState } from "../stores/useTradePanelState";
 import { Container, Content, Value } from "../styles/StrikePrice";
 
 export const StrikePrice = () => {
-  const {
-    selectedTab,
-    selectedPairId,
-    quoteTokenInputState,
-    selectedLeverage,
-  } = useTradePanelState();
+  const { positionSide, pairId, quoteTokenInputState, leverage } =
+    useTradePanelState();
 
-  const strikePrice = useTradePanelStrikePrice(selectedTab, selectedPairId);
+  const strikePrice = useTradePanelStrikePrice(positionSide, pairId);
   const optionHourlyBorrowRate = useTradePanelOptionHourlyBorrowRate(
-    selectedTab,
-    selectedPairId,
+    positionSide,
+    pairId,
     quoteTokenInputState,
-    selectedLeverage
+    leverage
   );
 
   const formattedStrikePrice = getFormattedPrice(strikePrice);

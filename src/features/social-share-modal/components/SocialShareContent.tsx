@@ -4,13 +4,13 @@ import { forwardRef } from "react";
 import { appLogo } from "../../icons/brand";
 import { usePair } from "../../protected-perps-page/hooks/usePair";
 import { usePairPrices } from "../../protected-perps-page/hooks/usePairPrices";
-import { PositionSide } from "../../queries/types/Position";
 import {
   getFormattedAPY,
   getFormattedFullCurrency,
   getFormattedLeverage,
 } from "../../shared/helpers/baseFormatters";
 import { TitleCell } from "../../table/components/TitleCell";
+import { getPositionSideTitle } from "../../trade-panel/helpers/getPositionSideTitle";
 import { useSocialShareModalState } from "../hooks/useSocialShareModalState";
 import {
   Container,
@@ -31,7 +31,7 @@ const SocialShareContent = forwardRef<HTMLDivElement | null>(
     const { position } = useSocialShareModalState();
 
     const {
-      side,
+      positionSide,
       pairId,
       entryPrice,
       initialCollateral,
@@ -51,7 +51,7 @@ const SocialShareContent = forwardRef<HTMLDivElement | null>(
         ? [baseTokenSymbol, quoteTokenSymbol]
         : undefined;
 
-    const isLongSide = side === PositionSide.LONG;
+    const positionSideTitle = getPositionSideTitle(positionSide);
 
     const isPositive = profitAndLossValue.gt(0);
 
@@ -75,7 +75,9 @@ const SocialShareContent = forwardRef<HTMLDivElement | null>(
         <PairName>
           <TitleCell symbols={symbols} title={title} />
           <Flex>
-            <SideValue side={side}>{isLongSide ? "Long" : "Short"}</SideValue>
+            <SideValue positionSide={positionSide}>
+              {positionSideTitle}
+            </SideValue>
             <Leverage>{formattedLeverage}</Leverage>
           </Flex>
         </PairName>

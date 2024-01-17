@@ -16,38 +16,33 @@ import { useTradePanelState } from "../stores/useTradePanelState";
 import { Container, Content, Value } from "../styles/StrikePrice";
 
 export const LeverageSlider = () => {
-  const {
-    selectedTab,
-    selectedPairId,
-    quoteTokenInputState,
-    selectedLeverage,
-    setSelectedLeverage,
-  } = useTradePanelState();
+  const { positionSide, pairId, quoteTokenInputState, leverage, setLeverage } =
+    useTradePanelState();
 
   const optionHourlyBorrowRate = useTradePanelOptionHourlyBorrowRate(
-    selectedTab,
-    selectedPairId,
+    positionSide,
+    pairId,
     quoteTokenInputState,
-    selectedLeverage
+    leverage
   );
 
   const runwayInSeconds = getRunwayInSeconds(
     quoteTokenInputState,
-    selectedLeverage,
+    leverage,
     optionHourlyBorrowRate
   );
 
   const formattedRunway = getFormattedRunway(runwayInSeconds);
-  const formattedSelectedLeverage = getFormattedLeverage(selectedLeverage);
+  const formattedLeverage = getFormattedLeverage(leverage);
 
-  const selectedLeverageIndex = leverageSteps.indexOf(selectedLeverage);
-  const sliderValue = selectedLeverageIndex < 0 ? 0 : selectedLeverageIndex;
+  const leverageIndex = leverageSteps.indexOf(leverage);
+  const sliderValue = leverageIndex < 0 ? 0 : leverageIndex;
 
   const handleSliderChange = useCallback(
     (value: number) => {
-      setSelectedLeverage(leverageSteps[value]);
+      setLeverage(leverageSteps[value]);
     },
-    [setSelectedLeverage]
+    [setLeverage]
   );
 
   return (
@@ -58,7 +53,7 @@ export const LeverageSlider = () => {
       </Content>
       <Container>
         <Content>
-          <Value>{formattedSelectedLeverage}</Value>
+          <Value>{formattedLeverage}</Value>
           <Value>{formattedRunway}</Value>
         </Content>
       </Container>

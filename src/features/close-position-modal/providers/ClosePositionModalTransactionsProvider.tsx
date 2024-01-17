@@ -4,14 +4,12 @@ import { getPairConfig } from "../../pair/helpers/getPairConfig";
 import { usePairOpenInterestQuery } from "../../queries/hooks/usePairOpenInterestQuery";
 import { usePairPricesQuery } from "../../queries/hooks/usePairPricesQuery";
 import { usePositionsQuery } from "../../queries/hooks/usePositionsQuery";
-import { PositionSide } from "../../queries/types/Position";
 import { defaultUseMutationResult } from "../../shared/constants/defaultUseMutationResult";
 import { useModal } from "../../shared/modal/hooks/useModal";
 import { useToast } from "../../toast/hooks/useToast";
 import { ToastType } from "../../toast/types/ToastType";
 import { useTradeModalTitle } from "../../trade-panel/hooks/useTradeModalTitle";
-import { PositionActionType } from "../../trade-panel/types/PositionActionType";
-import { TabType } from "../../trade-panel/types/TabType";
+import { PositionAction } from "../../trade-panel/types/PositionAction";
 import { useClosePositionTransaction } from "../../transactions/transaction-hooks/useClosePositionTransaction";
 import { useClosePositionModalState } from "../stores/useClosePositionModalState";
 
@@ -34,12 +32,8 @@ export const ClosePositionModalTransactionsProvider: FC<
   const { popModal } = useModal();
   const toast = useToast();
 
-  const { pairId, side } = useClosePositionModalState();
-  const title = useTradeModalTitle(
-    PositionActionType.OPEN,
-    side === PositionSide.LONG ? TabType.LONG : TabType.SHORT,
-    pairId
-  );
+  const { pairId, positionSide } = useClosePositionModalState();
+  const title = useTradeModalTitle(PositionAction.CLOSE, positionSide, pairId);
 
   const pairPricesQuery = usePairPricesQuery(pairId);
   const pairOpenInterestQuery = usePairOpenInterestQuery(pairId);

@@ -1,15 +1,17 @@
 import styled from "@emotion/styled/dist/emotion-styled.cjs";
 import tw from "twin.macro";
 
-import { PositionSide } from "../../queries/types/Position";
+import { isPositionSideLong } from "../../trade-panel/helpers/isPositionSideLong";
 import bg from "../assets/bg.png";
+
+import type { PositionSide } from "../../trade-panel/types/PositionSide";
 
 interface PnlValueProps {
   isPositive: boolean;
 }
 
 interface SideValueProps {
-  side: PositionSide;
+  positionSide: PositionSide;
 }
 
 export const Container = styled.div`
@@ -29,8 +31,8 @@ export const Long = tw.span`text-sm text-white bg-interactions-green rounded p-1
 export const SideValue = styled.div<SideValueProps>`
   ${tw`text-sm text-white rounded p-1 ml-4`}
 
-  ${({ side }) =>
-    side === PositionSide.LONG ? tw`bg-interactions-green` : tw`bg-error`}
+  ${({ positionSide }) =>
+    isPositionSideLong(positionSide) ? tw`bg-interactions-green` : tw`bg-error`}
 `;
 
 export const PositionProfitRow = tw.div`flex w-full gap-2 justify-between items-center`;

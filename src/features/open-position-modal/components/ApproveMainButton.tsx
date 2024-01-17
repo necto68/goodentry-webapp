@@ -4,12 +4,12 @@ import { useOpenPositionModalState } from "../stores/useOpenPositionModalState";
 import { useOpenPositionModalTransactions } from "../stores/useOpenPositionModalTransactions";
 
 export const ApproveMainButton = () => {
-  const { selectedPairId, quoteTokenInputState } = useOpenPositionModalState();
+  const { pairId, quoteTokenInputState } = useOpenPositionModalState();
   const { tokenApproveTransaction } = useOpenPositionModalTransactions();
 
   const {
     addresses: { positionManager },
-  } = getPairConfig(selectedPairId);
+  } = getPairConfig(pairId);
 
   const { tokenData } = quoteTokenInputState;
 

@@ -3,12 +3,12 @@ import { combine } from "zustand/middleware";
 
 import { pairConfigs } from "../../pair/constants/pairConfigs";
 
-const defaultStore = { selectedPairId: pairConfigs[0].id };
+const defaultStore = { pairId: pairConfigs[0].id };
 
-export const useSelectedPairIdStore = create(
+export const usePairIdStore = create(
   combine(defaultStore, (set) => ({
-    setSelectedPairId: (selectedPairId: string) => {
-      set({ selectedPairId });
+    setPairId: (pairId: string) => {
+      set({ pairId });
     },
   }))
 );

@@ -5,28 +5,23 @@ import { TransactionErrorMainButton } from "../../form-components/components/Tra
 import { toTokenAmount } from "../../input-card/helpers/tokenAmount";
 import { usePairPrices } from "../../protected-perps-page/hooks/usePairPrices";
 import { getPositionSize } from "../../trade-panel/helpers/getPositionSize";
+import { isPositionSideLong } from "../../trade-panel/helpers/isPositionSideLong";
 import { useTradePanelQueries } from "../../trade-panel/hooks/useTradePanelQueries";
-import { TabType } from "../../trade-panel/types/TabType";
 import { useOpenPositionModalState } from "../stores/useOpenPositionModalState";
 import { useOpenPositionModalTransactions } from "../stores/useOpenPositionModalTransactions";
 
 export const OpenPositionButton = () => {
-  const {
-    selectedTab,
-    selectedPairId,
-    quoteTokenInputState,
-    selectedLeverage,
-  } = useOpenPositionModalState();
-  const { baseTokenPrice } = usePairPrices(selectedPairId) ?? {};
-  const { baseTokenQuery, quoteTokenQuery } =
-    useTradePanelQueries(selectedPairId);
+  const { positionSide, pairId, quoteTokenInputState, leverage } =
+    useOpenPositionModalState();
+  const { baseTokenPrice } = usePairPrices(pairId) ?? {};
+  const { baseTokenQuery, quoteTokenQuery } = useTradePanelQueries(pairId);
   const { openPositionTransaction } = useOpenPositionModalTransactions();
 
   const { mutation, resetTransaction, runTransaction } =
     openPositionTransaction;
 
-  const isLongTab = selectedTab === TabType.LONG;
-  const positionSize = getPositionSize(quoteTokenInputState, selectedLeverage);
+  const isLong = isPositionSideLong(positionSide);
+  const positionSize = getPositionSize(quoteTokenInputState, leverage);
 
   const baseToken = baseTokenQuery.data;
   const quoteToken = quoteTokenQuery.data;
@@ -42,12 +37,12 @@ export const OpenPositionButton = () => {
       const quoteTokenNotionalAmount = toTokenAmount(positionSize, quoteToken);
       const collateralAmount = toTokenAmount(inputValueBig, quoteToken);
 
-      const notionalAmount = isLongTab
+      const notionalAmount = isLong
         ? baseTokenNotionalAmount
         : quoteTokenNotionalAmount;
 
       runTransaction(
-        isLongTab,
+        isLong,
         notionalAmount.toString(),
         collateralAmount.toString()
       );
@@ -58,7 +53,7 @@ export const OpenPositionButton = () => {
     quoteToken,
     quoteTokenInputState,
     positionSize,
-    isLongTab,
+    isLong,
     runTransaction,
   ]);
 
@@ -76,7 +71,7 @@ export const OpenPositionButton = () => {
       isLoading={isLoading}
       loadingText={loadingTitle}
       onClick={handleButtonClick}
-      variant={isLongTab ? "brand" : "error"}
+      variant={isLong ? "brand" : "error"}
     >
       {title}
     </Button>

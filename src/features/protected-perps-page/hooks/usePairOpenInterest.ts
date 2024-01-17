@@ -1,11 +1,7 @@
 import { usePairOpenInterestQuery } from "../../queries/hooks/usePairOpenInterestQuery";
-import { useSelectedPairIdStore } from "../stores/useSelectedPairIdStore";
 
-export const usePairOpenInterest = (pairId?: string) => {
-  const { selectedPairId } = useSelectedPairIdStore();
-  const pairOpenInterestQuery = usePairOpenInterestQuery(
-    pairId ?? selectedPairId
-  );
+export const usePairOpenInterest = (pairId: string) => {
+  const pairOpenInterestQuery = usePairOpenInterestQuery(pairId);
 
   return pairOpenInterestQuery.data;
 };

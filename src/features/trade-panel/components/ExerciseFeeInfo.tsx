@@ -11,9 +11,7 @@ import { exerciseFee } from "../constants/openPosition";
 import type { TradePanelState } from "../types/TradePanelState";
 import type { FC } from "react";
 
-interface ExerciseFeeInfoProps {
-  readonly quoteTokenInputState: TradePanelState["quoteTokenInputState"];
-}
+type ExerciseFeeInfoProps = Pick<TradePanelState, "quoteTokenInputState">;
 
 export const ExerciseFeeInfo: FC<ExerciseFeeInfoProps> = ({
   quoteTokenInputState,

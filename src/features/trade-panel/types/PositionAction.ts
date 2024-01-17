@@ -1,4 +1,4 @@
-export enum PositionActionType {
+export enum PositionAction {
   OPEN = "OPEN",
   CLOSE = "CLOSE",
 }
