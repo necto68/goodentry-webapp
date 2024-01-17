@@ -4,26 +4,22 @@ import { getPairConfig } from "../../pair/helpers/getPairConfig";
 import { useTradePanelQueries } from "../../trade-panel/hooks/useTradePanelQueries";
 import { useWallet } from "../../wallet/hooks/useWallet";
 import { isInsufficientTokenAllowanceForOpenPosition } from "../helpers/isInsufficientTokenAllowanceForOpenPosition";
-import { useTradeModalState } from "../stores/useTradeModalState";
-import { useTradeModalTransactions } from "../stores/useTradeModalTransactions";
-import { TradeModalType } from "../types/TradeModalType";
+import { useOpenPositionModalState } from "../stores/useOpenPositionModalState";
+import { useOpenPositionModalTransactions } from "../stores/useOpenPositionModalTransactions";
 
 import { ApproveMainButton } from "./ApproveMainButton";
-import { ClosePositionButton } from "./ClosePositionButton";
 import { OpenPositionButton } from "./OpenPositionButton";
 
-export const TradeModalMainButton = () => {
+export const OpenPositionModalMainButton = () => {
   const { isConnected, chainId: selectedChainId } = useWallet();
 
-  const { selectedPairId, quoteTokenInputState, modalType } =
-    useTradeModalState();
+  const { selectedPairId, quoteTokenInputState } = useOpenPositionModalState();
 
-  const { tokenApproveTransaction } = useTradeModalTransactions();
+  const { tokenApproveTransaction } = useOpenPositionModalTransactions();
   const { quoteTokenQuery } = useTradePanelQueries(selectedPairId);
 
   const { chainId } = getPairConfig(selectedPairId);
 
-  const isOpenPositionModalType = modalType === TradeModalType.OPEN_POSITION;
   const { isLoading: isTokenApproveMutationLoading } =
     tokenApproveTransaction.mutation;
 
@@ -40,16 +36,9 @@ export const TradeModalMainButton = () => {
     return <WrongNetworkMainButton />;
   }
 
-  if (
-    isOpenPositionModalType &&
-    (isInsufficientAllowance || isTokenApproveMutationLoading)
-  ) {
+  if (isInsufficientAllowance || isTokenApproveMutationLoading) {
     return <ApproveMainButton />;
   }
 
-  return isOpenPositionModalType ? (
-    <OpenPositionButton />
-  ) : (
-    <ClosePositionButton />
-  );
+  return <OpenPositionButton />;
 };

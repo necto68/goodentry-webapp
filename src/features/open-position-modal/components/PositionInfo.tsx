@@ -10,10 +10,11 @@ import {
   InfoValue,
 } from "../../shared/modal/styles/ModalInfo";
 import { PositionSizeInfo } from "../../trade-panel/components/PositionSizeInfo";
-import { useTradeModalState } from "../stores/useTradeModalState";
+import { useOpenPositionModalState } from "../stores/useOpenPositionModalState";
 
 export const PositionInfo = () => {
-  const { quoteTokenInputState, selectedLeverage } = useTradeModalState();
+  const { quoteTokenInputState, selectedLeverage } =
+    useOpenPositionModalState();
 
   const { tokenData, inputValueBig } = quoteTokenInputState;
 

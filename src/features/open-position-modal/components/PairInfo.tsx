@@ -6,10 +6,10 @@ import {
   InfoValue,
 } from "../../shared/modal/styles/ModalInfo";
 import { getTabTitle } from "../../trade-panel/helpers/getTabTitle";
-import { useTradeModalState } from "../stores/useTradeModalState";
+import { useOpenPositionModalState } from "../stores/useOpenPositionModalState";
 
 export const PairInfo = () => {
-  const { selectedTab, selectedPairId } = useTradeModalState();
+  const { selectedTab, selectedPairId } = useOpenPositionModalState();
   const { title } = usePair(selectedPairId) ?? {};
 
   const sideTitle = getTabTitle(selectedTab);

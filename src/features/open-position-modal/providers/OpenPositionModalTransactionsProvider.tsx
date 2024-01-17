@@ -8,36 +8,42 @@ import { defaultUseMutationResult } from "../../shared/constants/defaultUseMutat
 import { useModal } from "../../shared/modal/hooks/useModal";
 import { useToast } from "../../toast/hooks/useToast";
 import { ToastType } from "../../toast/types/ToastType";
+import { useTradeModalTitle } from "../../trade-panel/hooks/useTradeModalTitle";
 import { useTradePanelQueries } from "../../trade-panel/hooks/useTradePanelQueries";
+import { PositionActionType } from "../../trade-panel/types/PositionActionType";
 import { useTokenApproveTransaction } from "../../transactions/hooks/useTokenApproveTransaction";
 import { useClosePositionTransaction } from "../../transactions/transaction-hooks/useClosePositionTransaction";
 import { useOpenPositionTransaction } from "../../transactions/transaction-hooks/useOpenPositionTransaction";
-import { useTradeModalTitle } from "../hooks/useTradeModalTitle";
-import { useTradeModalState } from "../stores/useTradeModalState";
+import { useOpenPositionModalState } from "../stores/useOpenPositionModalState";
 
 import type { DependantQueries } from "../../shared/types/BaseTransaction";
-import type { TradeModalTransactions } from "../types/TradeModalTransactions";
-import type { ReactNode, FC } from "react";
+import type { OpenPositionModalTransactions } from "../types/OpenPositionModalTransactions";
+import type { FC, ReactNode } from "react";
 
-interface TradeModalTransactionsProviderProps {
+interface OpenPositionModalTransactionsProviderProps {
   readonly children: ReactNode;
 }
 
-export const TradeModalTransactionsContext =
-  createContext<TradeModalTransactions>({
+export const OpenPositionModalTransactionsContext =
+  createContext<OpenPositionModalTransactions>({
     tokenApproveTransaction: defaultUseMutationResult,
     openPositionTransaction: defaultUseMutationResult,
     closePositionTransaction: defaultUseMutationResult,
   });
 
-export const TradeModalTransactionsProvider: FC<
-  TradeModalTransactionsProviderProps
+export const OpenPositionModalTransactionsProvider: FC<
+  OpenPositionModalTransactionsProviderProps
 > = ({ children }) => {
   const { popModal } = useModal();
   const toast = useToast();
 
-  const { selectedPairId, quoteTokenInputState } = useTradeModalState();
-  const title = useTradeModalTitle();
+  const { selectedTab, selectedPairId, quoteTokenInputState } =
+    useOpenPositionModalState();
+  const title = useTradeModalTitle(
+    PositionActionType.OPEN,
+    selectedTab,
+    selectedPairId
+  );
 
   const { quoteTokenQuery } = useTradePanelQueries(selectedPairId);
   const pairPricesQuery = usePairPricesQuery(selectedPairId);
@@ -131,8 +137,8 @@ export const TradeModalTransactionsProvider: FC<
   );
 
   return (
-    <TradeModalTransactionsContext.Provider value={value}>
+    <OpenPositionModalTransactionsContext.Provider value={value}>
       {children}
-    </TradeModalTransactionsContext.Provider>
+    </OpenPositionModalTransactionsContext.Provider>
   );
 };

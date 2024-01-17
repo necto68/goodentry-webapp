@@ -3,13 +3,13 @@ import { useCallback } from "react";
 
 import { TransactionErrorMainButton } from "../../form-components/components/TransactionErrorMainButton";
 import { TabType } from "../../trade-panel/types/TabType";
-import { useTradeModalState } from "../stores/useTradeModalState";
-import { useTradeModalTransactions } from "../stores/useTradeModalTransactions";
+import { useOpenPositionModalState } from "../stores/useOpenPositionModalState";
+import { useOpenPositionModalTransactions } from "../stores/useOpenPositionModalTransactions";
 
 export const ClosePositionButton = () => {
-  const { selectedTab } = useTradeModalState();
+  const { selectedTab } = useOpenPositionModalState();
 
-  const { closePositionTransaction } = useTradeModalTransactions();
+  const { closePositionTransaction } = useOpenPositionModalTransactions();
 
   const { mutation, resetTransaction, runTransaction } =
     closePositionTransaction;

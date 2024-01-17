@@ -1,4 +1,0 @@
-export enum TradeModalType {
-  OPEN_POSITION = "OPEN_POSITION",
-  CLOSE_POSITION = "CLOSE_POSITION",
-}

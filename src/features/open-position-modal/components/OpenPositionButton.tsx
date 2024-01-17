@@ -7,8 +7,8 @@ import { usePairPrices } from "../../protected-perps-page/hooks/usePairPrices";
 import { getPositionSize } from "../../trade-panel/helpers/getPositionSize";
 import { useTradePanelQueries } from "../../trade-panel/hooks/useTradePanelQueries";
 import { TabType } from "../../trade-panel/types/TabType";
-import { useTradeModalState } from "../stores/useTradeModalState";
-import { useTradeModalTransactions } from "../stores/useTradeModalTransactions";
+import { useOpenPositionModalState } from "../stores/useOpenPositionModalState";
+import { useOpenPositionModalTransactions } from "../stores/useOpenPositionModalTransactions";
 
 export const OpenPositionButton = () => {
   const {
@@ -16,11 +16,11 @@ export const OpenPositionButton = () => {
     selectedPairId,
     quoteTokenInputState,
     selectedLeverage,
-  } = useTradeModalState();
+  } = useOpenPositionModalState();
   const { baseTokenPrice } = usePairPrices(selectedPairId) ?? {};
   const { baseTokenQuery, quoteTokenQuery } =
     useTradePanelQueries(selectedPairId);
-  const { openPositionTransaction } = useTradeModalTransactions();
+  const { openPositionTransaction } = useOpenPositionModalTransactions();
 
   const { mutation, resetTransaction, runTransaction } =
     openPositionTransaction;

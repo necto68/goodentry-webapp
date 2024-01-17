@@ -8,10 +8,10 @@ import {
 } from "../../shared/modal/styles/ModalInfo";
 import { ExerciseFeeInfo } from "../../trade-panel/components/ExerciseFeeInfo";
 import { getCollateralAmountIncludingFee } from "../../trade-panel/helpers/getCollateralAmountIncludingFee";
-import { useTradeModalState } from "../stores/useTradeModalState";
+import { useOpenPositionModalState } from "../stores/useOpenPositionModalState";
 
 export const CollateralInfo = () => {
-  const { quoteTokenInputState } = useTradeModalState();
+  const { quoteTokenInputState } = useOpenPositionModalState();
 
   const { tokenData, inputValueBig } = quoteTokenInputState;
 

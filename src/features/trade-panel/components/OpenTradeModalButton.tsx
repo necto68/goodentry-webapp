@@ -4,7 +4,6 @@ import { useCallback } from "react";
 import { loadingPlaceholder } from "../../shared/constants/placeholders";
 import { useModal } from "../../shared/modal/hooks/useModal";
 import { ModalType } from "../../shared/modal/types/ModalType";
-import { TradeModalType } from "../../trade-modal/types/TradeModalType";
 import { getTabTitle } from "../helpers/getTabTitle";
 import { useTradePanelQueries } from "../hooks/useTradePanelQueries";
 import { useTradePanelState } from "../stores/useTradePanelState";
@@ -22,9 +21,10 @@ export const OpenTradeModalButton = () => {
   const { baseTokenQuery } = useTradePanelQueries(selectedPairId);
   const baseTokenData = baseTokenQuery.data;
 
-  const isLongTab = selectedTab === TabType.LONG;
+  const sideTitle = getTabTitle(selectedTab);
+  const symbol = baseTokenData ? baseTokenData.symbol : loadingPlaceholder;
 
-  const modalType = TradeModalType.OPEN_POSITION;
+  const isLongTab = selectedTab === TabType.LONG;
 
   const handleButtonClick = useCallback(() => {
     const modalState = {
@@ -32,22 +32,16 @@ export const OpenTradeModalButton = () => {
       selectedPairId,
       quoteTokenInputState,
       selectedLeverage,
-      modalType,
     };
 
-    pushModal(ModalType.TRADE, modalState);
+    pushModal(ModalType.OPEN_POSITION, modalState);
   }, [
     pushModal,
     selectedTab,
     selectedPairId,
     quoteTokenInputState,
     selectedLeverage,
-    modalType,
   ]);
-
-  const sideTitle = getTabTitle(selectedTab);
-
-  const symbol = baseTokenData ? baseTokenData.symbol : loadingPlaceholder;
 
   return (
     <Button

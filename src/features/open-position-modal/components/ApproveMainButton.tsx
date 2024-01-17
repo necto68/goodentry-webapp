@@ -1,11 +1,11 @@
 import { ApproveMainButton as BaseApproveMainButton } from "../../form-components/components/ApproveMainButton";
 import { getPairConfig } from "../../pair/helpers/getPairConfig";
-import { useTradeModalState } from "../stores/useTradeModalState";
-import { useTradeModalTransactions } from "../stores/useTradeModalTransactions";
+import { useOpenPositionModalState } from "../stores/useOpenPositionModalState";
+import { useOpenPositionModalTransactions } from "../stores/useOpenPositionModalTransactions";
 
 export const ApproveMainButton = () => {
-  const { selectedPairId, quoteTokenInputState } = useTradeModalState();
-  const { tokenApproveTransaction } = useTradeModalTransactions();
+  const { selectedPairId, quoteTokenInputState } = useOpenPositionModalState();
+  const { tokenApproveTransaction } = useOpenPositionModalTransactions();
 
   const {
     addresses: { positionManager },
