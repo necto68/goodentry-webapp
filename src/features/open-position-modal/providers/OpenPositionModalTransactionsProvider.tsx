@@ -12,7 +12,6 @@ import { useTradeModalTitle } from "../../trade-panel/hooks/useTradeModalTitle";
 import { useTradePanelQueries } from "../../trade-panel/hooks/useTradePanelQueries";
 import { PositionActionType } from "../../trade-panel/types/PositionActionType";
 import { useTokenApproveTransaction } from "../../transactions/hooks/useTokenApproveTransaction";
-import { useClosePositionTransaction } from "../../transactions/transaction-hooks/useClosePositionTransaction";
 import { useOpenPositionTransaction } from "../../transactions/transaction-hooks/useOpenPositionTransaction";
 import { useOpenPositionModalState } from "../stores/useOpenPositionModalState";
 
@@ -28,7 +27,6 @@ export const OpenPositionModalTransactionsContext =
   createContext<OpenPositionModalTransactions>({
     tokenApproveTransaction: defaultUseMutationResult,
     openPositionTransaction: defaultUseMutationResult,
-    closePositionTransaction: defaultUseMutationResult,
   });
 
 export const OpenPositionModalTransactionsProvider: FC<
@@ -62,7 +60,7 @@ export const OpenPositionModalTransactionsProvider: FC<
 
   const tokenApproveDependantQueries: DependantQueries = [quoteTokenQuery];
 
-  const positionsDependantQueries: DependantQueries = [
+  const openPositionDependantQueries: DependantQueries = [
     ...tokenApproveDependantQueries,
     pairPricesQuery,
     pairOpenInterestQuery,
@@ -86,7 +84,6 @@ export const OpenPositionModalTransactionsProvider: FC<
       transactionHash,
     });
 
-    quoteTokenInputState.resetState();
     popModal();
   };
 
@@ -115,14 +112,7 @@ export const OpenPositionModalTransactionsProvider: FC<
 
   const openPositionTransaction = useOpenPositionTransaction(
     positionManager,
-    positionsDependantQueries,
-    onTransactionSuccess,
-    onTransactionError
-  );
-
-  const closePositionTransaction = useClosePositionTransaction(
-    positionManager,
-    positionsDependantQueries,
+    openPositionDependantQueries,
     onTransactionSuccess,
     onTransactionError
   );
@@ -131,9 +121,8 @@ export const OpenPositionModalTransactionsProvider: FC<
     () => ({
       tokenApproveTransaction,
       openPositionTransaction,
-      closePositionTransaction,
     }),
-    [tokenApproveTransaction, openPositionTransaction, closePositionTransaction]
+    [tokenApproveTransaction, openPositionTransaction]
   );
 
   return (

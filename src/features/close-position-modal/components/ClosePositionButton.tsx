@@ -2,19 +2,19 @@ import { Button } from "@chakra-ui/react";
 import { useCallback } from "react";
 
 import { TransactionErrorMainButton } from "../../form-components/components/TransactionErrorMainButton";
-import { TabType } from "../../trade-panel/types/TabType";
-import { useOpenPositionModalState } from "../stores/useOpenPositionModalState";
-import { useOpenPositionModalTransactions } from "../stores/useOpenPositionModalTransactions";
+import { PositionSide } from "../../queries/types/Position";
+import { useClosePositionModalState } from "../stores/useClosePositionModalState";
+import { useClosePositionModalTransactions } from "../stores/useClosePositionModalTransactions";
 
 export const ClosePositionButton = () => {
-  const { selectedTab } = useOpenPositionModalState();
+  const { side } = useClosePositionModalState();
 
-  const { closePositionTransaction } = useOpenPositionModalTransactions();
+  const { closePositionTransaction } = useClosePositionModalTransactions();
 
   const { mutation, resetTransaction, runTransaction } =
     closePositionTransaction;
 
-  const isLongTab = selectedTab === TabType.LONG;
+  const isLong = side === PositionSide.LONG;
 
   const handleButtonClick = useCallback(() => {
     // TODO: v2 update
@@ -35,7 +35,7 @@ export const ClosePositionButton = () => {
       isLoading={isLoading}
       loadingText={loadingTitle}
       onClick={handleButtonClick}
-      variant={isLongTab ? "brand" : "error"}
+      variant={isLong ? "brand" : "error"}
     >
       {title}
     </Button>
