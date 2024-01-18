@@ -5,7 +5,7 @@ import { appLogo } from "../../icons/brand";
 import { usePair } from "../../protected-perps-page/hooks/usePair";
 import { usePairPrices } from "../../protected-perps-page/hooks/usePairPrices";
 import {
-  getFormattedAPY,
+  getFormattedProfitAndLossPercentage,
   getFormattedFullCurrency,
   getFormattedLeverage,
 } from "../../shared/helpers/baseFormatters";
@@ -34,9 +34,9 @@ const SocialShareContent = forwardRef<HTMLDivElement | null>(
       positionSide,
       pairId,
       entryPrice,
-      initialCollateral,
       leverage,
-      profitAndLossValue,
+      profitAndLoss,
+      profitAndLossPercentage,
     } = position;
 
     const {
@@ -53,17 +53,11 @@ const SocialShareContent = forwardRef<HTMLDivElement | null>(
 
     const positionSideTitle = getPositionSideTitle(positionSide);
 
-    const isPositive = profitAndLossValue.gt(0);
-
-    const profitAndLossPercentValue = initialCollateral.gt(0)
-      ? profitAndLossValue.div(initialCollateral).toNumber()
-      : 0;
-
-    const formattedProfitAndLossPercent = getFormattedAPY(
-      profitAndLossPercentValue
-    );
+    const isPositive = profitAndLoss > 0;
 
     const formattedLeverage = getFormattedLeverage(leverage);
+    const formattedProfitAndLossPercentage =
+      getFormattedProfitAndLossPercentage(profitAndLossPercentage);
     const formattedEntryPrice = getFormattedFullCurrency(entryPrice);
     const formattedMarketPrice = baseTokenPrice
       ? getFormattedFullCurrency(baseTokenPrice)
@@ -83,7 +77,7 @@ const SocialShareContent = forwardRef<HTMLDivElement | null>(
         </PairName>
         <PositionProfitRow>
           <PnlValue isPositive={isPositive}>
-            {formattedProfitAndLossPercent}
+            {formattedProfitAndLossPercentage}
           </PnlValue>
         </PositionProfitRow>
         <EntryPriceRow>

@@ -37,19 +37,19 @@ export const getChartPoints = (
   const data = [];
 
   for (let price = minPrice; price < maxPrice; price += priceInterval) {
-    let profitAndLossValue = shift;
+    let profitAndLoss = shift;
 
     if (isPositionSideLong(positionSide) && price > strikePrice) {
-      profitAndLossValue += price - strikePrice;
+      profitAndLoss += price - strikePrice;
     } else if (!isPositionSideLong(positionSide) && price < strikePrice) {
-      profitAndLossValue += strikePrice - price;
+      profitAndLoss += strikePrice - price;
     } else {
-      profitAndLossValue = shift;
+      profitAndLoss = shift;
     }
 
     data.push({
       x: price,
-      y: profitAndLossValue,
+      y: profitAndLoss,
     });
   }
 

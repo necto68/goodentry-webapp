@@ -20,6 +20,10 @@ export const InfoValue = tw.span`
   text-right
 `;
 
+export const InfoBrandValue = tw(InfoValue)`
+  text-brand
+`;
+
 export const InfoErrorValue = tw(InfoValue)`
   text-error
 `;

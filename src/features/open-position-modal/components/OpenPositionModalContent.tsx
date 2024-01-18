@@ -27,7 +27,7 @@ export const OpenPositionModalContent = () => {
         <Header isLong={isLong}>{title}</Header>
       </HeaderContainer>
       <Content>
-        <PairInfo />
+        <PairInfo pairId={pairId} positionSide={positionSide} />
         <StrikePriceInfo />
         <PositionInfo />
         <CollateralInfo />

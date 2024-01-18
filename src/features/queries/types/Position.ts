@@ -11,7 +11,8 @@ export interface Position {
   positionSize: Big;
   optionHourlyBorrowRate: number;
   runwayInSeconds: number;
-  profitAndLossValue: Big;
+  profitAndLoss: number;
+  profitAndLossPercentage: number;
   feesAccumulated: Big;
   feesMin: Big;
 }

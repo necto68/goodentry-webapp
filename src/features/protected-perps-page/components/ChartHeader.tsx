@@ -2,7 +2,7 @@ import {
   loadingPlaceholder,
   notAvailablePlaceholder,
 } from "../../shared/constants/placeholders";
-import { getFormattedAPY } from "../../shared/helpers/baseFormatters";
+import { getFormattedProfitAndLossPercentage } from "../../shared/helpers/baseFormatters";
 import { getFormattedPrice } from "../../shared/helpers/formatters";
 import { useAssetPrices } from "../hooks/useAssetPrices";
 import { usePairPrices } from "../hooks/usePairPrices";
@@ -36,9 +36,7 @@ export const ChartHeader = () => {
   } else if (priceChange === null) {
     formattedPriceChange = notAvailablePlaceholder;
   } else {
-    formattedPriceChange = getFormattedAPY(priceChange, {
-      signDisplay: "exceptZero",
-    });
+    formattedPriceChange = getFormattedProfitAndLossPercentage(priceChange);
   }
 
   const isPositive = priceChange ? priceChange > 0 : false;

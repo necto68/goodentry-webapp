@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { notAvailablePlaceholder } from "../../shared/constants/placeholders";
-import { getFormattedAPY } from "../../shared/helpers/baseFormatters";
+import { getFormattedProfitAndLossPercentage } from "../../shared/helpers/baseFormatters";
 import { InfoRow } from "../../shared/modal/styles/ModalInfo";
 import { useTradePanelStrikePrice } from "../../trade-panel/hooks/useTradePanelStrikePrice";
 import { useTradePanelState } from "../../trade-panel/stores/useTradePanelState";
@@ -26,7 +26,7 @@ export const PayoffChart = () => {
 
   const formattedProfitAndLossChartValue =
     profitAndLossChartValue !== null
-      ? getFormattedAPY(profitAndLossChartValue, { signDisplay: "exceptZero" })
+      ? getFormattedProfitAndLossPercentage(profitAndLossChartValue)
       : null;
 
   return (

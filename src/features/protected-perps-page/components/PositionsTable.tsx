@@ -1,8 +1,9 @@
 import {
   getFormattedAmount,
-  getFormattedAPY,
+  getFormattedProfitAndLossPercentage,
   getFormattedFullCurrency,
   getFormattedLeverage,
+  getFormattedProfitAndLoss,
 } from "../../shared/helpers/baseFormatters";
 import {
   getFormattedBorrowRate,
@@ -50,6 +51,18 @@ const columns: Column<Position>[] = [
     render: ({ entryPrice }) => getFormattedFullCurrency(entryPrice),
   },
   {
+    key: "optionHourlyBorrowRate",
+    title: "Funding / 1h",
+
+    render: ({ optionHourlyBorrowRate }) =>
+      getFormattedBorrowRate(optionHourlyBorrowRate),
+  },
+  {
+    key: "runwayInSeconds",
+    title: "Runway",
+    render: ({ runwayInSeconds }) => getFormattedRunway(runwayInSeconds),
+  },
+  {
     key: "initialCollateral",
     title: "Wager (Leverage)",
 
@@ -74,44 +87,26 @@ const columns: Column<Position>[] = [
     render: ({ positionSize }) => getFormattedAmount(positionSize),
   },
   {
-    key: "optionHourlyBorrowRate",
-    title: "Funding / 1h",
-
-    render: ({ optionHourlyBorrowRate }) =>
-      getFormattedBorrowRate(optionHourlyBorrowRate),
-  },
-  {
-    key: "runwayInSeconds",
-    title: "Runway",
-    render: ({ runwayInSeconds }) => getFormattedRunway(runwayInSeconds),
-  },
-  {
-    key: "profitAndLossValue",
+    key: "profitAndLoss",
     title: "PNL",
 
     render: (position) => {
-      const { initialCollateral, profitAndLossValue } = position;
-      const isPositive = profitAndLossValue.gt(0);
-      const formattedProfitAndLossValue = getFormattedFullCurrency(
-        profitAndLossValue.toNumber()
-      );
+      const { profitAndLoss, profitAndLossPercentage } = position;
 
-      const profitAndLossPercentValue = initialCollateral.gt(0)
-        ? profitAndLossValue.div(initialCollateral).toNumber()
-        : 0;
+      const isPositive = profitAndLoss > 0;
 
-      const formattedProfitAndLossPercent = getFormattedAPY(
-        profitAndLossPercentValue
-      );
+      const formattedProfitAndLoss = getFormattedProfitAndLoss(profitAndLoss);
+      const formattedProfitAndLossPercentage =
+        getFormattedProfitAndLossPercentage(profitAndLossPercentage);
 
       return (
         <ProfitAndLossRow>
           <ProfitAndLossCell>
             <ColorText isPositive={isPositive}>
-              {formattedProfitAndLossValue}
+              {formattedProfitAndLoss}
             </ColorText>
             <ColorText isPositive={isPositive}>
-              {formattedProfitAndLossPercent}
+              {formattedProfitAndLossPercentage}
             </ColorText>
           </ProfitAndLossCell>
         </ProfitAndLossRow>

@@ -1,7 +1,6 @@
+import { usePair } from "../../protected-perps-page/hooks/usePair";
 import { getPositionSideTitle } from "../helpers/getPositionSideTitle";
 import { PositionAction } from "../types/PositionAction";
-
-import { useTradePanelQueries } from "./useTradePanelQueries";
 
 import type { PositionSide } from "../types/PositionSide";
 
@@ -10,14 +9,12 @@ export const useTradeModalTitle = (
   positionSide: PositionSide,
   pairId: string
 ) => {
-  const { baseTokenQuery } = useTradePanelQueries(pairId);
-
-  const baseTokenData = baseTokenQuery.data;
+  const { baseTokenSymbol } = usePair(pairId) ?? {};
 
   const positionActionTitle =
     positionAction === PositionAction.OPEN ? "Open" : "Close";
   const positionSideTitle = getPositionSideTitle(positionSide);
-  const symbol = baseTokenData ? baseTokenData.symbol : "";
+  const symbol = baseTokenSymbol ?? "";
 
   return `${positionActionTitle} ${positionSideTitle} ${symbol} Position`;
 };

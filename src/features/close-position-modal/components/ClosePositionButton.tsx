@@ -7,7 +7,7 @@ import { useClosePositionModalState } from "../stores/useClosePositionModalState
 import { useClosePositionModalTransactions } from "../stores/useClosePositionModalTransactions";
 
 export const ClosePositionButton = () => {
-  const { positionSide } = useClosePositionModalState();
+  const { id, positionSide } = useClosePositionModalState();
 
   const { closePositionTransaction } = useClosePositionModalTransactions();
 
@@ -17,9 +17,8 @@ export const ClosePositionButton = () => {
   const isLong = isPositionSideLong(positionSide);
 
   const handleButtonClick = useCallback(() => {
-    // TODO: v2 update
-    runTransaction(0);
-  }, [runTransaction]);
+    runTransaction(id);
+  }, [runTransaction, id]);
 
   const title = "Close Position";
   const loadingTitle = "Closing Position...";

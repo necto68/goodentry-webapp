@@ -1,3 +1,4 @@
+import { PairInfo } from "../../open-position-modal/components/PairInfo";
 import {
   Container,
   Content,
@@ -10,6 +11,9 @@ import { PositionAction } from "../../trade-panel/types/PositionAction";
 import { useClosePositionModalState } from "../stores/useClosePositionModalState";
 
 import { ClosePositionModalMainButton } from "./ClosePositionModalMainButton";
+import { EntryPriceInfo } from "./EntryPriceInfo";
+import { PositionInfo } from "./PositionInfo";
+import { ProfitAndLossInfo } from "./ProfitAndLossInfo";
 
 export const ClosePositionModalContent = () => {
   const { pairId, positionSide } = useClosePositionModalState();
@@ -23,6 +27,10 @@ export const ClosePositionModalContent = () => {
         <Header isLong={isLong}>{title}</Header>
       </HeaderContainer>
       <Content>
+        <PairInfo pairId={pairId} positionSide={positionSide} />
+        <EntryPriceInfo />
+        <PositionInfo />
+        <ProfitAndLossInfo />
         <ClosePositionModalMainButton />
       </Content>
     </Container>

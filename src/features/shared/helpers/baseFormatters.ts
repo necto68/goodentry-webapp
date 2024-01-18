@@ -37,6 +37,18 @@ export const getFormattedFullCurrency = (
   return currencyFormatter.format(Number(value));
 };
 
+export const getFormattedProfitAndLoss = (
+  value: number | string,
+  options?: Partial<Intl.NumberFormatOptions>
+) => {
+  const formatterOptions: Intl.NumberFormatOptions = {
+    ...options,
+    signDisplay: "exceptZero",
+  };
+
+  return getFormattedFullCurrency(value, formatterOptions);
+};
+
 export const getFormattedAPY = (
   value: number,
   options?: Partial<Intl.NumberFormatOptions>
@@ -50,6 +62,18 @@ export const getFormattedAPY = (
   const formattedValue = apyFormatter.format(value);
 
   return formattedValue === "-0%" ? "0%" : formattedValue;
+};
+
+export const getFormattedProfitAndLossPercentage = (
+  value: number,
+  options?: Partial<Intl.NumberFormatOptions>
+) => {
+  const formatterOptions: Intl.NumberFormatOptions = {
+    signDisplay: "exceptZero",
+    ...options,
+  };
+
+  return getFormattedAPY(value, formatterOptions);
 };
 
 export const getFormattedNumber = (

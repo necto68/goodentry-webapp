@@ -71,21 +71,27 @@ export const basePositionFetcher = async (
   const positionSize = isLong ? notionalAmount.mul(entryPrice) : notionalAmount;
   const leverage = positionSize.div(initialCollateral).round().toNumber();
 
-  let profitAndLossValue = getZero();
+  let profitAndLossBig = getZero();
 
   if (isLong && basePositionPrice > entryPrice) {
-    profitAndLossValue = profitAndLossValue.add(
+    profitAndLossBig = profitAndLossBig.add(
       notionalAmount.mul(basePositionPrice - entryPrice)
     );
   } else if (!isLong && basePositionPrice < entryPrice) {
-    profitAndLossValue = profitAndLossValue.add(
+    profitAndLossBig = profitAndLossBig.add(
       notionalAmount.div(entryPrice).mul(entryPrice - basePositionPrice)
     );
   } else {
-    profitAndLossValue = getZero();
+    profitAndLossBig = getZero();
   }
 
-  profitAndLossValue = profitAndLossValue.sub(feesAccumulated);
+  profitAndLossBig = profitAndLossBig.sub(feesAccumulated);
+
+  const profitAndLoss = profitAndLossBig.toNumber();
+
+  const profitAndLossPercentage = initialCollateral.gt(0)
+    ? profitAndLossBig.div(initialCollateral).toNumber()
+    : 0;
 
   // divide by 10e10 because of scaling
   // then divide by quoteToken.decimals
@@ -109,7 +115,8 @@ export const basePositionFetcher = async (
     positionSize,
     optionHourlyBorrowRate,
     runwayInSeconds,
-    profitAndLossValue,
+    profitAndLoss,
+    profitAndLossPercentage,
     feesAccumulated,
     feesMin,
   };
