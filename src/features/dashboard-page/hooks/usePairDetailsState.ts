@@ -1,4 +1,3 @@
-import { useAssetPrices } from "../../protected-perps-page/hooks/useAssetPrices";
 import { usePair } from "../../protected-perps-page/hooks/usePair";
 import { vaultConfigs } from "../../vault/constants/vaultConfigs";
 import { useVaultToken } from "../../vault-details-page/hooks/useVaultToken";
@@ -6,7 +5,6 @@ import { useVaults } from "../../vaults-page/hooks/useVaults";
 
 export const usePairDetailsState = (pairId: string) => {
   const pair = usePair(pairId);
-  const assetPrices = useAssetPrices(pairId);
 
   const vaultIds = vaultConfigs
     .filter((vaultConfig) => vaultConfig.pairId === pairId)
@@ -22,7 +20,6 @@ export const usePairDetailsState = (pairId: string) => {
 
   return {
     pair,
-    assetPrices,
     vaults,
     vaultTokens: [activeVaultToken, deprecatedVaultToken],
   };

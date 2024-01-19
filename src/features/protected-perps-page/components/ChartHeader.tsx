@@ -2,9 +2,16 @@ import {
   loadingPlaceholder,
   notAvailablePlaceholder,
 } from "../../shared/constants/placeholders";
-import { getFormattedProfitAndLossPercentage } from "../../shared/helpers/baseFormatters";
-import { getFormattedPrice } from "../../shared/helpers/formatters";
+import {
+  getFormattedAPY,
+  getFormattedProfitAndLossPercentage,
+} from "../../shared/helpers/baseFormatters";
+import {
+  getFormattedOpenInterest,
+  getFormattedPrice,
+} from "../../shared/helpers/formatters";
 import { useAssetPrices } from "../hooks/useAssetPrices";
+import { usePairOpenInterest } from "../hooks/usePairOpenInterest";
 import { usePairPrices } from "../hooks/usePairPrices";
 import { usePairIdStore } from "../stores/usePairIdStore";
 import {
@@ -20,8 +27,14 @@ import { PairSelector } from "./PairSelector";
 
 export const ChartHeader = () => {
   const { pairId } = usePairIdStore();
-  const { baseTokenPrice } = usePairPrices(pairId) ?? {};
+  const { baseTokenPrice, volatility } = usePairPrices(pairId) ?? {};
   const { priceChange, highPrice, lowPrice } = useAssetPrices(pairId) ?? {};
+  const {
+    longOpenInterest,
+    shortOpenInterest,
+    longMaxOpenInterest,
+    shortMaxOpenInterest,
+  } = usePairOpenInterest(pairId) ?? {};
 
   const [formattedBaseTokenPrice, formattedHighPrice, formattedLowPrice] = [
     baseTokenPrice,
@@ -41,6 +54,20 @@ export const ChartHeader = () => {
 
   const isPositive = priceChange ? priceChange > 0 : false;
 
+  const formattedLongOpenInterest = getFormattedOpenInterest(
+    longOpenInterest,
+    longMaxOpenInterest
+  );
+
+  const formattedShortOpenInterest = getFormattedOpenInterest(
+    shortOpenInterest,
+    shortMaxOpenInterest
+  );
+
+  const formattedVolatility = volatility
+    ? getFormattedAPY(volatility)
+    : loadingPlaceholder;
+
   return (
     <ComponentContainer>
       <Container>
@@ -57,12 +84,16 @@ export const ChartHeader = () => {
             </ColorValue>
           </PriceContainer>
           <PriceContainer>
-            <Title>24h High</Title>
-            <Value>{formattedHighPrice}</Value>
+            <Title>24h High / Low</Title>
+            <Value>{`${formattedHighPrice} / ${formattedLowPrice}`}</Value>
           </PriceContainer>
           <PriceContainer>
-            <Title>24h Low</Title>
-            <Value>{formattedLowPrice}</Value>
+            <Title>Open Interest Long / Short</Title>
+            <Value>{`${formattedLongOpenInterest} / ${formattedShortOpenInterest}`}</Value>
+          </PriceContainer>
+          <PriceContainer>
+            <Title>Volatility</Title>
+            <Value>{formattedVolatility}</Value>
           </PriceContainer>
         </Container>
       </Container>

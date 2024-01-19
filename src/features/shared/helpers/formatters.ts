@@ -80,3 +80,18 @@ export const getFormattedRunway = (
 
   return parts.filter(Boolean).join(" ");
 };
+
+export const getFormattedOpenInterest = (
+  openInterest: Big | undefined,
+  maxOpenInterest: Big | undefined
+) => {
+  if (openInterest === undefined || maxOpenInterest === undefined) {
+    return loadingPlaceholder;
+  }
+
+  const openInterestValue = openInterest.lt(maxOpenInterest)
+    ? openInterest.div(maxOpenInterest).toNumber()
+    : 1;
+
+  return getFormattedAPY(openInterestValue);
+};

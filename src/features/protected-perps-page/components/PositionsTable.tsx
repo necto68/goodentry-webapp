@@ -2,7 +2,6 @@ import {
   getFormattedAmount,
   getFormattedProfitAndLossPercentage,
   getFormattedFullCurrency,
-  getFormattedLeverage,
   getFormattedProfitAndLoss,
 } from "../../shared/helpers/baseFormatters";
 import {
@@ -62,23 +61,31 @@ const columns: Column<Position>[] = [
     title: "Runway",
     render: ({ runwayInSeconds }) => getFormattedRunway(runwayInSeconds),
   },
+
+  // {
+  //   key: "initialCollateral",
+  //   title: "Wager (Leverage)",
+  //
+  //   render: ({ initialCollateral, leverage }) => {
+  //     const formattedInitialCollateral =
+  //     getFormattedAmount(initialCollateral);
+  //     const formattedLeverage = getFormattedLeverage(leverage);
+  //
+  //     return (
+  //       <ProfitAndLossRow>
+  //         <ProfitAndLossCell>
+  //           <span>{formattedInitialCollateral}</span>
+  //           <span>{formattedLeverage}</span>
+  //         </ProfitAndLossCell>
+  //       </ProfitAndLossRow>
+  //     );
+  //   },
+  // },
   {
     key: "initialCollateral",
-    title: "Wager (Leverage)",
+    title: "Wager",
 
-    render: ({ initialCollateral, leverage }) => {
-      const formattedInitialCollateral = getFormattedAmount(initialCollateral);
-      const formattedLeverage = getFormattedLeverage(leverage);
-
-      return (
-        <ProfitAndLossRow>
-          <ProfitAndLossCell>
-            <span>{formattedInitialCollateral}</span>
-            <span>{formattedLeverage}</span>
-          </ProfitAndLossCell>
-        </ProfitAndLossRow>
-      );
-    },
+    render: ({ initialCollateral }) => getFormattedAmount(initialCollateral),
   },
   {
     key: "positionSize",
