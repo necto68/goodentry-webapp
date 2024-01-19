@@ -23,17 +23,13 @@ export const additionalNavigationLinks: NavigationLink[] = [
     href: RoutePathname.DASHBOARD,
   },
   {
-    name: "Fair Sale",
-    href: RoutePathname.PUBLIC_SALE,
-  },
-  {
     name: "Docs",
     href: "https://gitbook.goodentry.io/",
     isExternal: true,
   },
   {
     name: "Dune Dashboard",
-    href: "https://dune.com/good-entry/good-entry-ezvaults-tvl",
+    href: "https://dune.com/good-entry/protected-perpetuals-degen",
     isExternal: true,
   },
   {

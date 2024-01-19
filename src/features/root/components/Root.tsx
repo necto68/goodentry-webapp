@@ -1,4 +1,3 @@
-// import { NotificationBar } from "../../header/components/NotificationBar";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 import { DashboardPage } from "../../dashboard-page/components/DashboardPage";
@@ -6,7 +5,6 @@ import { Footer } from "../../footer/components/Footer";
 import { Header } from "../../header/components/Header";
 import { LockPage } from "../../lock-page/components/LockPage";
 import { ProtectedPerpsPage } from "../../protected-perps-page/components/ProtectedPerpsPage";
-import { PublicSalePage } from "../../public-sale-page/components/PublicSalePage";
 import { Modal } from "../../shared/modal/components/Modal";
 import { VaultDetailsPage } from "../../vault-details-page/components/VaultDetailsPage";
 import { VaultsPage } from "../../vaults-page/components/VaultsPage";
@@ -17,6 +15,7 @@ import { Container, Content } from "../styles/Root";
 import { RoutePathname } from "../types/RoutePathname";
 
 // Use when notification bar needs to be displayed
+// import { NotificationBar } from "../../header/components/NotificationBar";
 
 export const Root = () => {
   useInjectedWalletAutoConnect(
@@ -58,14 +57,6 @@ export const Root = () => {
               </Content>
             }
             path={RoutePathname.DASHBOARD}
-          />
-          <Route
-            element={
-              <Content>
-                <PublicSalePage />
-              </Content>
-            }
-            path={RoutePathname.PUBLIC_SALE}
           />
           <Route
             element={

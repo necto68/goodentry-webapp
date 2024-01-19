@@ -6,7 +6,7 @@ export const getBuyTokenLink = () => {
   } = getPublicSaleConfig();
 
   const link = new URL(
-    `https://app.1inch.io/#/42161/simple/swap/${collateralToken}/${saleToken}/import-token`
+    `https://app.camelot.exchange/?token1=${collateralToken}&token2=${saleToken}`
   );
 
   return link.toString();
