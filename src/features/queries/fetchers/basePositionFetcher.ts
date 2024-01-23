@@ -52,6 +52,7 @@ export const basePositionFetcher = async (
   const id = positionId;
   const positionSide = position.isCall ? PositionSide.LONG : PositionSide.SHORT;
   const isLong = isPositionSideLong(positionSide);
+  const timestamp = toBig(position.startDate).mul(getExp(3)).toNumber();
 
   const entryPrice = toBig(position.strike).div(priceDivisor).toNumber();
 
@@ -108,6 +109,7 @@ export const basePositionFetcher = async (
   return {
     id,
     pairId,
+    timestamp,
     positionSide,
     entryPrice,
     initialCollateral,

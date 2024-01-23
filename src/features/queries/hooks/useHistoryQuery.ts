@@ -4,8 +4,8 @@ import { useWallet } from "../../wallet/hooks/useWallet";
 import { getHistoryQueryOptions } from "../query-options-getters/getHistoryQueryOptions";
 
 export const useHistoryQuery = () => {
-  const { account } = useWallet();
-  const queryOptions = getHistoryQueryOptions(account);
+  const { account, chainId } = useWallet();
+  const queryOptions = getHistoryQueryOptions(account, chainId);
 
   return useQuery(queryOptions);
 };
