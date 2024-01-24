@@ -1,13 +1,17 @@
 import { InputCard } from "../../input-card/components/InputCard";
+import { useVaultModalQueries } from "../hooks/useVaultModalQueries";
 import { useVaultModalTokenInputState } from "../hooks/useVaultModalTokenInputState";
 import { useVaultModalState } from "../stores/useVaultModalState";
 import { TabType } from "../types/TabType";
 
 export const VaultInputCard = () => {
-  const { selectedTab } = useVaultModalState();
-  const isDepositTab = selectedTab === TabType.DEPOSIT;
+  const { selectedTab, vaultId } = useVaultModalState();
+  const { vaultTokenQuery } = useVaultModalQueries(vaultId);
 
-  const balanceTokenSymbol = isDepositTab ? undefined : "GEV";
+  const isDepositTab = selectedTab === TabType.DEPOSIT;
+  const vaultTokenData = vaultTokenQuery.data;
+
+  const balanceTokenSymbol = isDepositTab ? undefined : vaultTokenData?.symbol;
 
   const {
     tokenData,

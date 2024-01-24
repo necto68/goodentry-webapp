@@ -12,13 +12,14 @@ import {
   Description,
   VaultDefaultBody,
   VaultDescription,
+  VaultModalsContainer,
 } from "../styles/VaultDetailsPage";
 
 import { StrategyOverview } from "./StrategyOverview";
 import { VaultDetailsHeader } from "./VaultDetailsHeader";
-import { VaultIncentiveModal } from "./VaultIncentiveModal";
 import { VaultModal } from "./VaultModal";
 import { VaultPerformance } from "./VaultPerformance";
+import { VaultStakeModal } from "./VaultStakeModal";
 
 export const VaultDetailsPage = () => {
   const { vaultId = "" } = useParams();
@@ -75,10 +76,10 @@ export const VaultDetailsPage = () => {
             integrity of the smart contracts.
           </Description>
         </VaultDescription>
-        <Flex direction="column" gap="4">
+        <VaultModalsContainer>
           <VaultModal />
-          <VaultIncentiveModal />
-        </Flex>
+          <VaultStakeModal />
+        </VaultModalsContainer>
       </VaultDefaultBody>
     </Flex>
   );

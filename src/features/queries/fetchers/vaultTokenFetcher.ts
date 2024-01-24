@@ -2,6 +2,7 @@ import { constants } from "ethers";
 
 import { getExp, toBig } from "../../shared/helpers/bigjs";
 import { IGoodEntryVault__factory as GoodEntryVaultFactory } from "../../smart-contracts/types";
+import { vaultTokenSymbol } from "../../vault-details-page/constants/vaultTokenSymbol";
 import { areAddressesEqual } from "../../web3/helpers/addresses";
 import { getProvider } from "../../web3/helpers/getProvider";
 
@@ -32,6 +33,8 @@ export const vaultTokenFetcher = async (
 
   const price = totalValueLocked.div(baseToken.totalSupply).toNumber();
 
+  const symbol = vaultTokenSymbol;
+
   // if the spender is the vault, we set the allowance to MaxUint256
   // because we don't need to approve the vault to spend vault token
   const allowance =
@@ -41,6 +44,7 @@ export const vaultTokenFetcher = async (
 
   return {
     ...baseToken,
+    symbol,
     allowance,
     price,
   };

@@ -11,6 +11,7 @@ export const vaultConfigs: VaultConfig[] = [
 
     addresses: {
       vault: "0xd666156C473Cc9539CAaCc112B3A3590a895C861",
+      rewardTracker: "0x6FE937844dCFd8A001F163eC490241c6f5202d25",
     },
 
     status: VaultStatus.ACTIVE_REWARDS,

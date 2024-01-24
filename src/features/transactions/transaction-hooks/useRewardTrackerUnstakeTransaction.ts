@@ -1,7 +1,7 @@
 import { getDefaultProvider } from "ethers";
 import { useCallback } from "react";
 
-import { IGoodEntryVault__factory as VaultFactory } from "../../smart-contracts/types";
+import { IGoodEntryRewardTracker__factory as RewardTrackerFactory } from "../../smart-contracts/types";
 import { useBaseTransaction } from "../hooks/useBaseTransaction";
 
 import type {
@@ -10,21 +10,21 @@ import type {
   OnTransactionSuccess,
 } from "../../shared/types/BaseTransaction";
 
-export const useVaultWithdrawTransaction = (
-  vaultAddress: string,
+export const useRewardTrackerUnstakeTransaction = (
+  rewardTrackerAddress: string,
   dependantQueries?: DependantQueries,
   onTransactionSuccess?: OnTransactionSuccess,
   onTransactionError?: OnTransactionError
 ) => {
-  const vaultContract = VaultFactory.connect(
-    vaultAddress,
+  const rewardTrackerContract = RewardTrackerFactory.connect(
+    rewardTrackerAddress,
     getDefaultProvider()
   );
 
-  const method = "withdraw";
+  const method = "unstake(uint256)";
 
   const { mutation, resetTransaction, transactionHash } = useBaseTransaction(
-    vaultContract,
+    rewardTrackerContract,
     method,
     dependantQueries,
     onTransactionSuccess,
@@ -32,8 +32,8 @@ export const useVaultWithdrawTransaction = (
   );
 
   const runTransaction = useCallback(
-    (tokenAddress: string, amount: string) => {
-      mutation.mutate([amount, tokenAddress, { gasLimit: 10_000_000 }]);
+    (amount: string) => {
+      mutation.mutate([amount]);
     },
     [mutation]
   );

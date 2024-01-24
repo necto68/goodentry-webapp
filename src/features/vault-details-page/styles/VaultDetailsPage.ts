@@ -39,3 +39,7 @@ export const VaultInfo = tw.div`flex flex-col gap-2`;
 export const Description = tw.p`
     text-text-gray
 `;
+
+export const VaultModalsContainer = tw.div`
+  flex flex-col gap-4
+`;

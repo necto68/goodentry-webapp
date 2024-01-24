@@ -6,7 +6,6 @@ import {
   InfoTitle,
   InfoValue,
 } from "../../shared/modal/styles/ModalInfo";
-import { vaultTokenSymbol } from "../../vault-details-page/constants/vaultTokenSymbol";
 import { useVaultToken } from "../../vault-details-page/hooks/useVaultToken";
 
 import type { FC } from "react";
@@ -18,13 +17,13 @@ interface MyShareInfoProps {
 export const MyShareInfo: FC<MyShareInfoProps> = ({ vaultId }) => {
   const vaultToken = useVaultToken(vaultId);
 
-  const { balance, price } = vaultToken ?? {};
+  const { symbol = "", balance, price } = vaultToken ?? {};
 
   const formattedBalance = getFormattedTokenAmount(balance);
   const vaultTokenPrice = balance && price ? balance.mul(price).toNumber() : 0;
   const formattedVaultTokenPrice = getFormattedFullCurrency(vaultTokenPrice);
 
-  const formattedShareInfo = `${formattedBalance} ${vaultTokenSymbol} (${formattedVaultTokenPrice})`;
+  const formattedShareInfo = `${formattedBalance} ${symbol} (${formattedVaultTokenPrice})`;
 
   const isLoading = !vaultToken;
 
