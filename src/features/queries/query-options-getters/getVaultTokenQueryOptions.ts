@@ -5,7 +5,7 @@ import type { ChainId } from "../../web3/types/ChainId";
 
 export const getVaultTokenQueryOptions = (
   chainId: ChainId,
-  tokenAddress: string | null,
+  tokenAddress: string | undefined,
   spenderAddress?: string,
   account?: string
 ) => ({

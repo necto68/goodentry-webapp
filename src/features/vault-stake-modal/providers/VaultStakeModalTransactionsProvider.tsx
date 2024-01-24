@@ -36,7 +36,8 @@ export const VaultStakeModalTransactionsProvider: FC<
     addresses: { rewardTracker = "" },
   } = getVaultConfig(vaultId);
 
-  const { vaultTokenQuery } = useVaultStakeModalQueries(vaultId);
+  const { vaultTokenQuery, rewardTrackerDataQuery } =
+    useVaultStakeModalQueries(vaultId);
 
   const vaultTokenData = vaultTokenQuery.data;
   const tokenSymbol = vaultTokenData?.symbol ?? "";
@@ -44,10 +45,10 @@ export const VaultStakeModalTransactionsProvider: FC<
 
   const tokenApproveDependantQueries = [vaultTokenQuery];
 
-  // TODO: add reward tracker query later
-  const rewardTrackerDependantQueries = Array.from(
-    tokenApproveDependantQueries
-  );
+  const rewardTrackerDependantQueries = [
+    ...tokenApproveDependantQueries,
+    rewardTrackerDataQuery,
+  ];
 
   const onApproveTransactionSuccess = (transactionHash: string) => {
     toast({
