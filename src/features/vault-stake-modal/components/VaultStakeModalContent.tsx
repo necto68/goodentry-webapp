@@ -1,3 +1,9 @@
 import { Container } from "../../vault-modal/styles/VaultModal";
 
-export const VaultStakeModalContent = () => <Container>{null}</Container>;
+import { RewardTrackerInfo } from "./RewardTrackerInfo";
+
+export const VaultStakeModalContent = () => (
+  <Container>
+    <RewardTrackerInfo />
+  </Container>
+);
