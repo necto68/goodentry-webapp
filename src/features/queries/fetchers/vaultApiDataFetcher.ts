@@ -5,17 +5,19 @@ import { VaultStatus } from "../../vault/types/VaultStatus";
 
 import type { VaultApiData } from "../types/VaultApiData";
 
+const defaultVaultApiData: VaultApiData = {
+  avgApr: 0,
+  totalApr: 0,
+  incentiveApr: 0,
+  aprHistory: [],
+  priceHistory: [],
+};
+
 export const vaultApiDataFetcher = async (
   vaultId: string
 ): Promise<VaultApiData> => {
   if (!vaultId) {
-    return {
-      avgApr: 0,
-      totalApr: 0,
-      incentiveApr: 0,
-      aprHistory: [],
-      priceHistory: [],
-    };
+    return defaultVaultApiData;
   }
 
   const { status, addresses } = getVaultConfig(vaultId);
@@ -37,14 +39,18 @@ export const vaultApiDataFetcher = async (
       0
     )
   )
-    .mul(36_500)
+    .mul(365)
     .div(vaultHistory.length)
-    .div(1e2)
     .toNumber();
+
+  // TODO: remove this when we have a better way to calculate this
+  const daysPerYear = 365;
+  const arbPrice = 1.67;
+  const arbPerDay = 400;
 
   const incentiveApr =
     status === VaultStatus.ACTIVE_REWARDS
-      ? tvl.div(365 * 2.15 * 400).toNumber()
+      ? tvl.div(daysPerYear * arbPrice * arbPerDay).toNumber()
       : 0;
 
   const totalApr = avgApr + incentiveApr;

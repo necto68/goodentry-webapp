@@ -1,8 +1,8 @@
 import { useModal } from "../../shared/modal/hooks/useModal";
-import { TabType } from "../../vault-modal/types/TabType";
-import { EzVaultModalRoot } from "../components/EzVaultModalRoot";
+import { VaultModalRoot } from "../components/VaultModalRoot";
+import { TabType } from "../types/TabType";
 
-export const EzVaultModal = () => {
+export const VaultModal = () => {
   const { modalState } = useModal();
 
   const vaultId = modalState ? (modalState.vaultId as string) : "";
@@ -10,5 +10,5 @@ export const EzVaultModal = () => {
     ? (modalState.selectedTab as TabType)
     : TabType.DEPOSIT;
 
-  return <EzVaultModalRoot defaultTabType={tabType} vaultId={vaultId} />;
+  return <VaultModalRoot defaultTabType={tabType} vaultId={vaultId} />;
 };

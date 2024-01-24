@@ -34,14 +34,13 @@ export const VaultModalTransactionsProvider: FC<
 > = ({ children }) => {
   const toast = useToast();
 
-  const {
-    vaultId,
-    vaultAddress,
-    depositTokenInputState,
-    withdrawTokenInputState,
-  } = useVaultModalState();
+  const { vaultId, depositTokenInputState, withdrawTokenInputState } =
+    useVaultModalState();
 
-  const { chainId } = getVaultConfig(vaultId);
+  const {
+    chainId,
+    addresses: { vault },
+  } = getVaultConfig(vaultId);
 
   const {
     addresses: { vaultMigrationManager },
@@ -51,9 +50,9 @@ export const VaultModalTransactionsProvider: FC<
     vaultQuery,
     vaultTokenQuery,
     migrationVaultTokenQuery,
-    token0Query,
-    token1Query,
-  } = useVaultModalQueries(vaultId, vaultAddress);
+    baseTokenQuery,
+    quoteTokenQuery,
+  } = useVaultModalQueries(vaultId);
 
   const { tokenData } = useVaultModalTokenInputState();
 
@@ -65,8 +64,8 @@ export const VaultModalTransactionsProvider: FC<
   const { address: vaultTokenAddress = "" } = data ?? {};
 
   const tokenApproveDependantQueries = [
-    token0Query,
-    token1Query,
+    baseTokenQuery,
+    quoteTokenQuery,
     vaultTokenQuery,
     migrationVaultTokenQuery,
   ];
@@ -166,7 +165,7 @@ export const VaultModalTransactionsProvider: FC<
   );
 
   const depositTransaction = useVaultDepositTransaction(
-    vaultAddress,
+    vault,
     chainId,
     vaultDependantQueries,
     onDepositTransactionSuccess,
@@ -174,7 +173,7 @@ export const VaultModalTransactionsProvider: FC<
   );
 
   const withdrawTransaction = useVaultWithdrawTransaction(
-    vaultAddress,
+    vault,
     vaultDependantQueries,
     onWithdrawTransactionSuccess,
     onWithdrawTransactionError

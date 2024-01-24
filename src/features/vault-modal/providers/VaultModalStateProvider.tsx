@@ -14,7 +14,6 @@ export const VaultModalStateContext = createContext<VaultModalState>({
   selectedTab: TabType.DEPOSIT,
   setSelectedTab: () => undefined,
   vaultId: "",
-  vaultAddress: "",
   depositTokenInputState: defaultTokenInputState,
   withdrawTokenInputState: defaultTokenInputState,
 });
@@ -22,54 +21,53 @@ export const VaultModalStateContext = createContext<VaultModalState>({
 export const VaultModalStateProvider: FC<VaultModalStateProviderProps> = ({
   defaultTabType,
   vaultId,
-  vaultAddress,
   children,
 }) => {
   const [rawSelectedTabType, setRawSelectedTabType] = useState(defaultTabType);
 
   const { chainId } = getVaultConfig(vaultId);
 
-  const { vaultTokenQuery, nativeCoinQuery, token0Query, token1Query } =
-    useVaultModalQueries(vaultId, vaultAddress);
+  const { vaultTokenQuery, nativeCoinQuery, baseTokenQuery, quoteTokenQuery } =
+    useVaultModalQueries(vaultId);
 
   const nativeCoinData = nativeCoinQuery.data;
-  const token0Data = token0Query.data;
-  const token1Data = token1Query.data;
+  const baseTokenData = baseTokenQuery.data;
+  const quoteTokenData = quoteTokenQuery.data;
   const vaultTokenData = vaultTokenQuery.data;
 
-  // create vaultToken0Data and vaultToken1Data
-  // that base on vaultTokenData and uses token0Data / token1Data
+  // create vaultBaseTokenData and vaultQuoteTokenData
+  // that base on vaultTokenData and uses baseTokenData / quoteTokenData
   // update symbol GEV -> ETH / USDC
 
-  const vaultToken0Data =
-    vaultTokenData && token0Data
+  const vaultBaseTokenData =
+    vaultTokenData && baseTokenData
       ? {
           ...vaultTokenData,
 
-          symbol: token0Data.symbol,
-          address: token0Data.address,
+          symbol: baseTokenData.symbol,
+          address: baseTokenData.address,
         }
       : undefined;
 
-  const vaultToken1Data =
-    vaultTokenData && token1Data
+  const vaultQuoteTokenData =
+    vaultTokenData && quoteTokenData
       ? {
           ...vaultTokenData,
 
-          symbol: token1Data.symbol,
-          address: token1Data.address,
+          symbol: quoteTokenData.symbol,
+          address: quoteTokenData.address,
         }
       : undefined;
 
   const depositTokenInputState = useTokenInputState(
-    [token0Data, token1Data],
+    [baseTokenData, quoteTokenData],
     nativeCoinData,
     chainId
   );
 
   const withdrawTokenInputState = useTokenInputState([
-    vaultToken0Data,
-    vaultToken1Data,
+    vaultBaseTokenData,
+    vaultQuoteTokenData,
   ]);
 
   const selectedTab = rawSelectedTabType;
@@ -88,7 +86,6 @@ export const VaultModalStateProvider: FC<VaultModalStateProviderProps> = ({
       selectedTab,
       setSelectedTab,
       vaultId,
-      vaultAddress,
       depositTokenInputState,
       withdrawTokenInputState,
     }),
@@ -96,7 +93,6 @@ export const VaultModalStateProvider: FC<VaultModalStateProviderProps> = ({
       selectedTab,
       setSelectedTab,
       vaultId,
-      vaultAddress,
       depositTokenInputState,
       withdrawTokenInputState,
     ]

@@ -1,7 +1,7 @@
 import { useVaultApiDataQuery } from "../../queries/hooks/useVaultApiDataQuery";
 
-export const useVaultApiData = (vaultAddress: string) => {
-  const vaultApiDataQuery = useVaultApiDataQuery(vaultAddress);
+export const useVaultApiData = (vaultId: string) => {
+  const vaultApiDataQuery = useVaultApiDataQuery(vaultId);
 
   return vaultApiDataQuery.data;
 };

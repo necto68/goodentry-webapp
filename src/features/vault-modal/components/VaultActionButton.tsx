@@ -11,14 +11,14 @@ import { useVaultModalTransactions } from "../stores/useVaultModalTransactions";
 import { TabType } from "../types/TabType";
 
 export const VaultActionButton = () => {
-  const { selectedTab, vaultAddress, vaultId } = useVaultModalState();
+  const { selectedTab, vaultId } = useVaultModalState();
   const isDepositTab = selectedTab === TabType.DEPOSIT;
 
   const { depositTransaction, withdrawTransaction } =
     useVaultModalTransactions();
 
-  const { vaultQuery, nativeCoinQuery, token0Query, token1Query } =
-    useVaultModalQueries(vaultId, vaultAddress);
+  const { vaultQuery, nativeCoinQuery, baseTokenQuery, quoteTokenQuery } =
+    useVaultModalQueries(vaultId);
 
   const { tokenData, inputValueBig } = useVaultModalTokenInputState();
 
@@ -30,8 +30,8 @@ export const VaultActionButton = () => {
   const dependantQueries = [
     vaultQuery,
     nativeCoinQuery,
-    token0Query,
-    token1Query,
+    baseTokenQuery,
+    quoteTokenQuery,
   ];
 
   const [title, loadingTitle] =

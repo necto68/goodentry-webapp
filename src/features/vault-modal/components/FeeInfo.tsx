@@ -7,8 +7,8 @@ import {
   InfoValue,
 } from "../../shared/modal/styles/ModalInfo";
 import { useVault } from "../../vault-details-page/hooks/useVault";
-import { useVaultModalState } from "../../vault-modal/stores/useVaultModalState";
-import { TabType } from "../../vault-modal/types/TabType";
+import { useVaultModalState } from "../stores/useVaultModalState";
+import { TabType } from "../types/TabType";
 
 import type { FC } from "react";
 

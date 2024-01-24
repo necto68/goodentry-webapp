@@ -6,31 +6,41 @@ import { ConnectWalletMainButton } from "../../form-components/components/Connec
 import { SuccessfulMainButton } from "../../form-components/components/SuccessfulMainButton";
 import { WrongNetworkMainButton } from "../../form-components/components/WrongNetworkMainButton";
 import { isInsufficientTokenAllowance } from "../../input-card/helpers/tokenBalance";
+import { getPairConfig } from "../../pair/helpers/getPairConfig";
 import { vaultMigrationConfigs } from "../../vault/constants/vaultMigrationConfigs";
 import { getVaultConfig } from "../../vault/helpers/getVaultConfig";
 import { useVault } from "../../vault-details-page/hooks/useVault";
-import { useVaultModalQueries } from "../../vault-modal/hooks/useVaultModalQueries";
-import { useVaultModalState } from "../../vault-modal/stores/useVaultModalState";
-import { useVaultModalTransactions } from "../../vault-modal/stores/useVaultModalTransactions";
 import { useWallet } from "../../wallet/hooks/useWallet";
 import { getChainMetadata } from "../../web3/helpers/getChainMetadata";
+import { useVaultModalQueries } from "../hooks/useVaultModalQueries";
+import { useVaultModalState } from "../stores/useVaultModalState";
+import { useVaultModalTransactions } from "../stores/useVaultModalTransactions";
 
 // eslint-disable-next-line sonarjs/cognitive-complexity,complexity
-export const EzVaultMigrationButton = () => {
+export const VaultMigrationButton = () => {
   const { isConnected, chainId: selectedChainId } = useWallet();
 
-  const { vaultAddress: sourceVaultAddress, vaultId } = useVaultModalState();
+  const { vaultId } = useVaultModalState();
 
   const { vaultTokenApproveTransaction, migrateTransaction } =
     useVaultModalTransactions();
 
-  const { token0Query, token1Query, migrationVaultTokenQuery } =
-    useVaultModalQueries(vaultId, sourceVaultAddress);
+  const { migrationVaultTokenQuery } = useVaultModalQueries(vaultId);
 
-  const { chainId } = getVaultConfig(vaultId);
+  const {
+    chainId,
+    pairId,
+    addresses: { vault: sourceVaultAddress },
+  } = getVaultConfig(vaultId);
+
+  const {
+    addresses: { baseToken, quoteToken },
+  } = getPairConfig(pairId);
+
   const {
     addresses: { vaultMigrationManager },
   } = getChainMetadata(chainId);
+
   const { targetVaultId = "" } =
     vaultMigrationConfigs.find(
       ({ sourceVaultId }) => sourceVaultId === vaultId
@@ -47,9 +57,6 @@ export const EzVaultMigrationButton = () => {
     vaultToken
   );
 
-  const { address: token0Address = "" } = token0Query.data ?? {};
-  const { address: token1Address = "" } = token1Query.data ?? {};
-
   const { mutation, runTransaction } = migrateTransaction;
 
   const { isLoading: isTokenApproveMutationLoading } =
@@ -60,9 +67,9 @@ export const EzVaultMigrationButton = () => {
   const onClick = () => {
     if (sourceVaultAddress && targetVault) {
       const firstTokenAddress =
-        targetVault.fee0 < targetVault.fee1 ? token0Address : token1Address;
+        targetVault.fee0 < targetVault.fee1 ? baseToken : quoteToken;
       const secondTokenAddress =
-        targetVault.fee0 < targetVault.fee1 ? token1Address : token0Address;
+        targetVault.fee0 < targetVault.fee1 ? quoteToken : baseToken;
       const targetVaultAddress = targetVault.address;
 
       void runTransaction(

@@ -3,7 +3,6 @@ import { Tooltip } from "@chakra-ui/react";
 import { useCallback } from "react";
 import { generatePath, Link } from "react-router-dom";
 
-import { MyShareInfo } from "../../ez-vault-modal/components/MyShareInfo";
 import { getImageSourceBySymbol } from "../../icons/helpers/getImageSourceBySymbol";
 import { usePair } from "../../protected-perps-page/hooks/usePair";
 import { RoutePathname } from "../../root/types/RoutePathname";
@@ -15,6 +14,7 @@ import { getVaultConfig } from "../../vault/helpers/getVaultConfig";
 import { VaultStatus } from "../../vault/types/VaultStatus";
 import { useVault } from "../../vault-details-page/hooks/useVault";
 import { useVaultApiData } from "../../vault-details-page/hooks/useVaultApiData";
+import { MyShareInfo } from "../../vault-modal/components/MyShareInfo";
 import {
   Container,
   InfoDescription,
