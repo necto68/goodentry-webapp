@@ -1,5 +1,4 @@
-import { loadingPlaceholder } from "../../shared/constants/placeholders";
-import { getFormattedTokenAmount } from "../../shared/helpers/formatters";
+import { getFormattedTokenAmountWithSymbol } from "../../shared/helpers/formatters";
 import {
   Container,
   InputsContainer,
@@ -44,9 +43,13 @@ export const InputCard: FC<InputCardProps> = ({
   sliderTitle,
   balanceTokenSymbol,
 }) => {
-  const tokenSymbol = balanceTokenSymbol ?? tokenData?.symbol;
+  const { symbol: defaultTokenSymbol, balance } = tokenData ?? {};
+  const tokenSymbol = balanceTokenSymbol ?? defaultTokenSymbol;
 
-  const formattedTokenBalance = getFormattedTokenAmount(tokenData?.balance);
+  const formattedTokenBalance = getFormattedTokenAmountWithSymbol(
+    balance,
+    tokenSymbol
+  );
 
   const isShowTokensDropdown = Array.isArray(tokens) && tokens.length > 1;
   const isShowTokenSymbol = !isShowTokensDropdown && Boolean(tokenSymbol);
@@ -82,11 +85,7 @@ export const InputCard: FC<InputCardProps> = ({
       ) : null}
       <BalanceTitleContainer>
         <InputSubTitle>{`${balanceTitle}:`}</InputSubTitle>
-        <InputTitle>
-          {tokenSymbol
-            ? `${formattedTokenBalance} ${tokenSymbol}`
-            : loadingPlaceholder}
-        </InputTitle>
+        <InputTitle>{formattedTokenBalance}</InputTitle>
       </BalanceTitleContainer>
     </Container>
   );

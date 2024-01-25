@@ -1,6 +1,6 @@
 import { loadingPlaceholder } from "../../shared/constants/placeholders";
 import { getFormattedFullCurrency } from "../../shared/helpers/baseFormatters";
-import { getFormattedTokenAmount } from "../../shared/helpers/formatters";
+import { getFormattedTokenAmountWithSymbol } from "../../shared/helpers/formatters";
 import {
   InfoRow,
   InfoTitle,
@@ -19,11 +19,12 @@ export const MyShareInfo: FC<MyShareInfoProps> = ({ vaultId }) => {
 
   const { symbol = "", balance, price } = vaultToken ?? {};
 
-  const formattedBalance = getFormattedTokenAmount(balance);
+  const formattedBalance = getFormattedTokenAmountWithSymbol(balance, symbol);
+
   const vaultTokenPrice = balance && price ? balance.mul(price).toNumber() : 0;
   const formattedVaultTokenPrice = getFormattedFullCurrency(vaultTokenPrice);
 
-  const formattedShareInfo = `${formattedBalance} ${symbol} (${formattedVaultTokenPrice})`;
+  const formattedShareInfo = `${formattedBalance} (${formattedVaultTokenPrice})`;
 
   const isLoading = !vaultToken;
 

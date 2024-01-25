@@ -1,5 +1,5 @@
 import { loadingPlaceholder } from "../../shared/constants/placeholders";
-import { getFormattedTokenAmount } from "../../shared/helpers/formatters";
+import { getFormattedTokenAmountWithSymbol } from "../../shared/helpers/formatters";
 import {
   Container,
   InfoRow,
@@ -26,15 +26,7 @@ export const RewardTrackerInfo = () => {
   const [formattedVaultTokenBalance, formattedStakedBalance] = [
     balance,
     stakedBalance,
-  ].map((value) => {
-    if (vaultTokenSymbol) {
-      const formattedValue = getFormattedTokenAmount(value);
-
-      return `${formattedValue} ${vaultTokenSymbol}`;
-    }
-
-    return loadingPlaceholder;
-  });
+  ].map((value) => getFormattedTokenAmountWithSymbol(value, vaultTokenSymbol));
 
   return (
     <Container>
