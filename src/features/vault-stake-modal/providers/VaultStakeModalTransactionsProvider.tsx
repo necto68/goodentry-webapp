@@ -4,6 +4,7 @@ import { defaultUseMutationResult } from "../../shared/constants/defaultUseMutat
 import { useToast } from "../../toast/hooks/useToast";
 import { ToastType } from "../../toast/types/ToastType";
 import { useTokenApproveTransaction } from "../../transactions/hooks/useTokenApproveTransaction";
+import { useRewardTrackerClaimTransaction } from "../../transactions/transaction-hooks/useRewardTrackerClaimTransaction";
 import { useRewardTrackerStakeTransaction } from "../../transactions/transaction-hooks/useRewardTrackerStakeTransaction";
 import { useRewardTrackerUnstakeTransaction } from "../../transactions/transaction-hooks/useRewardTrackerUnstakeTransaction";
 import { getVaultConfig } from "../../vault/helpers/getVaultConfig";
@@ -22,6 +23,7 @@ export const VaultStakeModalTransactionsContext =
     tokenApproveTransaction: defaultUseMutationResult,
     stakeTransaction: defaultUseMutationResult,
     unstakeTransaction: defaultUseMutationResult,
+    claimTransaction: defaultUseMutationResult,
   });
 
 export const VaultStakeModalTransactionsProvider: FC<
@@ -36,12 +38,15 @@ export const VaultStakeModalTransactionsProvider: FC<
     addresses: { rewardTracker = "" },
   } = getVaultConfig(vaultId);
 
-  const { vaultTokenQuery, rewardTrackerDataQuery } =
+  const { vaultTokenQuery, rewardTrackerDataQuery, rewardTokenQuery } =
     useVaultStakeModalQueries(vaultId);
 
   const vaultTokenData = vaultTokenQuery.data;
+  const rewardTokenData = rewardTokenQuery.data;
+
   const tokenSymbol = vaultTokenData?.symbol ?? "";
   const tokenAddress = vaultTokenData?.address ?? "";
+  const rewardTokenSymbol = rewardTokenData?.symbol ?? "";
 
   const tokenApproveDependantQueries = [vaultTokenQuery];
 
@@ -77,6 +82,15 @@ export const VaultStakeModalTransactionsProvider: FC<
     });
   };
 
+  const onClaimTransactionSuccess = (transactionHash: string) => {
+    toast({
+      type: ToastType.SUCCESS,
+      title: `Claim ${rewardTokenSymbol}`,
+      chainId,
+      transactionHash,
+    });
+  };
+
   const onApproveTransactionError = (error: Error) => {
     toast({
       type: ToastType.ERROR,
@@ -97,6 +111,14 @@ export const VaultStakeModalTransactionsProvider: FC<
     toast({
       type: ToastType.ERROR,
       title: `Unstake ${tokenSymbol}`,
+      description: error.message,
+    });
+  };
+
+  const onClaimTransactionError = (error: Error) => {
+    toast({
+      type: ToastType.ERROR,
+      title: `Claim ${rewardTokenSymbol}`,
       description: error.message,
     });
   };
@@ -122,13 +144,26 @@ export const VaultStakeModalTransactionsProvider: FC<
     onUnstakeTransactionError
   );
 
+  const claimTransaction = useRewardTrackerClaimTransaction(
+    rewardTracker,
+    rewardTrackerDependantQueries,
+    onClaimTransactionSuccess,
+    onClaimTransactionError
+  );
+
   const value = useMemo(
     () => ({
       tokenApproveTransaction,
       stakeTransaction,
       unstakeTransaction,
+      claimTransaction,
     }),
-    [tokenApproveTransaction, stakeTransaction, unstakeTransaction]
+    [
+      tokenApproveTransaction,
+      stakeTransaction,
+      unstakeTransaction,
+      claimTransaction,
+    ]
   );
 
   return (

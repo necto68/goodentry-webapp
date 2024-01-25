@@ -15,7 +15,7 @@ export const Title = tw.span`
 export const Separator = tw.hr`
   flex
   w-full
-  bg-bg-secondary
+  border-bg-secondary
 `;
 
 export const Content = tw.div`

@@ -13,5 +13,5 @@ export const toTokenAmount = (value: Big, tokenData: Token) => {
 export const fromTokenAmount = (value: Big, tokenData: Token) => {
   const divisor = getExp(tokenData.decimals);
 
-  return value.div(divisor).round(6);
+  return value.div(divisor).round(tokenData.decimals);
 };
