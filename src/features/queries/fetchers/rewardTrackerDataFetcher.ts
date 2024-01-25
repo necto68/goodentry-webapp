@@ -15,10 +15,19 @@ export const rewardTrackerDataFetcher = async (
 ): Promise<RewardTrackerData> => {
   const {
     chainId,
-    addresses: { vault, rewardTracker = "" },
+    addresses: { vault, rewardTracker },
   } = getVaultConfig(vaultId);
 
   const provider = getProvider(chainId);
+
+  if (!rewardTracker) {
+    // if vault doesn't have reward tracker, return empty data
+    return {
+      rewardTokenAddress: "",
+      stakedBalance: null,
+      claimableBalance: null,
+    };
+  }
 
   const rewardTrackerContract = RewardTrackerFactory.connect(
     rewardTracker,

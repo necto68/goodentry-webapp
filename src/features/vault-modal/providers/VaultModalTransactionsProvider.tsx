@@ -8,6 +8,7 @@ import { useVaultDepositTransaction } from "../../transactions/transaction-hooks
 import { useVaultMigrationTransaction } from "../../transactions/transaction-hooks/useVaultMigrationTransaction";
 import { useVaultWithdrawTransaction } from "../../transactions/transaction-hooks/useVaultWithdrawTransaction";
 import { getVaultConfig } from "../../vault/helpers/getVaultConfig";
+import { useVaultStakeModalQueries } from "../../vault-stake-modal/hooks/useVaultStakeModalQueries";
 import { getChainMetadata } from "../../web3/helpers/getChainMetadata";
 import { useVaultModalQueries } from "../hooks/useVaultModalQueries";
 import { useVaultModalTokenInputState } from "../hooks/useVaultModalTokenInputState";
@@ -54,6 +55,9 @@ export const VaultModalTransactionsProvider: FC<
     quoteTokenQuery,
   } = useVaultModalQueries(vaultId);
 
+  const { vaultTokenQuery: vaultStakeTokenQuery, rewardTrackerDataQuery } =
+    useVaultStakeModalQueries(vaultId);
+
   const { tokenData } = useVaultModalTokenInputState();
 
   const tokenSymbol = tokenData?.symbol ?? "";
@@ -69,7 +73,12 @@ export const VaultModalTransactionsProvider: FC<
     vaultTokenQuery,
     migrationVaultTokenQuery,
   ];
-  const vaultDependantQueries = [...tokenApproveDependantQueries, vaultQuery];
+  const vaultDependantQueries = [
+    ...tokenApproveDependantQueries,
+    vaultQuery,
+    vaultStakeTokenQuery,
+    rewardTrackerDataQuery,
+  ];
 
   const onTransactionSuccess = () => {
     depositTokenInputState.resetState();

@@ -35,10 +35,9 @@ export const VaultActionButton = () => {
     quoteTokenQuery,
   ];
 
-  const [title, loadingTitle] =
-    selectedTab === TabType.DEPOSIT
-      ? ["Deposit", "Depositing..."]
-      : ["Withdraw", "Withdrawing..."];
+  const [title, loadingTitle] = isDepositTab
+    ? ["Deposit", "Depositing..."]
+    : ["Withdraw", "Withdrawing..."];
 
   const handleButtonClick = useCallback(() => {
     if (tokenData) {
