@@ -5,10 +5,10 @@ import { FiExternalLink } from "react-icons/fi";
 
 import { TransactionType } from "../../queries/types/PositionsResponse";
 import {
-  getFormattedAmount,
   getFormattedCurrency,
   getFormattedDate,
 } from "../../shared/helpers/baseFormatters";
+import { getFormattedTokenAmount } from "../../shared/helpers/formatters";
 import { getExplorerLink } from "../../web3/helpers/getExplorerLink";
 import { ExplorerLinkType } from "../../web3/types/ExplorerLinkType";
 import { useHistory } from "../hooks/useHistory";
@@ -45,7 +45,7 @@ const getFormattedTitle = (row: PositionHistory) => {
   // TODO Size temporary available only for open positions.
   //  Need to improve data logging on API level or aggregate onchain data.
   if (row.type === TransactionType.OPEN_POSITION && row.entry !== row.strike) {
-    message += `, Size (${row.symbol}): ${getFormattedAmount(row.amount)}`;
+    message += `, Size (${row.symbol}): ${getFormattedTokenAmount(row.amount)}`;
   }
 
   if (row.entry) {

@@ -1,5 +1,4 @@
-import { loadingPlaceholder } from "../../shared/constants/placeholders";
-import { getFormattedAmount } from "../../shared/helpers/baseFormatters";
+import { getFormattedTokenAmountWithSymbol } from "../../shared/helpers/formatters";
 import {
   Container,
   InfoRow,
@@ -14,13 +13,14 @@ export const CollateralInfo = () => {
   const { quoteTokenInputState } = useOpenPositionModalState();
 
   const { tokenData, inputValueBig } = quoteTokenInputState;
+  const { symbol } = tokenData ?? {};
 
   const collateralAmount = getCollateralAmountIncludingFee(inputValueBig);
 
-  const formattedCollateralAmount = getFormattedAmount(collateralAmount);
-  const formattedCollateral = tokenData
-    ? `${formattedCollateralAmount} ${tokenData.symbol}`
-    : loadingPlaceholder;
+  const formattedCollateral = getFormattedTokenAmountWithSymbol(
+    collateralAmount,
+    symbol
+  );
 
   return (
     <Container>

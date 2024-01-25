@@ -1,5 +1,4 @@
-import { loadingPlaceholder } from "../../shared/constants/placeholders";
-import { getFormattedAmount } from "../../shared/helpers/baseFormatters";
+import { getFormattedTokenAmountWithSymbol } from "../../shared/helpers/formatters";
 import {
   InfoRow,
   InfoTitle,
@@ -22,11 +21,12 @@ export const PositionSizeInfo: FC<PositionSizeInfoProps> = ({
   const positionSize = getPositionSize(quoteTokenInputState, leverage);
 
   const { tokenData } = quoteTokenInputState;
+  const { symbol } = tokenData ?? {};
 
-  const formattedPositionSizeValue = getFormattedAmount(positionSize);
-  const formattedPositionSize = tokenData
-    ? `${formattedPositionSizeValue} ${tokenData.symbol}`
-    : loadingPlaceholder;
+  const formattedPositionSize = getFormattedTokenAmountWithSymbol(
+    positionSize,
+    symbol
+  );
 
   return (
     <InfoRow>

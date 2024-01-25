@@ -1,6 +1,5 @@
-import { loadingPlaceholder } from "../../shared/constants/placeholders";
-import { getFormattedAmount } from "../../shared/helpers/baseFormatters";
 import { toBig } from "../../shared/helpers/bigjs";
+import { getFormattedTokenAmountWithSymbol } from "../../shared/helpers/formatters";
 import {
   InfoRow,
   InfoTitle,
@@ -17,11 +16,12 @@ export const ExerciseFeeInfo: FC<ExerciseFeeInfoProps> = ({
   quoteTokenInputState,
 }) => {
   const { tokenData } = quoteTokenInputState;
+  const { symbol } = tokenData ?? {};
 
-  const formattedExerciseFeeValue = getFormattedAmount(toBig(exerciseFee));
-  const formattedExerciseFee = tokenData
-    ? `${formattedExerciseFeeValue} ${tokenData.symbol}`
-    : loadingPlaceholder;
+  const formattedExerciseFee = getFormattedTokenAmountWithSymbol(
+    toBig(exerciseFee),
+    symbol
+  );
 
   return (
     <InfoRow>

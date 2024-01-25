@@ -1,5 +1,4 @@
 import {
-  getFormattedAmount,
   getFormattedProfitAndLossPercentage,
   getFormattedFullCurrency,
   getFormattedProfitAndLoss,
@@ -7,6 +6,7 @@ import {
 import {
   getFormattedBorrowRate,
   getFormattedRunway,
+  getFormattedTokenAmount,
 } from "../../shared/helpers/formatters";
 import { Table } from "../../table/components/Table";
 import { getPositionSideTitle } from "../../trade-panel/helpers/getPositionSideTitle";
@@ -68,7 +68,7 @@ const columns: Column<Position>[] = [
   //
   //   render: ({ initialCollateral, leverage }) => {
   //     const formattedInitialCollateral =
-  //     getFormattedAmount(initialCollateral);
+  //     getFormattedTokenAmount(initialCollateral);
   //     const formattedLeverage = getFormattedLeverage(leverage);
   //
   //     return (
@@ -85,13 +85,14 @@ const columns: Column<Position>[] = [
     key: "initialCollateral",
     title: "Wager",
 
-    render: ({ initialCollateral }) => getFormattedAmount(initialCollateral),
+    render: ({ initialCollateral }) =>
+      getFormattedTokenAmount(initialCollateral),
   },
   {
     key: "positionSize",
     title: "Position Size",
 
-    render: ({ positionSize }) => getFormattedAmount(positionSize),
+    render: ({ positionSize }) => getFormattedTokenAmount(positionSize),
   },
   {
     key: "profitAndLoss",

@@ -1,6 +1,5 @@
-import { loadingPlaceholder } from "../../shared/constants/placeholders";
-import { getFormattedAmount } from "../../shared/helpers/baseFormatters";
 import { toBig } from "../../shared/helpers/bigjs";
+import { getFormattedTokenAmountWithSymbol } from "../../shared/helpers/formatters";
 import {
   Container,
   InfoRow,
@@ -19,22 +18,12 @@ export const TradePanelInfo = () => {
   const maxPositionSize = useMaxPositionSize();
 
   const { tokenData } = quoteTokenInputState;
-
-  const formattedMinPositionSizeValue = getFormattedAmount(
-    toBig(minPositionSize)
-  );
-  const formattedMaxPositionSizeValue = maxPositionSize
-    ? getFormattedAmount(maxPositionSize)
-    : undefined;
+  const { symbol } = tokenData ?? {};
 
   const [formattedMinPositionSize, formattedMaxPositionSize] = [
-    formattedMinPositionSizeValue,
-    formattedMaxPositionSizeValue,
-  ].map((formattedValue) =>
-    formattedValue && tokenData
-      ? `${formattedValue} ${tokenData.symbol}`
-      : loadingPlaceholder
-  );
+    toBig(minPositionSize),
+    maxPositionSize,
+  ].map((value) => getFormattedTokenAmountWithSymbol(value, symbol));
 
   return (
     <Container>

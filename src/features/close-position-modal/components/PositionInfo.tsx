@@ -1,9 +1,6 @@
 import { usePair } from "../../protected-perps-page/hooks/usePair";
-import { loadingPlaceholder } from "../../shared/constants/placeholders";
-import {
-  getFormattedAmount,
-  getFormattedLeverage,
-} from "../../shared/helpers/baseFormatters";
+import { getFormattedLeverage } from "../../shared/helpers/baseFormatters";
+import { getFormattedTokenAmountWithSymbol } from "../../shared/helpers/formatters";
 import {
   Container,
   InfoRow,
@@ -18,16 +15,12 @@ export const PositionInfo = () => {
 
   const { quoteTokenSymbol } = usePair(pairId) ?? {};
 
-  const formattedInitialCollateralValue = getFormattedAmount(initialCollateral);
-  const formattedLeverage = getFormattedLeverage(leverage);
-  const formattedPositionSizeValue = getFormattedAmount(positionSize);
-
   const [formattedInitialCollateral, formattedPositionSize] = [
-    formattedInitialCollateralValue,
-    formattedPositionSizeValue,
-  ].map((value) =>
-    quoteTokenSymbol ? `${value} ${quoteTokenSymbol}` : loadingPlaceholder
-  );
+    initialCollateral,
+    positionSize,
+  ].map((value) => getFormattedTokenAmountWithSymbol(value, quoteTokenSymbol));
+
+  const formattedLeverage = getFormattedLeverage(leverage);
 
   return (
     <Container>

@@ -1,4 +1,4 @@
-import { getFormattedAmount } from "../../shared/helpers/baseFormatters";
+import { getFormattedTokenAmount } from "../../shared/helpers/formatters";
 import { Table } from "../../table/components/Table";
 import { useLockData } from "../hooks/useLockData";
 
@@ -28,21 +28,21 @@ const columns: Column<UnlockSchedule>[] = [
     title: "Init Unlock",
 
     render: ({ governanceTokenInitUnlock }) =>
-      getFormattedAmount(governanceTokenInitUnlock),
+      getFormattedTokenAmount(governanceTokenInitUnlock),
   },
   {
     key: "governanceTokenLocked",
     title: "Locked",
 
     render: ({ governanceTokenLocked }) =>
-      getFormattedAmount(governanceTokenLocked),
+      getFormattedTokenAmount(governanceTokenLocked),
   },
   {
     key: "governanceTokenUnlocked",
     title: "Unlocked",
 
     render: ({ governanceTokenUnlocked }) =>
-      getFormattedAmount(governanceTokenUnlocked),
+      getFormattedTokenAmount(governanceTokenUnlocked),
   },
   {
     title: "Actions",

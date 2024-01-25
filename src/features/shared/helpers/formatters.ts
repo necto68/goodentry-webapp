@@ -37,6 +37,20 @@ export const getFormattedTokenAmount = (amount: Big | null | undefined) => {
   return getFormattedAmount(amount);
 };
 
+export const getFormattedTokenAmountWithSymbol = (
+  amount: Big | null | undefined,
+  symbol: string | undefined
+) => {
+  if (amount === undefined || symbol === undefined) {
+    return loadingPlaceholder;
+  }
+
+  const formattedAmount =
+    amount === null ? notAvailablePlaceholder : getFormattedAmount(amount);
+
+  return `${formattedAmount} ${symbol}`;
+};
+
 export const getFormattedBorrowRate = (
   borrowRate: number | null | undefined
 ) => {

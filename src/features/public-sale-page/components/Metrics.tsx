@@ -1,10 +1,8 @@
 import { marketCap, amount, price, round } from "../../icons/public-sale";
 import { loadingPlaceholder } from "../../shared/constants/placeholders";
-import {
-  getFormattedAmount,
-  getFormattedCurrency,
-} from "../../shared/helpers/baseFormatters";
+import { getFormattedCurrency } from "../../shared/helpers/baseFormatters";
 import { toBig } from "../../shared/helpers/bigjs";
+import { getFormattedTokenAmountWithSymbol } from "../../shared/helpers/formatters";
 import { usePublicSaleCollateralToken } from "../hooks/usePublicSaleCollateralToken";
 import { usePublicSaleData } from "../hooks/usePublicSaleData";
 import { Container } from "../styles/Metrics";
@@ -29,15 +27,9 @@ export const Metrics = () => {
   const [formattedCollateralTokenCap, formattedSaleTokenPrice] = [
     collateralTokenCap,
     saleTokenPriceBig,
-  ].map((value) => {
-    if (value && collateralTokenSymbol) {
-      const formattedValue = getFormattedAmount(value);
-
-      return `${formattedValue} ${collateralTokenSymbol}`;
-    }
-
-    return loadingPlaceholder;
-  });
+  ].map((value) =>
+    getFormattedTokenAmountWithSymbol(value, collateralTokenSymbol)
+  );
 
   return (
     <Container>

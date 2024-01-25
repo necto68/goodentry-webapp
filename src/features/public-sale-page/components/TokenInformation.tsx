@@ -1,6 +1,6 @@
 import { loadingPlaceholder } from "../../shared/constants/placeholders";
-import { getFormattedAmount } from "../../shared/helpers/baseFormatters";
 import { toBig } from "../../shared/helpers/bigjs";
+import { getFormattedTokenAmount } from "../../shared/helpers/formatters";
 import { getTruncatedAddress } from "../../web3/helpers/addresses";
 import { getExplorerLink } from "../../web3/helpers/getExplorerLink";
 import { ExplorerLinkType } from "../../web3/types/ExplorerLinkType";
@@ -31,7 +31,7 @@ export const TokenInformation = () => {
   const [formattedTotalSupply, formattedSaleTokenCap] = [
     totalSupply,
     saleTokenCap,
-  ].map((value) => (value ? getFormattedAmount(value) : null));
+  ].map((value) => (value ? getFormattedTokenAmount(value) : null));
 
   const formattedTokenAddress = address ? getTruncatedAddress(address) : "";
   const tokenAddressLink = address

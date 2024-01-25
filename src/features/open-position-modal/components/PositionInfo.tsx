@@ -1,8 +1,5 @@
-import { loadingPlaceholder } from "../../shared/constants/placeholders";
-import {
-  getFormattedAmount,
-  getFormattedLeverage,
-} from "../../shared/helpers/baseFormatters";
+import { getFormattedLeverage } from "../../shared/helpers/baseFormatters";
+import { getFormattedTokenAmountWithSymbol } from "../../shared/helpers/formatters";
 import {
   Container,
   InfoRow,
@@ -16,13 +13,14 @@ export const PositionInfo = () => {
   const { quoteTokenInputState, leverage } = useOpenPositionModalState();
 
   const { tokenData, inputValueBig } = quoteTokenInputState;
+  const { symbol } = tokenData ?? {};
 
-  const formattedQuoteTokenAmountValue = getFormattedAmount(inputValueBig);
+  const formattedQuoteTokenAmount = getFormattedTokenAmountWithSymbol(
+    inputValueBig,
+    symbol
+  );
+
   const formattedLeverage = getFormattedLeverage(leverage);
-
-  const formattedQuoteTokenAmount = tokenData
-    ? `${formattedQuoteTokenAmountValue} ${tokenData.symbol}`
-    : loadingPlaceholder;
 
   return (
     <Container>
