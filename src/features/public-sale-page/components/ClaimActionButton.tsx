@@ -1,6 +1,7 @@
 import { Button } from "@chakra-ui/react";
 import { useCallback } from "react";
 
+import { SuccessfulMainButton } from "../../form-components/components/SuccessfulMainButton";
 import { TransactionErrorMainButton } from "../../form-components/components/TransactionErrorMainButton";
 import { useClaimTransaction } from "../hooks/useClaimTransaction";
 import { usePublicSaleQueries } from "../hooks/usePublicSaleQueries";
@@ -22,9 +23,13 @@ export const ClaimActionButton = () => {
     runTransaction();
   }, [runTransaction]);
 
-  const { isError, isLoading } = mutation;
+  const { isSuccess, isError, isLoading } = mutation;
   const isDisabled =
     !isSaleTokenClaimable || dependantQueries.some((query) => query.isLoading);
+
+  if (isSuccess) {
+    return <SuccessfulMainButton title="Claim Successful" />;
+  }
 
   if (isError) {
     return <TransactionErrorMainButton resetTransaction={resetTransaction} />;

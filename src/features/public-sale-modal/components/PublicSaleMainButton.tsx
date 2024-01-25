@@ -1,6 +1,5 @@
 import { ConnectWalletMainButton } from "../../form-components/components/ConnectWalletMainButton";
 import { ErrorMainButton } from "../../form-components/components/ErrorMainButton";
-import { SuccessfulMainButton } from "../../form-components/components/SuccessfulMainButton";
 import { TokenErrorMainButton } from "../../form-components/components/TokenErrorMainButton";
 import { WrongNetworkMainButton } from "../../form-components/components/WrongNetworkMainButton";
 import { ZeroBalanceMainButton } from "../../form-components/components/ZeroBalanceMainButton";
@@ -30,8 +29,7 @@ export const PublicSaleMainButton = () => {
     isPaused = false,
   } = usePublicSaleData() ?? {};
 
-  const { tokenApproveTransaction, depositTransaction } =
-    usePublicSaleModalTransactions();
+  const { tokenApproveTransaction } = usePublicSaleModalTransactions();
 
   const {
     tokenData: collateralTokenData,
@@ -45,8 +43,6 @@ export const PublicSaleMainButton = () => {
 
   const { isLoading: isCollateralTokenApproveMutationLoading } =
     tokenApproveTransaction.mutation;
-
-  const { isSuccess } = depositTransaction.mutation;
 
   const isZeroBalance = inputValueBig.lte(0);
   const isCollateralTokenInsufficientAllowance = isInsufficientTokenAllowance(
@@ -65,10 +61,6 @@ export const PublicSaleMainButton = () => {
 
   if (selectedChainId && selectedChainId !== chainId) {
     return <WrongNetworkMainButton />;
-  }
-
-  if (isSuccess) {
-    return <SuccessfulMainButton title="Deposit Successful" />;
   }
 
   if (isPaused || status !== PublicSaleStatus.IN_PROGRESS) {

@@ -1,6 +1,5 @@
 import { ConnectWalletMainButton } from "../../form-components/components/ConnectWalletMainButton";
 import { ErrorMainButton } from "../../form-components/components/ErrorMainButton";
-import { SuccessfulMainButton } from "../../form-components/components/SuccessfulMainButton";
 import { TokenErrorMainButton } from "../../form-components/components/TokenErrorMainButton";
 import { WrongNetworkMainButton } from "../../form-components/components/WrongNetworkMainButton";
 import { ZeroBalanceMainButton } from "../../form-components/components/ZeroBalanceMainButton";
@@ -16,7 +15,7 @@ import { TabType } from "../types/TabType";
 import { ApproveMainButton } from "./ApproveMainButton";
 import { VaultActionButton } from "./VaultActionButton";
 
-// eslint-disable-next-line sonarjs/cognitive-complexity,complexity
+// eslint-disable-next-line complexity
 export const VaultMainButton = () => {
   const { isConnected, chainId: selectedChainId } = useWallet();
 
@@ -28,18 +27,13 @@ export const VaultMainButton = () => {
 
   const isDepositTab = selectedTab === TabType.DEPOSIT;
 
-  const { tokenApproveTransaction, depositTransaction, withdrawTransaction } =
-    useVaultModalTransactions();
+  const { tokenApproveTransaction } = useVaultModalTransactions();
 
   const { tokenData, inputValueBig, isError, error } =
     useVaultModalTokenInputState();
 
   const { isLoading: isTokenApproveMutationLoading } =
     tokenApproveTransaction.mutation;
-
-  const { isSuccess } = isDepositTab
-    ? depositTransaction.mutation
-    : withdrawTransaction.mutation;
 
   const isZeroBalance = inputValueBig.lte(0);
   const isInsufficientAllowance = isInsufficientTokenAllowance(
@@ -53,12 +47,6 @@ export const VaultMainButton = () => {
 
   if (selectedChainId && selectedChainId !== chainId) {
     return <WrongNetworkMainButton />;
-  }
-
-  if (isSuccess) {
-    const title = isDepositTab ? "Deposit Successful" : "Withdraw Successful";
-
-    return <SuccessfulMainButton title={title} />;
   }
 
   if (isDepositTab && isMaxCapReached) {
