@@ -78,7 +78,7 @@ export const VaultDetailsPage = () => {
         </VaultDescription>
         <VaultModalsContainer>
           <VaultModal />
-          <VaultStakeModal />
+          {status === VaultStatus.ACTIVE_REWARDS ? <VaultStakeModal /> : null}
         </VaultModalsContainer>
       </VaultDefaultBody>
     </Flex>

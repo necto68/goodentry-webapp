@@ -6,7 +6,7 @@ import { getVaultConfig } from "../../vault/helpers/getVaultConfig";
 export const useVaultStakeModalQueries = (vaultId: string) => {
   const {
     chainId,
-    addresses: { vault, rewardTracker = "" },
+    addresses: { vault, rewardTracker },
   } = getVaultConfig(vaultId);
 
   const vaultTokenQuery = useVaultTokenQuery({
