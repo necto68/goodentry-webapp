@@ -14,29 +14,31 @@ import { Chart } from "./Chart";
 import { ChartHeader } from "./ChartHeader";
 import { PayoffChart } from "./PayoffChart";
 import { Positions } from "./Positions";
-import { PositionsHistory } from "./PositionsHistory";
+
+// import { PositionsHistory } from "./PositionsHistory";
 
 export const ProtectedPerpsPage = () => {
-  const { account } = useWallet();
+  const { isConnected } = useWallet();
+
   return (
     <Container>
       <Content>
         <LeftContainer>
           <ChartHeader />
           <Chart />
-          {account ? (
+          {isConnected ? (
             <Tabs>
               <TabList>
                 <Tab>Positions</Tab>
-                <Tab>History</Tab>
+                {/* <Tab>History</Tab> */}
               </TabList>
               <TabPanels>
                 <TabPanel>
                   <Positions />
                 </TabPanel>
-                <TabPanel>
-                  <PositionsHistory />
-                </TabPanel>
+                {/* <TabPanel> */}
+                {/*  <PositionsHistory /> */}
+                {/* </TabPanel> */}
               </TabPanels>
             </Tabs>
           ) : null}

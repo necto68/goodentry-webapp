@@ -5,15 +5,11 @@ import {
 } from "../../shared/helpers/baseFormatters";
 import { getFormattedTokenAmount } from "../../shared/helpers/formatters";
 import { Table } from "../../table/components/Table";
-import { TitleCell } from "../../table/components/TitleCell";
-import { getVaultConfig } from "../../vault/helpers/getVaultConfig";
-import { VaultStatus } from "../../vault/types/VaultStatus";
-import { MigrationTag } from "../../vaults-page/components/MigrationTag";
 import { usePairDetailsState } from "../hooks/usePairDetailsState";
 import { useVaultTokenAssetRow } from "../hooks/useVaultTokenAssetRow";
-import { TitleContainer } from "../styles/PairAssetsTable";
 
 import { ActionButtons } from "./ActionButtons";
+import { VaultCell } from "./VaultCell";
 
 import type { Column } from "../../table/types/Column";
 import type { PairAssetRow } from "../types/PairAssetsRow";
@@ -25,22 +21,8 @@ interface PairDetailsTableProps {
 
 const columns: Column<PairAssetRow>[] = [
   {
-    title: "Asset",
-
-    render: (row) => {
-      const { vaultId } = row;
-
-      // TODO: v2 update
-      const symbols: [string, string] = ["", ""];
-      const { status } = getVaultConfig(vaultId);
-
-      return (
-        <TitleContainer>
-          <TitleCell symbols={symbols} title="ezVault" />
-          {status === VaultStatus.DEPRECATED ? <MigrationTag /> : null}
-        </TitleContainer>
-      );
-    },
+    title: "Vault",
+    render: ({ vaultId }) => <VaultCell vaultId={vaultId} />,
   },
   {
     key: "vaultToken",
