@@ -43,18 +43,22 @@ export const VaultCard: FC<VaultCardProps> = ({ vaultId }) => {
 
   const { pairId, status } = getVaultConfig(vaultId);
 
-  const { avgApr, incentiveApr, totalApr } = useVaultApiData(vaultId) ?? {};
+  const {
+    feesAnnualPercentageRate,
+    rewardsAnnualPercentageRate,
+    totalAnnualPercentageRate,
+  } = useVaultApiData(vaultId) ?? {};
 
   const { title, baseTokenSymbol, quoteTokenSymbol } = usePair(pairId) ?? {};
 
-  const formattedTvl = totalValueLocked
+  const formattedTVL = totalValueLocked
     ? formatNumberWithSuffix(totalValueLocked)
     : loadingPlaceholder;
 
-  const [formattedApr, formattedIncentivesApr, formattedTotalApr] = [
-    avgApr,
-    incentiveApr,
-    totalApr,
+  const [formattedFeesAPR, formattedRewardsAPR, formattedTotalAPR] = [
+    feesAnnualPercentageRate,
+    rewardsAnnualPercentageRate,
+    totalAnnualPercentageRate,
   ].map((value) => (value ? getFormattedAPY(value) : loadingPlaceholder));
 
   const [baseTokenIcon, quoteTokenIcon] = [
@@ -71,13 +75,13 @@ export const VaultCard: FC<VaultCardProps> = ({ vaultId }) => {
   const getTooltipContent = useCallback(
     () => (
       <>
-        <p>Fees APR: {formattedApr}</p>
+        <p>Fees APR: {formattedFeesAPR}</p>
         {status === VaultStatus.ACTIVE_REWARDS ? (
-          <p>Incentive APR: {formattedIncentivesApr}</p>
+          <p>Rewards APR: {formattedRewardsAPR}</p>
         ) : null}
       </>
     ),
-    [status, formattedApr, formattedIncentivesApr]
+    [status, formattedFeesAPR, formattedRewardsAPR]
   );
 
   return (
@@ -107,11 +111,11 @@ export const VaultCard: FC<VaultCardProps> = ({ vaultId }) => {
                 <InfoIcon />
               </Tooltip>
             </InfoDescription>
-            <InfoValueBrand>{formattedTotalApr}</InfoValueBrand>
+            <InfoValueBrand>{formattedTotalAPR}</InfoValueBrand>
           </InfoRow>
           <InfoRow>
             <InfoDescription>TVL</InfoDescription>
-            <InfoValueBold>{formattedTvl}</InfoValueBold>
+            <InfoValueBold>{formattedTVL}</InfoValueBold>
           </InfoRow>
           <Separator />
           <MyShareInfo vaultId={vaultId} />

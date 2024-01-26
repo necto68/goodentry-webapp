@@ -23,35 +23,41 @@ export const VaultPerformance = () => {
 
   const { status } = getVaultConfig(vaultId);
 
-  const { avgApr, incentiveApr, aprHistory, totalApr } =
-    useVaultApiData(vaultId) ?? {};
+  const {
+    feesAnnualPercentageRate,
+    rewardsAnnualPercentageRate,
+    totalAnnualPercentageRate,
+    annualPercentageRateHistory,
+  } = useVaultApiData(vaultId) ?? {};
 
-  const [formattedApr, formattedIncentivesApr, formattedTotalApr] = [
-    avgApr,
-    incentiveApr,
-    totalApr,
+  const [formattedFeesAPR, formattedRewardsAPR, formattedTotalAPR] = [
+    feesAnnualPercentageRate,
+    rewardsAnnualPercentageRate,
+    totalAnnualPercentageRate,
   ].map((value) => (value ? getFormattedAPY(value) : loadingPlaceholder));
+
+  const historyData = annualPercentageRateHistory
+    ? annualPercentageRateHistory.map(({ value }) => value)
+    : null;
 
   return (
     <Container>
       <APRRow>
         <Metric>
           <Title>Total Projected APR</Title>
-          <AccentValue>{formattedTotalApr}</AccentValue>
+          <AccentValue>{formattedTotalAPR}</AccentValue>
         </Metric>
       </APRRow>
-      {aprHistory ? (
-        <VaultChart data={aprHistory.map(({ value }) => value)} />
-      ) : null}
+      {historyData ? <VaultChart data={historyData} /> : null}
       <MetricsRow>
         <Metric>
           <MetricTitle>Fees APR</MetricTitle>
-          <MetricValue>{formattedApr}</MetricValue>
+          <MetricValue>{formattedFeesAPR}</MetricValue>
         </Metric>
         {status === VaultStatus.ACTIVE_REWARDS ? (
           <Metric>
-            <MetricTitle>Incentive APR</MetricTitle>
-            <MetricValue>{formattedIncentivesApr}</MetricValue>
+            <MetricTitle>Rewards APR</MetricTitle>
+            <MetricValue>{formattedRewardsAPR}</MetricValue>
           </Metric>
         ) : null}
       </MetricsRow>

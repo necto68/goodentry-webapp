@@ -1,4 +1,3 @@
-import { loadingPlaceholder } from "../../shared/constants/placeholders";
 import { getFormattedTokenAmountWithSymbol } from "../../shared/helpers/formatters";
 import {
   Container,
@@ -10,18 +9,12 @@ import { useRewardTrackerData } from "../hooks/useRewardTrackerData";
 import { useVaultStakeModalQueries } from "../hooks/useVaultStakeModalQueries";
 import { useVaultStakeModalState } from "../stores/useVaultStakeModalState";
 
-export const RewardTrackerInfo = () => {
+export const BalancesInfo = () => {
   const { vaultId } = useVaultStakeModalState();
 
-  const { vaultTokenQuery, rewardTokenQuery } =
-    useVaultStakeModalQueries(vaultId);
+  const { vaultTokenQuery } = useVaultStakeModalQueries(vaultId);
   const { stakedBalance } = useRewardTrackerData(vaultId) ?? {};
   const { symbol: vaultTokenSymbol, balance } = vaultTokenQuery.data ?? {};
-  const { symbol: rewardTokenSymbol } = rewardTokenQuery.data ?? {};
-
-  const formattedRewards = rewardTokenSymbol
-    ? `400 ${rewardTokenSymbol} / day`
-    : loadingPlaceholder;
 
   const [formattedVaultTokenBalance, formattedStakedBalance] = [
     balance,
@@ -30,10 +23,6 @@ export const RewardTrackerInfo = () => {
 
   return (
     <Container>
-      <InfoRow>
-        <InfoTitle>Rewards</InfoTitle>
-        <InfoValue>{formattedRewards}</InfoValue>
-      </InfoRow>
       <InfoRow>
         <InfoTitle>Unstaked Balance</InfoTitle>
         <InfoValue>{formattedVaultTokenBalance}</InfoValue>

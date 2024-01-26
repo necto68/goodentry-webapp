@@ -24,7 +24,7 @@ export const ClaimableBalanceInfo = () => {
   return (
     <Container>
       <InfoRow>
-        <InfoTitle>Claimable Reward</InfoTitle>
+        <InfoTitle>Claimable Rewards</InfoTitle>
         <InfoValue>{formattedClaimableBalance}</InfoValue>
       </InfoRow>
     </Container>

@@ -10,7 +10,8 @@ export const useVaultTokenAssetRow = (
   vault: Vault | undefined,
   vaultToken: VaultToken | undefined
 ): VaultTokenAssetRow | undefined => {
-  const { totalApr = 0 } = useVaultApiData(vaultId ?? "") ?? {};
+  const { totalAnnualPercentageRate = 0 } =
+    useVaultApiData(vaultId ?? "") ?? {};
 
   if (!vaultId || !vault || !vaultToken) {
     return undefined;
@@ -20,6 +21,6 @@ export const useVaultTokenAssetRow = (
     type: AssetRowType.VAULT_TOKEN,
     vaultId,
     vaultToken,
-    annualPercentageRate: totalApr,
+    annualPercentageRate: totalAnnualPercentageRate,
   };
 };

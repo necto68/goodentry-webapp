@@ -4,9 +4,9 @@ export interface VaultHistoricalData {
 }
 
 export interface VaultApiData {
-  avgApr: number;
-  totalApr: number;
-  incentiveApr: number;
+  feesAnnualPercentageRate: number;
+  rewardsAnnualPercentageRate: number;
+  totalAnnualPercentageRate: number;
   priceHistory: VaultHistoricalData[];
-  aprHistory: VaultHistoricalData[];
+  annualPercentageRateHistory: VaultHistoricalData[];
 }

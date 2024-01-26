@@ -6,10 +6,10 @@ import { VaultStatus } from "../../vault/types/VaultStatus";
 import type { VaultApiData } from "../types/VaultApiData";
 
 const defaultVaultApiData: VaultApiData = {
-  avgApr: 0,
-  totalApr: 0,
-  incentiveApr: 0,
-  aprHistory: [],
+  feesAnnualPercentageRate: 0,
+  totalAnnualPercentageRate: 0,
+  rewardsAnnualPercentageRate: 0,
+  annualPercentageRateHistory: [],
   priceHistory: [],
 };
 
@@ -33,7 +33,7 @@ export const vaultApiDataFetcher = async (
 
   const tvl = toBig(vaultHistory[vaultHistory.length - 1].tvlX8).div(1e8);
 
-  const avgApr = toBig(
+  const feesAnnualPercentageRate = toBig(
     Object.values(vaultHistory).reduce(
       (accumulator: number, { feesX8, tvlX8 }) => accumulator + feesX8 / tvlX8,
       0
@@ -48,17 +48,20 @@ export const vaultApiDataFetcher = async (
   const arbPrice = 1.67;
   const arbPerDay = 400;
 
-  const incentiveApr =
+  const rewardsAnnualPercentageRate =
     status === VaultStatus.ACTIVE_REWARDS
       ? tvl.div(daysPerYear * arbPrice * arbPerDay).toNumber()
       : 0;
 
-  const totalApr = avgApr + incentiveApr;
+  const totalAnnualPercentageRate =
+    feesAnnualPercentageRate + rewardsAnnualPercentageRate;
 
-  const aprHistory = vaultHistory.map(({ feesX8, tvlX8, day }) => ({
-    day,
-    value: toBig(feesX8).div(tvlX8).mul(36_500).toNumber(),
-  }));
+  const annualPercentageRateHistory = vaultHistory.map(
+    ({ feesX8, tvlX8, day }) => ({
+      day,
+      value: toBig(feesX8).div(tvlX8).mul(36_500).toNumber(),
+    })
+  );
 
   const priceHistory = vaultHistory.map(({ vaultPrice, day }) => ({
     day,
@@ -66,10 +69,10 @@ export const vaultApiDataFetcher = async (
   }));
 
   return {
-    avgApr,
-    totalApr,
-    incentiveApr,
-    aprHistory,
+    feesAnnualPercentageRate,
+    rewardsAnnualPercentageRate,
+    totalAnnualPercentageRate,
+    annualPercentageRateHistory,
     priceHistory,
   };
 };
