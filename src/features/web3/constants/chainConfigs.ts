@@ -45,6 +45,7 @@ export const chainConfigs: ChainConfig[] = [
 
     urls: {
       explorer: "https://arbiscan.io",
+      explorerApi: "https://api.arbiscan.io",
     },
 
     addresses: {
@@ -52,7 +53,7 @@ export const chainConfigs: ChainConfig[] = [
     },
 
     keys: {
-      explorerApi: "WSN4AIK9NGQ5DE2824YNMAYIGV82EJ33TS",
+      explorerApi: "BYUIRGM2YBGEM36ZSC7PWW7DTAP8FY2KIW",
     },
   },
   {

@@ -1,69 +1,90 @@
 import { Button } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
-import { FiExternalLink } from "react-icons/fi";
 
-import { TransactionType } from "../../queries/types/PositionsResponse";
 import {
-  getFormattedCurrency,
   getFormattedDate,
+  getFormattedFullCurrency,
 } from "../../shared/helpers/baseFormatters";
-import { getFormattedTokenAmount } from "../../shared/helpers/formatters";
+import { Table } from "../../table/components/Table";
+import { getPositionSideTitle } from "../../trade-panel/helpers/getPositionSideTitle";
+import { PositionSide } from "../../trade-panel/types/PositionSide";
+import { getTruncatedAddress } from "../../web3/helpers/addresses";
 import { getExplorerLink } from "../../web3/helpers/getExplorerLink";
 import { ExplorerLinkType } from "../../web3/types/ExplorerLinkType";
 import { useHistory } from "../hooks/useHistory";
 import {
   Container,
-  HistoryExplore,
-  HistoryRow,
-  HistoryText,
+  HistoryTx,
+  LongText,
   Paginator,
+  ShortText,
 } from "../styles/HistoryTable";
 
-import type { PositionHistory } from "../../queries/types/PositionHistory";
+import type { PositionHistoryItem } from "../../queries/types/PositionHistoryItem";
+import type { Column } from "../../table/types/Column";
 
-const getFormattedTitle = (row: PositionHistory) => {
-  let type = "Open";
-  switch (row.type) {
-    case TransactionType.OPEN_POSITION:
-      type = "Open";
-      break;
-    case TransactionType.CLOSE_POSITION:
-      type = "Close";
-      break;
-    case TransactionType.LIQUIDATE_POSITION:
-      type = "Liquidated";
-      break;
-    default:
-      break;
-  }
-  let message = `
-    ${type} ${row.tickerSymbol}${row.strike ? `-${row.strike}` : ""} ${
-    row.side
-  } position`;
+const columns: Column<PositionHistoryItem>[] = [
+  {
+    key: "timestamp",
+    title: "Date",
 
-  // TODO Size temporary available only for open positions.
-  //  Need to improve data logging on API level or aggregate onchain data.
-  if (row.type === TransactionType.OPEN_POSITION && row.entry !== row.strike) {
-    message += `, Size (${row.symbol}): ${getFormattedTokenAmount(row.amount)}`;
-  }
+    render: ({ timestamp }) => getFormattedDate(timestamp),
+  },
+  {
+    key: "transactionHash",
+    title: "Tx",
 
-  if (row.entry) {
-    message += `, Entry price: ${getFormattedCurrency(row.entry)}`;
-  }
+    render: ({ transactionHash, chainId }) => (
+      <HistoryTx
+        href={getExplorerLink(chainId, ExplorerLinkType.TX, transactionHash)}
+        target="_blank"
+      >
+        {getTruncatedAddress(transactionHash)}
+      </HistoryTx>
+    ),
+  },
+  {
+    key: "pairId",
+    title: "Pair",
+    render: ({ pairId }) => pairId,
+  },
+  {
+    key: "positionSide",
+    title: "Direction",
 
-  if (row.pnl) {
-    message += `, PnL: ${getFormattedCurrency(row.pnl, {
-      maximumFractionDigits: 2,
-    })}`;
-  }
+    render: ({ positionSide }) =>
+      positionSide === PositionSide.LONG ? (
+        <LongText>{getPositionSideTitle(positionSide)}</LongText>
+      ) : (
+        <ShortText>{getPositionSideTitle(positionSide)}</ShortText>
+      ),
+  },
+  {
+    key: "entryPrice",
+    title: "Entry Price",
 
-  return message;
-};
+    render: ({ entryPrice }) => getFormattedFullCurrency(entryPrice),
+  },
+  {
+    key: "amount",
+    title: "Amount",
+
+    render: ({ amount }) => getFormattedFullCurrency(amount),
+  },
+  {
+    key: "pnl",
+    title: "PNL",
+
+    render: ({ pnl }) => getFormattedFullCurrency(pnl),
+  },
+];
+
+const getRowKey = ({ transactionHash }: PositionHistoryItem) => transactionHash;
 
 export const HistoryTable = () => {
   const limit = 5;
-  const [paginatedData, setPaginatedData] = useState<PositionHistory[]>([]);
+  const [paginatedData, setPaginatedData] = useState<PositionHistoryItem[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
 
   const rows = useHistory();
@@ -90,20 +111,7 @@ export const HistoryTable = () => {
 
   return (
     <Container>
-      {paginatedData.map((row) => (
-        <HistoryRow key={row.hash}>
-          <HistoryText>{getFormattedDate(row.date.getTime())}</HistoryText>
-          <HistoryText>
-            <span>{getFormattedTitle(row)}</span>
-            <HistoryExplore
-              href={getExplorerLink(row.chainId, ExplorerLinkType.TX, row.hash)}
-              target="_blank"
-            >
-              <FiExternalLink />
-            </HistoryExplore>
-          </HistoryText>
-        </HistoryRow>
-      ))}
+      <Table columns={columns} getRowKey={getRowKey} rows={paginatedData} />
       <Paginator>
         <Button onClick={handlePreviousPage} variant="unstyled">
           <BsChevronLeft color="gray" />
