@@ -7,7 +7,6 @@ import type Big from "big.js";
 export const getOptionBorrowRatesQueryOptions = (
   pairId: string,
   positionSize: Big,
-  leverage: number,
   pairPrices: PairPrices | undefined
 ) => ({
   queryKey: [
@@ -18,7 +17,7 @@ export const getOptionBorrowRatesQueryOptions = (
   ],
 
   queryFn: async () =>
-    await optionBorrowRatesFetcher(pairId, positionSize, leverage, pairPrices),
+    await optionBorrowRatesFetcher(pairId, positionSize, pairPrices),
 
   cacheTime: 0,
 });

@@ -13,7 +13,7 @@ export const useTradePanelOptionHourlyBorrowRate = (
   const positionSize = getPositionSize(quoteTokenInputState, leverage);
 
   const { lowerOptionHourlyBorrowRate, upperOptionHourlyBorrowRate } =
-    useOptionBorrowRates(pairId, positionSize, leverage) ?? {};
+    useOptionBorrowRates(pairId, positionSize) ?? {};
 
   const isLong = isPositionSideLong(positionSide);
 

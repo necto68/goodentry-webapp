@@ -6,11 +6,7 @@ import { usePairPrices } from "./usePairPrices";
 
 import type Big from "big.js";
 
-export const useOptionBorrowRates = (
-  pairId: string,
-  positionSize: Big,
-  leverage: number
-) => {
+export const useOptionBorrowRates = (pairId: string, positionSize: Big) => {
   const [debouncedPositionSize, debouncedState] = useDebounce(
     positionSize,
     300,
@@ -24,7 +20,6 @@ export const useOptionBorrowRates = (
   const optionBorrowRates = useOptionBorrowRatesQuery(
     pairId,
     debouncedPositionSize,
-    leverage,
     pairPrices
   );
 

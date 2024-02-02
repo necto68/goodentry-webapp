@@ -9,7 +9,6 @@ import type Big from "big.js";
 export const useOptionBorrowRatesQuery = (
   pairId: string,
   positionSize: Big,
-  leverage: number,
   pairPrices: PairPrices | undefined
 ) => {
   const { id } = getPairConfig(pairId);
@@ -17,7 +16,6 @@ export const useOptionBorrowRatesQuery = (
   const queryOptions = getOptionBorrowRatesQueryOptions(
     id,
     positionSize,
-    leverage,
     pairPrices
   );
 

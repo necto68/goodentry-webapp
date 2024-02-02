@@ -18,7 +18,6 @@ const defaultOptionBorrowRates = {
 export const optionBorrowRatesFetcher = async (
   pairId: string,
   positionSize: Big,
-  leverage: number,
   pairPrices: PairPrices | undefined
 ): Promise<OptionBorrowRates> => {
   if (positionSize.lte(0) || !pairPrices) {
@@ -64,7 +63,7 @@ export const optionBorrowRatesFetcher = async (
     upperStrikePrice,
   ].map((value) => toBig(value).mul(priceDivisor));
 
-  const hoursToExpiry = 6;
+  const hoursToExpiry = 4;
   const secondsToExpiry = 60 * 60 * hoursToExpiry;
 
   const [rawLowerOptionPrice, rawUpperOptionPrice] = await Promise.all([
@@ -87,9 +86,7 @@ export const optionBorrowRatesFetcher = async (
     rawUpperOptionPrice,
   ].map((value) => toBig(value).div(priceDivisor).toNumber());
 
-  // add high leverage multiplier if leverage > 250
-  const highLeverageMultiplier = 1 + 0.008 * (leverage - 250);
-  const borrowRateMultiplier = leverage > 250 ? highLeverageMultiplier : 1;
+  const borrowRateMultiplier = 2;
 
   const lowerOptionHourlyBorrowRate =
     (lowerOptionPrice / lowerStrikePrice / hoursToExpiry) *
