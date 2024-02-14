@@ -5,6 +5,7 @@ import { Footer } from "../../footer/components/Footer";
 import { Header } from "../../header/components/Header";
 import { LockPage } from "../../lock-page/components/LockPage";
 import { ProtectedPerpsPage } from "../../protected-perps-page/components/ProtectedPerpsPage";
+import { ReferralsPage } from "../../referral-page/components/ReferralsPage";
 import { Modal } from "../../shared/modal/components/Modal";
 import { VaultDetailsPage } from "../../vault-details-page/components/VaultDetailsPage";
 import { VaultsPage } from "../../vaults-page/components/VaultsPage";
@@ -66,6 +67,7 @@ export const Root = () => {
             }
             path={RoutePathname.LOCK}
           />
+          <Route element={<ReferralsPage />} path={RoutePathname.REFERRALS} />
           <Route
             element={<Navigate to={RoutePathname.PROTECTED_PERPS} />}
             path="*"

@@ -8,6 +8,7 @@ import {
   MenuList,
 } from "@chakra-ui/react";
 import { BiListUl, BiBarChartSquare, BiMapAlt } from "react-icons/bi";
+import { FaPeoplePulling } from "react-icons/fa6";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { SiGitbook } from "react-icons/si";
 import { Link } from "react-router-dom";
@@ -17,6 +18,7 @@ import { additionalNavigationLinks } from "../constants/navigationLinks";
 export const AdditionalNavigationButton = () => {
   const [
     dashboardLink,
+    referralsLink,
     documentationsLink,
     duneDashboardLink,
     zealyQuestsLink,
@@ -35,6 +37,11 @@ export const AdditionalNavigationButton = () => {
           <Link to={dashboardLink.href}>
             <MenuItem icon={<BiListUl size={20} />}>
               {dashboardLink.name}
+            </MenuItem>
+          </Link>
+          <Link to={referralsLink.href}>
+            <MenuItem icon={<FaPeoplePulling size={20} />}>
+              {referralsLink.name}
             </MenuItem>
           </Link>
         </MenuGroup>
