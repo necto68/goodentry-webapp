@@ -23,6 +23,10 @@ export const additionalNavigationLinks: NavigationLink[] = [
     href: RoutePathname.DASHBOARD,
   },
   {
+    name: "Referrals",
+    href: RoutePathname.REFERRALS,
+  },
+  {
     name: "Docs",
     href: "https://gitbook.goodentry.io/",
     isExternal: true,
