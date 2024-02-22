@@ -76,7 +76,7 @@ export const referralFetcher = async (
           getTokenQueryOptions(chainId, tokenAddress)
         );
         return {
-          reward: toBig(amount).div(getExp(decimals)).toNumber(),
+          reward: toBig(amount).div(getExp(decimals)),
 
           timestamp: toBig(BigInt(timeStamp).toString())
             .mul(getExp(3))

@@ -5,7 +5,7 @@ export const getReferralsQueryOptions = (
   account?: string,
   chainId?: number
 ) => ({
-  queryKey: [QueryType.HISTORY, account, chainId],
+  queryKey: [QueryType.REFERRAL_DATA, account, chainId],
   queryFn: async () => await referralFetcher(account, chainId),
   staleTime: 5000,
 });

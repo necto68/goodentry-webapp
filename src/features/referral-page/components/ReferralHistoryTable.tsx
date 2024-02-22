@@ -7,10 +7,8 @@ import {
   Paginator,
 } from "../../protected-perps-page/styles/HistoryTable";
 import { useReferralsQuery } from "../../queries/hooks/useReferralsQuery";
-import {
-  getFormattedDate,
-  getFormattedFullCurrency,
-} from "../../shared/helpers/baseFormatters";
+import { getFormattedDate } from "../../shared/helpers/baseFormatters";
+import { getFormattedTokenAmountWithSymbol } from "../../shared/helpers/formatters";
 import { Table } from "../../table/components/Table";
 import { getTruncatedAddress } from "../../web3/helpers/addresses";
 import { getExplorerLink } from "../../web3/helpers/getExplorerLink";
@@ -46,7 +44,7 @@ const columns: Column<ReferralHistoryItem>[] = [
     title: "Reward",
 
     render: ({ reward, token }) =>
-      `${getFormattedFullCurrency(reward)} ${token}`,
+      String(getFormattedTokenAmountWithSymbol(reward, token)),
   },
 ];
 
