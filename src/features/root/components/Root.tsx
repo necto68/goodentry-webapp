@@ -3,6 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { DashboardPage } from "../../dashboard-page/components/DashboardPage";
 import { Footer } from "../../footer/components/Footer";
 import { Header } from "../../header/components/Header";
+import { NotificationBar } from "../../header/components/NotificationBar";
 import { LockPage } from "../../lock-page/components/LockPage";
 import { ProtectedPerpsPage } from "../../protected-perps-page/components/ProtectedPerpsPage";
 import { ReferralsPage } from "../../referral-page/components/ReferralsPage";
@@ -15,9 +16,6 @@ import { CustomProviderLabel } from "../../wallet/types/CustomProviderLabel";
 import { Container, Content } from "../styles/Root";
 import { RoutePathname } from "../types/RoutePathname";
 
-// Use when notification bar needs to be displayed
-// import { NotificationBar } from "../../header/components/NotificationBar";
-
 export const Root = () => {
   useInjectedWalletAutoConnect(
     CustomProviderLabel.OKTO_WALLET,
@@ -28,7 +26,7 @@ export const Root = () => {
     <Container>
       <BrowserRouter>
         <Modal />
-        {/* <NotificationBar /> */}
+        <NotificationBar />
         <Header />
         <Routes>
           <Route
