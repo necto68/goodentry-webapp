@@ -26,7 +26,6 @@ export interface AssetPricesResponse {
 
 export interface AssetPrices {
   id: Pair["id"];
-  currentPrice: number;
   priceChange: number | null;
   highPrice: number | null;
   lowPrice: number | null;

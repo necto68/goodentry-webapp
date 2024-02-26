@@ -3,10 +3,7 @@ import { constants } from "ethers";
 import { toBig, getExp, getZero } from "../../shared/helpers/bigjs";
 import { getChainConfig } from "../../web3/helpers/getChainConfig";
 import { getProvider } from "../../web3/helpers/getProvider";
-import { getWrappedNativeCoinAddress } from "../../web3/helpers/getWrappedNativeCoinAddress";
 import { NATIVE_COIN_ADDRESS } from "../constants/nativeCoin";
-
-import { basePriceFetcher } from "./basePriceFetcher";
 
 import type { ChainId } from "../../web3/types/ChainId";
 import type { Token } from "../types/Token";
@@ -22,11 +19,8 @@ export const nativeCoinFetcher = async (
     nativeCurrency: { symbol },
   } = getChainConfig(chainId);
 
-  const wrappedNativeCoinAddress = getWrappedNativeCoinAddress(chainId);
-
-  const [rawBalance, price] = await Promise.all([
+  const [rawBalance] = await Promise.all([
     account ? provider.getBalance(account).then(toBig) : null,
-    basePriceFetcher(chainId, wrappedNativeCoinAddress),
   ]);
 
   const name = symbol;
@@ -45,6 +39,5 @@ export const nativeCoinFetcher = async (
     balance,
     allowance,
     totalSupply,
-    price,
   };
 };

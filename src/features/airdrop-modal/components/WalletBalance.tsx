@@ -1,7 +1,6 @@
 import { useGovernanceToken } from "../../lock-page/hooks/useGovernanceToken";
 import { useLockToken } from "../../lock-page/hooks/useLockToken";
-import { loadingPlaceholder } from "../../shared/constants/placeholders";
-import { getFormattedAmount } from "../../shared/helpers/baseFormatters";
+import { getFormattedTokenAmountWithSymbol } from "../../shared/helpers/formatters";
 import { TitleCell } from "../../table/components/TitleCell";
 import {
   Container,
@@ -16,19 +15,15 @@ export const WalletBalance = () => {
   const { symbol: governanceTokenSymbol, balance: governanceTokenBalance } =
     useGovernanceToken() ?? {};
 
-  const [formattedLockTokenBalanceValue, formattedGovernanceTokenBalanceValue] =
-    [lockTokenBalance, governanceTokenBalance].map((value) =>
-      value ? getFormattedAmount(value) : null
-    );
+  const formattedLockTokenBalance = getFormattedTokenAmountWithSymbol(
+    lockTokenBalance,
+    lockTokenSymbol
+  );
 
-  const formattedLockTokenBalance =
-    formattedLockTokenBalanceValue && lockTokenSymbol
-      ? `${formattedLockTokenBalanceValue} ${lockTokenSymbol}`
-      : loadingPlaceholder;
-  const formattedGovernanceTokenBalance =
-    formattedGovernanceTokenBalanceValue && governanceTokenSymbol
-      ? `${formattedGovernanceTokenBalanceValue} ${governanceTokenSymbol}`
-      : loadingPlaceholder;
+  const formattedGovernanceTokenBalance = getFormattedTokenAmountWithSymbol(
+    governanceTokenBalance,
+    governanceTokenSymbol
+  );
 
   return (
     <Container>

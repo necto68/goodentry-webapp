@@ -1,49 +1,89 @@
-import { pairConfigs } from "../../pair/constants/pairConfigs";
-import { areAddressesEqual } from "../../web3/helpers/addresses";
+import { getPositionManagerPairIdMap } from "../../pair/helpers/getPositionManagerPairIdMap";
+import { getExp, toBig } from "../../shared/helpers/bigjs";
+import { IGoodEntryPositionManager__factory as PositionManagerFactory } from "../../smart-contracts/types";
+import { getProvider } from "../../web3/helpers/getProvider";
 
-import { baseHistoryFetcher } from "./baseHistoryFetcher";
+import { basePositionFetcher } from "./basePositionFetcher";
+import { chainExplorerDataFetcher } from "./chainExplorerDataFetcher";
 
-import type { PositionHistory } from "../types/PositionHistory";
-import type { AccountData } from "../types/PositionsResponse";
+import type { ClosedPositionEventObject } from "../../smart-contracts/types/IGoodEntryPositionManager";
+import type { Log } from "../types/ChainExplorerResponse";
+import type { PositionHistoryItem } from "../types/PositionHistoryItem";
 
 export const historyFetcher = async (
-  account?: string
-): Promise<PositionHistory[] | null> => {
-  if (!account) {
+  account?: string,
+  chainId?: number
+): Promise<PositionHistoryItem[] | null> => {
+  if (!account || !chainId) {
     return null;
   }
 
-  const positionsURL = `https://roe.nicodeva.xyz/stats/arbitrum/tx/${account}.json`;
+  const provider = getProvider(chainId);
 
-  const positionsDataResponse = await fetch(positionsURL, {
-    cache: "no-store",
-  }).catch(() => null);
+  const positionManagerContract = PositionManagerFactory.connect("", provider);
 
-  if (!positionsDataResponse) {
-    return [];
-  }
+  const positionManagerContractInterface =
+    PositionManagerFactory.createInterface();
 
-  const rawPositionAccountData =
-    (await positionsDataResponse.json()) as AccountData;
-  const rawHistory = rawPositionAccountData.tx;
+  // eslint-disable-next-line new-cap
+  const filter = positionManagerContract.filters.ClosedPosition(account, null);
 
-  if (rawHistory.length === 0) {
-    return [];
-  }
+  let historicalData: Log[] = [];
 
-  const positionsPairIds = rawHistory.map(({ asset }) => {
-    const pairConfig = pairConfigs.find(({ tickersAddresses }) =>
-      tickersAddresses.some((ticker) => areAddressesEqual(ticker, asset))
+  try {
+    const { result } = await chainExplorerDataFetcher(
+      chainId,
+      filter.address,
+      filter.topics
     );
-    return pairConfig?.id ?? pairConfigs[0].id;
-  });
+
+    historicalData = result;
+  } catch {
+    return [];
+  }
+
+  const priceDivisor = getExp(8);
+
+  const positionManagerPairIdMap = getPositionManagerPairIdMap(chainId);
 
   return await Promise.all(
-    rawHistory
-      .map(
-        async (historyDto, index) =>
-          await baseHistoryFetcher(positionsPairIds[index], historyDto)
+    historicalData
+      .filter(({ address }) =>
+        Object.prototype.hasOwnProperty.call(positionManagerPairIdMap, address)
       )
+      .map(async (log) => {
+        const { data, address, transactionHash } = log;
+
+        const decodedHistory = positionManagerContractInterface.decodeEventLog(
+          positionManagerContractInterface.getEvent("ClosedPosition"),
+          data
+        ) as unknown as ClosedPositionEventObject;
+
+        const { tokenId, pnl: rawPnl } = decodedHistory;
+
+        const positionHistory = await basePositionFetcher(
+          positionManagerPairIdMap[address],
+          0,
+          toBig(tokenId).toNumber()
+        );
+
+        const { positionSide, pairId, entryPrice, timestamp, positionSize } =
+          positionHistory;
+
+        const amount = positionSize.toNumber();
+        const pnl = toBig(rawPnl).div(priceDivisor).toNumber();
+
+        return {
+          pnl,
+          amount,
+          pairId,
+          chainId,
+          timestamp,
+          entryPrice,
+          positionSide,
+          transactionHash,
+        };
+      })
       .reverse()
   );
 };

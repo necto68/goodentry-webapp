@@ -1,54 +1,41 @@
 import { Button } from "@chakra-ui/react";
 import { useCallback } from "react";
 
+import { usePair } from "../../protected-perps-page/hooks/usePair";
+import { loadingPlaceholder } from "../../shared/constants/placeholders";
 import { useModal } from "../../shared/modal/hooks/useModal";
 import { ModalType } from "../../shared/modal/types/ModalType";
-import { TradeModalType } from "../../trade-modal/types/TradeModalType";
-import { getTabTitle } from "../helpers/formatters";
-import { useTicker } from "../hooks/useTicker";
+import { getPositionSideTitle } from "../helpers/getPositionSideTitle";
+import { isPositionSideLong } from "../helpers/isPositionSideLong";
 import { useTradePanelState } from "../stores/useTradePanelState";
-import { TabType } from "../types/TabType";
 
 export const OpenTradeModalButton = () => {
   const { pushModal } = useModal();
-  const {
-    selectedTab,
-    selectedPairId,
-    selectedTickerAddress,
-    tickerTokenInputState,
-  } = useTradePanelState();
-  const ticker = useTicker(selectedPairId, selectedTickerAddress);
+  const { positionSide, pairId, quoteTokenInputState, leverage } =
+    useTradePanelState();
 
-  const isLongTab = selectedTab === TabType.LONG;
-  const { symbol = "" } = ticker ?? {};
+  const { baseTokenSymbol } = usePair(pairId) ?? {};
 
-  const modalType = TradeModalType.OPEN_POSITION;
+  const positionSideTitle = getPositionSideTitle(positionSide);
+  const symbol = baseTokenSymbol ?? loadingPlaceholder;
+
+  const isLong = isPositionSideLong(positionSide);
 
   const handleButtonClick = useCallback(() => {
     const modalState = {
-      selectedTab,
-      selectedPairId,
-      selectedTickerAddress,
-      tickerTokenInputState,
-      modalType,
+      positionSide,
+      pairId,
+      quoteTokenInputState,
+      leverage,
     };
 
-    pushModal(ModalType.TRADE, modalState);
-  }, [
-    pushModal,
-    selectedTab,
-    selectedPairId,
-    selectedTickerAddress,
-    tickerTokenInputState,
-    modalType,
-  ]);
-
-  const sideTitle = getTabTitle(selectedTab);
+    pushModal(ModalType.OPEN_POSITION, modalState);
+  }, [pushModal, positionSide, pairId, quoteTokenInputState, leverage]);
 
   return (
     <Button
       onClick={handleButtonClick}
-      variant={isLongTab ? "brand" : "error"}
-    >{`${sideTitle} ${symbol}`}</Button>
+      variant={isLong ? "brand" : "error"}
+    >{`${positionSideTitle} ${symbol}`}</Button>
   );
 };

@@ -8,7 +8,7 @@ export const Container = tw.div`flex flex-col justify-center items-center bg-bg-
   max-w-full min-w-full min-h-[314px]
   py-2 px-4 md:py-6 md:px-12 gap-2 transition duration-150 shadow-glow`;
 
-export const Content = tw.div`flex flex-col-reverse items-center sm:flex-row max-w-[1024px] w-full justify-between`;
+export const Content = tw.div`flex flex-col-reverse items-start sm:flex-row max-w-[1024px] w-full justify-between`;
 
 export const VaultBrief = tw.div`flex flex-col justify-between p-2 relative max-w-[478px] w-full gap-3`;
 
@@ -30,12 +30,16 @@ export const TokenIconRightMobile = tw.img`
    sm:hidden h-12 -translate-x-2
 `;
 
-export const VaultDefaultBody = tw.div`flex flex-col-reverse justify-center items-center md:items-start max-w-[1024px] md:flex-row p-4 md:p-8 gap-4`;
+export const VaultDefaultBody = tw.div`flex flex-col-reverse justify-center items-center w-full md:w-auto md:items-start max-w-[1024px] md:flex-row p-4 md:p-8 gap-4`;
 
-export const VaultDescription = tw.div`flex items-start gap-6 flex-col md:w-[calc(100% - 343px)]`;
+export const VaultDescription = tw.div`flex items-start gap-6 flex-col w-full md:w-[calc(100% - 343px)]`;
 
 export const VaultInfo = tw.div`flex flex-col gap-2`;
 
 export const Description = tw.p`
     text-text-gray
+`;
+
+export const VaultModalsContainer = tw.div`
+  flex flex-col gap-4
 `;

@@ -10,9 +10,4 @@ export interface Vault {
   isMaxCapReached: boolean;
   fee0: number;
   fee1: number;
-
-  supplyRate: number;
-  feesRate: number;
-  totalAnnualPercentageYield: number;
-  statsDivisor: Big;
 }

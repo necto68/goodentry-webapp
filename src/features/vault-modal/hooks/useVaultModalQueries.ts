@@ -1,4 +1,4 @@
-import { usePair } from "../../protected-perps-page/hooks/usePair";
+import { getPairConfig } from "../../pair/helpers/getPairConfig";
 import { NATIVE_COIN_ADDRESS } from "../../queries/constants/nativeCoin";
 import { useTokenQuery } from "../../queries/hooks/useTokenQuery";
 import { useVaultQuery } from "../../queries/hooks/useVaultQuery";
@@ -6,12 +6,16 @@ import { useVaultTokenQuery } from "../../queries/hooks/useVaultTokenQuery";
 import { getVaultConfig } from "../../vault/helpers/getVaultConfig";
 import { getChainMetadata } from "../../web3/helpers/getChainMetadata";
 
-export const useVaultModalQueries = (vaultId: string, vaultAddress: string) => {
-  const { chainId, pairId } = getVaultConfig(vaultId);
+export const useVaultModalQueries = (vaultId: string) => {
+  const {
+    chainId,
+    pairId,
+    addresses: { vault },
+  } = getVaultConfig(vaultId);
 
-  const pair = usePair(pairId);
-
-  const { token0Address = "", token1Address = "" } = pair ?? {};
+  const {
+    addresses: { baseToken, quoteToken },
+  } = getPairConfig(pairId);
 
   const {
     addresses: { vaultMigrationManager },
@@ -21,13 +25,13 @@ export const useVaultModalQueries = (vaultId: string, vaultAddress: string) => {
 
   const vaultTokenQuery = useVaultTokenQuery({
     chainId,
-    tokenAddress: vaultAddress,
-    spenderAddress: vaultAddress,
+    tokenAddress: vault,
+    spenderAddress: vault,
   });
 
   const migrationVaultTokenQuery = useVaultTokenQuery({
     chainId,
-    tokenAddress: vaultAddress,
+    tokenAddress: vault,
     spenderAddress: vaultMigrationManager,
   });
 
@@ -36,16 +40,16 @@ export const useVaultModalQueries = (vaultId: string, vaultAddress: string) => {
     tokenAddress: NATIVE_COIN_ADDRESS,
   });
 
-  const token0Query = useTokenQuery({
+  const baseTokenQuery = useTokenQuery({
     chainId,
-    tokenAddress: token0Address,
-    spenderAddress: vaultAddress,
+    tokenAddress: baseToken,
+    spenderAddress: vault,
   });
 
-  const token1Query = useTokenQuery({
+  const quoteTokenQuery = useTokenQuery({
     chainId,
-    tokenAddress: token1Address,
-    spenderAddress: vaultAddress,
+    tokenAddress: quoteToken,
+    spenderAddress: vault,
   });
 
   return {
@@ -53,7 +57,7 @@ export const useVaultModalQueries = (vaultId: string, vaultAddress: string) => {
     vaultTokenQuery,
     migrationVaultTokenQuery,
     nativeCoinQuery,
-    token0Query,
-    token1Query,
+    baseTokenQuery,
+    quoteTokenQuery,
   };
 };

@@ -1,10 +1,14 @@
-import { pairConfigs } from "../../pair/constants/pairConfigs";
-import { areAddressesEqual } from "../../web3/helpers/addresses";
+import { getPairConfig } from "../../pair/helpers/getPairConfig";
+import { getPairIds } from "../../pair/helpers/getPairIds";
+import { queryClient } from "../../shared/constants/queryClient";
+import { toBig } from "../../shared/helpers/bigjs";
+import { IGoodEntryPositionManager__factory as PositionManagerFactory } from "../../smart-contracts/types";
+import { getProvider } from "../../web3/helpers/getProvider";
+import { getPairPricesQueryOptions } from "../query-options-getters/getPairPricesQueryOptions";
 
 import { basePositionFetcher } from "./basePositionFetcher";
 
 import type { Position } from "../types/Position";
-import type { AccountData } from "../types/PositionsResponse";
 
 export const positionsFetcher = async (
   account?: string
@@ -13,48 +17,58 @@ export const positionsFetcher = async (
     return null;
   }
 
-  const positionsURL = `https://roe.nicodeva.xyz/stats/arbitrum/tx/${account}.json`;
+  const pairIds = getPairIds();
 
-  const positionsDataResponse = await fetch(positionsURL, {
-    cache: "no-store",
-  }).catch(() => null);
+  const pairPositionsConfigs = await Promise.all(
+    pairIds.map(async (pairId) => {
+      const {
+        chainId,
+        addresses: { positionManager },
+      } = getPairConfig(pairId);
 
-  if (!positionsDataResponse) {
-    return [];
-  }
+      const provider = getProvider(chainId);
 
-  const rawPositionAccountData =
-    (await positionsDataResponse.json()) as AccountData;
-  const rawPositions = rawPositionAccountData.status;
+      const positionManagerContract = PositionManagerFactory.connect(
+        positionManager,
+        provider
+      );
 
-  const positionsData = Object.keys(rawPositions)
-    .map((tickerAddress) => ({
-      tickerAddress,
-      positionData: rawPositions[tickerAddress],
-    }))
-    .filter(({ positionData }) => Number.parseFloat(positionData.debt) !== 0);
+      const [{ baseTokenPrice }, rawPositionsLength] = await Promise.all([
+        queryClient.fetchQuery(getPairPricesQueryOptions(pairId)),
+        positionManagerContract.balanceOf(account),
+      ]);
+      const positionsLength = toBig(rawPositionsLength).toNumber();
 
-  if (positionsData.length === 0) {
-    return [];
-  }
+      const positionsIds = await Promise.all(
+        Array.from({ length: positionsLength }, async (item, index) => {
+          const rawPositionId =
+            await positionManagerContract.tokenOfOwnerByIndex(account, index);
 
-  const positionsPairIds = positionsData.map(({ positionData }) => {
-    const lendingPoolAddress = positionData.vault;
-    const pairConfig = pairConfigs.find(({ addresses }) =>
-      areAddressesEqual(addresses.lendingPool, lendingPoolAddress)
-    );
-    return pairConfig?.id ?? pairConfigs[0].id;
-  });
+          return toBig(rawPositionId).toNumber();
+        })
+      );
+
+      return {
+        pairId,
+        baseTokenPrice,
+        positionsIds,
+      };
+    })
+  );
+
+  const positionConfigs = pairPositionsConfigs.flatMap(
+    ({ pairId, baseTokenPrice, positionsIds }) =>
+      positionsIds.map((positionId) => ({
+        pairId,
+        baseTokenPrice,
+        positionId,
+      }))
+  );
 
   return await Promise.all(
-    positionsData.map(
-      async ({ tickerAddress, positionData }, index) =>
-        await basePositionFetcher(
-          positionsPairIds[index],
-          tickerAddress,
-          positionData,
-          account
-        )
+    positionConfigs.map(
+      async ({ pairId, baseTokenPrice, positionId }) =>
+        await basePositionFetcher(pairId, baseTokenPrice, positionId)
     )
   );
 };

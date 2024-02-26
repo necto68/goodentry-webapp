@@ -1,5 +1,6 @@
+import { usePair } from "../../protected-perps-page/hooks/usePair";
+import { usePairPrices } from "../../protected-perps-page/hooks/usePairPrices";
 import { getFormattedNumber } from "../../shared/helpers/baseFormatters";
-import { usePairDetailsState } from "../hooks/usePairDetailsState";
 import {
   Container,
   TitleContainer,
@@ -17,23 +18,20 @@ interface PairDetailsProps {
 }
 
 export const PairDetails: FC<PairDetailsProps> = ({ pairId }) => {
-  const { pair, assetPrices, collateralTokens } = usePairDetailsState(pairId);
+  const { title, baseTokenSymbol, quoteTokenSymbol } = usePair(pairId) ?? {};
+  const { baseTokenPrice } = usePairPrices(pairId) ?? {};
 
-  const { title } = pair ?? {};
-  const { currentPrice = 0 } = assetPrices ?? {};
-
-  const [token0Symbol, token1Symbol] = collateralTokens.map(
-    (collateralToken) => collateralToken?.symbol
-  );
-
-  const formattedCurrentPrice = getFormattedNumber(currentPrice);
+  const formattedBaseTokenPrice = baseTokenPrice
+    ? getFormattedNumber(baseTokenPrice)
+    : null;
 
   return (
     <Container>
       <TitleContainer>
         <Title>{title}</Title>
         <Price>
-          Price: 1 {token0Symbol} = {formattedCurrentPrice} {token1Symbol}
+          Price: 1 {baseTokenSymbol} = {formattedBaseTokenPrice}{" "}
+          {quoteTokenSymbol}
         </Price>
       </TitleContainer>
       <TableContainer>

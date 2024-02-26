@@ -1,7 +1,9 @@
 import tw from "twin.macro";
 
+import { InfoTitle, InfoValue } from "../../shared/modal/styles/ModalInfo";
+
 export const Container = tw.div`flex flex-col justify-center bg-bg-primary sm:min-w-[302px] w-[25%] sm:max-w-[24%]
-  hover:border-brand max-w-full min-w-full
+  hover:border-brand max-w-full min-w-full min-h-[400px]
   rounded border border-bg-secondary p-2 gap-4 transition duration-150 hover:shadow-glow`;
 
 export const TagContainer = tw.div`
@@ -28,16 +30,12 @@ export const VaultInfo = tw.div`
     flex flex-col gap-4
 `;
 
-export const InfoRow = tw.div`
-    flex justify-between
+export const InfoDescription = tw(InfoTitle)`
+   flex items-center gap-2 text-text-blueGray
 `;
 
-export const InfoDescription = tw.h3`
-    flex gap-2 items-center text-text-blueGray
-`;
-
-export const InfoValue = tw.h3`
-    flex flex-col text-white
+export const InfoValueBold = tw(InfoValue)`
+    text-xl font-bold
 `;
 
 export const InfoValueBrand = tw.h3`
@@ -47,3 +45,5 @@ export const InfoValueBrand = tw.h3`
 export const Separator = tw.div`
   flex border-b border-bg-secondary
 `;
+
+export const NoTag = tw.div`h-7`;

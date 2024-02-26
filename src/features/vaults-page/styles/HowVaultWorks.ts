@@ -3,6 +3,7 @@ import tw from "twin.macro";
 export const Container = tw.div`
   flex flex-col justify-center items-center gap-8
   max-w-[625px]
+  max-h-[400px]
   p-4
   bg-bg-primary
   rounded
@@ -28,4 +29,4 @@ export const Description = tw.span`
   font-medium
 `;
 
-export const DescriptionImage = tw.img`max-w-[530px] w-full`;
+export const DescriptionImage = tw.img`w-[80%]`;

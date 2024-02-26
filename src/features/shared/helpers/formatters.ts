@@ -1,3 +1,4 @@
+import { getDurationBetweenTimestamps } from "../../public-sale-page/helpers/getDurationBetweenTimestamps";
 import {
   loadingPlaceholder,
   notAvailablePlaceholder,
@@ -6,183 +7,22 @@ import {
 import {
   getFormattedAmount,
   getFormattedAPY,
+  getFormattedDurationParts,
   getFormattedFullCurrency,
 } from "./baseFormatters";
-import { getZero } from "./bigjs";
 
-import type { TokenData } from "../../queries/types/Token";
 import type Big from "big.js";
 
-export const getFormattedTotalCollateral = (
-  collateralToken0: TokenData,
-  collateralToken1: TokenData
-) => {
-  if (collateralToken0 === undefined || collateralToken1 === undefined) {
+export const getFormattedPrice = (price: number | null | undefined) => {
+  if (price === undefined) {
     return loadingPlaceholder;
   }
 
-  const collateralToken0Balance = collateralToken0.balance;
-  const collateralToken1Balance = collateralToken1.balance;
-
-  if (collateralToken0Balance === null || collateralToken1Balance === null) {
+  if (price === null) {
     return notAvailablePlaceholder;
   }
 
-  const formattedToken0Balance = getFormattedAmount(collateralToken0Balance);
-  const formattedToken1Balance = getFormattedAmount(collateralToken1Balance);
-
-  const collateralPrice = collateralToken0Balance
-    .mul(collateralToken0.price)
-    .add(collateralToken1Balance.mul(collateralToken1.price));
-
-  const formattedCollateralPrice = getFormattedFullCurrency(
-    collateralPrice.toNumber()
-  );
-
-  const formattedToken0 = `${formattedToken0Balance} ${collateralToken0.symbol}`;
-  const formattedToken1 = `${formattedToken1Balance} ${collateralToken1.symbol}`;
-
-  if (collateralToken0Balance.gt(0) && collateralToken1Balance.gt(0)) {
-    return `${formattedToken0} + ${formattedToken1} (${formattedCollateralPrice})`;
-  }
-
-  if (collateralToken0Balance.gt(0)) {
-    return `${formattedToken0} (${formattedCollateralPrice})`;
-  }
-
-  // show collateral in USDC, by default
-  return `${formattedToken1} (${formattedCollateralPrice})`;
-};
-
-export const getAvailableMargin = (
-  availableCollateral: Big,
-  maxLeverage: number
-) => availableCollateral.mul(maxLeverage);
-
-export const getFormattedAvailableMargin = (
-  availableCollateral: Big | null | undefined,
-  maxLeverage: number | null | undefined,
-  isRounded = false
-) => {
-  if (availableCollateral === undefined || maxLeverage === undefined) {
-    return loadingPlaceholder;
-  }
-
-  if (availableCollateral === null || maxLeverage === null) {
-    return notAvailablePlaceholder;
-  }
-
-  const availableMarginValue = getAvailableMargin(
-    availableCollateral,
-    maxLeverage
-  );
-
-  return getFormattedFullCurrency(
-    availableMarginValue.toNumber(),
-    isRounded ? { maximumFractionDigits: 0 } : undefined
-  );
-};
-
-export const getFormattedEquity = (totalCollateral: Big | null | undefined) => {
-  if (totalCollateral === undefined) {
-    return loadingPlaceholder;
-  }
-
-  if (totalCollateral === null) {
-    return notAvailablePlaceholder;
-  }
-
-  return getFormattedFullCurrency(totalCollateral.toNumber());
-};
-
-export const getMarginUsage = (
-  totalCollateral: Big,
-  totalDebt: Big,
-  liquidationThreshold: number
-) =>
-  totalCollateral.gt(0) && liquidationThreshold > 0
-    ? totalDebt.div(totalCollateral).div(liquidationThreshold)
-    : getZero();
-
-export const getFormattedMarginUsage = (
-  totalCollateral: Big | null | undefined,
-  totalDebt: Big | null | undefined,
-  liquidationThreshold: number | null | undefined,
-  isRounded = false
-) => {
-  if (
-    totalCollateral === undefined ||
-    totalDebt === undefined ||
-    liquidationThreshold === undefined
-  ) {
-    return loadingPlaceholder;
-  }
-
-  if (
-    totalCollateral === null ||
-    totalDebt === null ||
-    liquidationThreshold === null
-  ) {
-    return notAvailablePlaceholder;
-  }
-
-  const marginUsage = getMarginUsage(
-    totalCollateral,
-    totalDebt,
-    liquidationThreshold
-  );
-
-  return getFormattedAPY(
-    marginUsage.toNumber(),
-    isRounded ? { minimumFractionDigits: 0 } : undefined
-  );
-};
-
-export const getFormattedTickerTitle = (
-  symbol: string | undefined,
-  strikePrice: number | undefined
-) => {
-  if (symbol === undefined || strikePrice === undefined) {
-    return loadingPlaceholder;
-  }
-
-  return `${symbol}-${strikePrice}`;
-};
-
-export const getFormattedTickerStrikePrice = (
-  strikePrice: number | undefined
-) => {
-  if (strikePrice === undefined) {
-    return loadingPlaceholder;
-  }
-
-  return getFormattedFullCurrency(strikePrice);
-};
-
-export const getFormattedTickerBorrowRate = (
-  borrowRatePerHour: number | undefined
-) => {
-  if (borrowRatePerHour === undefined) {
-    return loadingPlaceholder;
-  }
-
-  return getFormattedAPY(borrowRatePerHour, {
-    minimumFractionDigits: 4,
-  });
-};
-
-export const getFormattedCurrentPrice = (
-  currentPrice: number | null | undefined
-) => {
-  if (currentPrice === undefined) {
-    return loadingPlaceholder;
-  }
-
-  if (currentPrice === null) {
-    return notAvailablePlaceholder;
-  }
-
-  return getFormattedFullCurrency(currentPrice);
+  return getFormattedFullCurrency(price);
 };
 
 export const getFormattedTokenAmount = (amount: Big | null | undefined) => {
@@ -195,4 +35,77 @@ export const getFormattedTokenAmount = (amount: Big | null | undefined) => {
   }
 
   return getFormattedAmount(amount);
+};
+
+export const getFormattedTokenAmountWithSymbol = (
+  amount: Big | null | undefined,
+  symbol: string | undefined
+) => {
+  if (amount === undefined || symbol === undefined) {
+    return loadingPlaceholder;
+  }
+
+  const formattedAmount =
+    amount === null ? notAvailablePlaceholder : getFormattedAmount(amount);
+
+  return `${formattedAmount} ${symbol}`;
+};
+
+export const getFormattedBorrowRate = (
+  borrowRate: number | null | undefined
+) => {
+  if (borrowRate === undefined) {
+    return loadingPlaceholder;
+  }
+
+  if (borrowRate === null) {
+    return notAvailablePlaceholder;
+  }
+
+  return getFormattedAPY(borrowRate, {
+    minimumFractionDigits: 4,
+  });
+};
+
+export const getFormattedRunway = (
+  runwayInSeconds: number | null | undefined
+) => {
+  if (runwayInSeconds === undefined) {
+    return loadingPlaceholder;
+  }
+
+  if (runwayInSeconds === null) {
+    return notAvailablePlaceholder;
+  }
+
+  const toTimestamp = runwayInSeconds * 1000;
+  const runwayDuration = getDurationBetweenTimestamps(0, toTimestamp);
+
+  const { days, hours, minutes, seconds } = runwayDuration;
+
+  const [formattedDays, formattedHours, formattedMinutes] =
+    getFormattedDurationParts(days, hours, minutes, seconds);
+
+  const parts = [
+    days > 0 ? `${formattedDays}d` : null,
+    hours > 0 ? `${formattedHours}h` : null,
+    minutes > 0 ? `${formattedMinutes}m` : null,
+  ];
+
+  return parts.filter(Boolean).join(" ");
+};
+
+export const getFormattedOpenInterest = (
+  openInterest: Big | undefined,
+  maxOpenInterest: Big | undefined
+) => {
+  if (openInterest === undefined || maxOpenInterest === undefined) {
+    return loadingPlaceholder;
+  }
+
+  const openInterestValue = openInterest.lt(maxOpenInterest)
+    ? openInterest.div(maxOpenInterest).toNumber()
+    : 1;
+
+  return getFormattedAPY(openInterestValue);
 };

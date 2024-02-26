@@ -1,6 +1,7 @@
 import { Button } from "@chakra-ui/react";
 import { useCallback } from "react";
 
+import { SuccessfulMainButton } from "../../form-components/components/SuccessfulMainButton";
 import { TransactionErrorMainButton } from "../../form-components/components/TransactionErrorMainButton";
 import { toTokenAmount } from "../../input-card/helpers/tokenAmount";
 import { getZero } from "../../shared/helpers/bigjs";
@@ -11,14 +12,14 @@ import { useVaultModalTransactions } from "../stores/useVaultModalTransactions";
 import { TabType } from "../types/TabType";
 
 export const VaultActionButton = () => {
-  const { selectedTab, vaultAddress, vaultId } = useVaultModalState();
+  const { selectedTab, vaultId } = useVaultModalState();
   const isDepositTab = selectedTab === TabType.DEPOSIT;
 
   const { depositTransaction, withdrawTransaction } =
     useVaultModalTransactions();
 
-  const { vaultQuery, nativeCoinQuery, token0Query, token1Query } =
-    useVaultModalQueries(vaultId, vaultAddress);
+  const { vaultQuery, nativeCoinQuery, baseTokenQuery, quoteTokenQuery } =
+    useVaultModalQueries(vaultId);
 
   const { tokenData, inputValueBig } = useVaultModalTokenInputState();
 
@@ -30,14 +31,13 @@ export const VaultActionButton = () => {
   const dependantQueries = [
     vaultQuery,
     nativeCoinQuery,
-    token0Query,
-    token1Query,
+    baseTokenQuery,
+    quoteTokenQuery,
   ];
 
-  const [title, loadingTitle] =
-    selectedTab === TabType.DEPOSIT
-      ? ["Deposit", "Depositing..."]
-      : ["Withdraw", "Withdrawing..."];
+  const [title, loadingTitle] = isDepositTab
+    ? ["Deposit", "Depositing..."]
+    : ["Withdraw", "Withdrawing..."];
 
   const handleButtonClick = useCallback(() => {
     if (tokenData) {
@@ -48,10 +48,18 @@ export const VaultActionButton = () => {
     }
   }, [tokenData, inputValueBig, runTransaction]);
 
-  const { isError, isLoading } = mutation;
+  const { isSuccess, isError, isLoading } = mutation;
   const isDisabled =
     inputValueBig.lte(getZero()) ||
     dependantQueries.some((query) => query.isLoading);
+
+  if (isSuccess) {
+    const successTitle = isDepositTab
+      ? "Deposit Successful"
+      : "Withdraw Successful";
+
+    return <SuccessfulMainButton title={successTitle} />;
+  }
 
   if (isError) {
     return <TransactionErrorMainButton resetTransaction={resetTransaction} />;

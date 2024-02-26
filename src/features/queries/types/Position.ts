@@ -1,19 +1,19 @@
-import type { Ticker } from "./Ticker";
-import type { PairConfig } from "../../pair/types/PairConfig";
+import type { PositionSide } from "../../trade-panel/types/PositionSide";
 import type Big from "big.js";
 
-export enum PositionSide {
-  LONG = "LONG",
-  SHORT = "SHORT",
-}
 export interface Position {
-  id: string;
-  pairId: PairConfig["id"];
-  ticker: Ticker;
-  side: PositionSide;
-  size: Big;
+  id: number;
+  pairId: string;
+  timestamp: number;
+  positionSide: PositionSide;
   entryPrice: number;
-  profitAndLossValue: Big;
-  token0Amount: Big;
-  token1Amount: Big;
+  initialCollateral: Big;
+  leverage: number;
+  positionSize: Big;
+  optionHourlyBorrowRate: number;
+  runwayInSeconds: number;
+  profitAndLoss: number;
+  profitAndLossPercentage: number;
+  feesAccumulated: Big;
+  feesMin: Big;
 }

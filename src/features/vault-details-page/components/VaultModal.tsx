@@ -1,9 +1,9 @@
 import { useParams } from "react-router-dom";
 
-import { EzVaultMigrationModalRoot } from "../../ez-vault-modal/components/EzVaultMigrationModalRoot";
-import { EzVaultModalRoot } from "../../ez-vault-modal/components/EzVaultModalRoot";
 import { getVaultConfig } from "../../vault/helpers/getVaultConfig";
 import { VaultStatus } from "../../vault/types/VaultStatus";
+import { VaultMigrationModalRoot } from "../../vault-modal/components/VaultMigrationModalRoot";
+import { VaultModalRoot } from "../../vault-modal/components/VaultModalRoot";
 import { TabType } from "../../vault-modal/types/TabType";
 import { Container } from "../styles/VaultModal";
 
@@ -14,9 +14,9 @@ export const VaultModal = () => {
   return (
     <Container>
       {status === VaultStatus.DEPRECATED ? (
-        <EzVaultMigrationModalRoot vaultId={vaultId} />
+        <VaultMigrationModalRoot vaultId={vaultId} />
       ) : (
-        <EzVaultModalRoot defaultTabType={TabType.DEPOSIT} vaultId={vaultId} />
+        <VaultModalRoot defaultTabType={TabType.DEPOSIT} vaultId={vaultId} />
       )}
     </Container>
   );

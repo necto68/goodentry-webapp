@@ -4,15 +4,15 @@ import { useParams } from "react-router-dom";
 import { getImageSourceBySymbol } from "../../icons/helpers/getImageSourceBySymbol";
 import { usePair } from "../../protected-perps-page/hooks/usePair";
 import { loadingPlaceholder } from "../../shared/constants/placeholders";
+import { InfoRow } from "../../shared/modal/styles/ModalInfo";
 import { formatNumberWithSuffix } from "../../vault/helpers/formatNumberWithSuffix";
 import { getVaultConfig } from "../../vault/helpers/getVaultConfig";
 import { VaultStatus } from "../../vault/types/VaultStatus";
-import { MigrationTag } from "../../vaults-page/components/MigrationTag";
 import { RewardsTag } from "../../vaults-page/components/RewardsTag";
 import {
   InfoDescription,
-  InfoRow,
-  InfoValue,
+  InfoValueBold,
+  NoTag,
   VaultInfo,
 } from "../../vaults-page/styles/VaultCard";
 import { useVault } from "../hooks/useVault";
@@ -35,25 +35,22 @@ export const VaultDetailsHeader = () => {
 
   const vault = useVault(vaultId);
 
-  const { title, token0Symbol, token1Symbol } = usePair(pairId) ?? {};
+  const { title, baseTokenSymbol, quoteTokenSymbol } = usePair(pairId) ?? {};
 
-  const { totalValueLocked, totalValueLockedCap } = vault ?? {};
+  const { totalValueLocked } = vault ?? {};
 
   const formattedTvl = totalValueLocked
     ? formatNumberWithSuffix(totalValueLocked)
     : loadingPlaceholder;
 
-  const formattedMaxTvl = totalValueLockedCap
-    ? formatNumberWithSuffix(totalValueLockedCap)
-    : loadingPlaceholder;
+  const [baseTokenIcon, quoteTokenIcon] = [
+    baseTokenSymbol,
+    quoteTokenSymbol,
+  ].map((symbol) => {
+    const imageSource = symbol ? getImageSourceBySymbol(symbol) : null;
 
-  const [token0Icon, token1Icon] = [token0Symbol, token1Symbol].map(
-    (symbol) => {
-      const imageSource = symbol ? getImageSourceBySymbol(symbol) : null;
-
-      return imageSource ?? undefined;
-    }
-  );
+    return imageSource ?? undefined;
+  });
 
   return (
     <Wrapper>
@@ -61,46 +58,42 @@ export const VaultDetailsHeader = () => {
         <Content>
           <VaultBrief>
             <Flex>
-              {status === VaultStatus.DEPRECATED ? (
-                <MigrationTag />
-              ) : (
+              {status === VaultStatus.ACTIVE_REWARDS ? (
                 <RewardsTag />
+              ) : (
+                <NoTag />
               )}
             </Flex>
             <PairTitle>
               {title}
               <TokenIconLeftMobile
-                alt={token0Symbol}
+                alt={baseTokenSymbol}
                 draggable={false}
-                src={token0Icon}
+                src={baseTokenIcon}
               />
               <TokenIconRightMobile
-                alt={token1Symbol}
+                alt={quoteTokenSymbol}
                 draggable={false}
-                src={token1Icon}
+                src={quoteTokenIcon}
               />
             </PairTitle>
             <VaultInfo>
               <InfoRow>
                 <InfoDescription>Current Deposits</InfoDescription>
-                <InfoValue>{formattedTvl}</InfoValue>
-              </InfoRow>
-              <InfoRow>
-                <InfoDescription>Max Capacity</InfoDescription>
-                <InfoValue>{formattedMaxTvl}</InfoValue>
+                <InfoValueBold>{formattedTvl}</InfoValueBold>
               </InfoRow>
             </VaultInfo>
           </VaultBrief>
           <Flex alignItems="center">
             <TokenIconLeft
-              alt={token0Symbol}
+              alt={baseTokenSymbol}
               draggable={false}
-              src={token0Icon}
+              src={baseTokenIcon}
             />
             <TokenIconRight
-              alt={token1Symbol}
+              alt={quoteTokenSymbol}
               draggable={false}
-              src={token1Icon}
+              src={quoteTokenIcon}
             />
           </Flex>
         </Content>

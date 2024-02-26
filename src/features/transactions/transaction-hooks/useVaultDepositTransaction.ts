@@ -24,6 +24,7 @@ export const useVaultDepositTransaction = (
     vaultAddress,
     getDefaultProvider()
   );
+
   const method = "deposit";
 
   const { mutation, resetTransaction, transactionHash } = useBaseTransaction(

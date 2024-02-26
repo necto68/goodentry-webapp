@@ -1,10 +1,8 @@
 import { Slider, SliderFilledTrack, SliderTrack } from "@chakra-ui/react";
 
 import { loadingPlaceholder } from "../../shared/constants/placeholders";
-import {
-  getFormattedAmount,
-  getFormattedAPY,
-} from "../../shared/helpers/baseFormatters";
+import { getFormattedAPY } from "../../shared/helpers/baseFormatters";
+import { getFormattedTokenAmount } from "../../shared/helpers/formatters";
 import { usePublicSaleData } from "../hooks/usePublicSaleData";
 import { usePublicSaleToken } from "../hooks/usePublicSaleToken";
 import { Container, TitleContainer, Title, Value } from "../styles/ProgressBar";
@@ -27,7 +25,7 @@ export const ProgressBar = () => {
     : loadingPlaceholder;
 
   const formattedSaleTokenCap = saleTokenCap
-    ? getFormattedAmount(saleTokenCap)
+    ? getFormattedTokenAmount(saleTokenCap)
     : null;
 
   return (

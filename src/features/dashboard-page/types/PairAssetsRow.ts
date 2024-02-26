@@ -1,23 +1,14 @@
-import type { Token } from "../../queries/types/Token";
+import type { VaultToken } from "../../queries/types/VaultToken";
 
 export enum AssetRowType {
-  COLLATERAL_TOKEN = "COLLATERAL_TOKEN",
   VAULT_TOKEN = "VAULT_TOKEN",
 }
 
-export interface BaseAssetRow {
-  token: Token;
-  annualPercentageRate: number;
-}
-export interface CollateralTokenAssetRow extends BaseAssetRow {
-  type: AssetRowType.COLLATERAL_TOKEN;
-  pairId: string;
-}
-
-export interface VaultTokenAssetRow extends BaseAssetRow {
+export interface VaultTokenAssetRow {
   type: AssetRowType.VAULT_TOKEN;
   vaultId: string;
-  collateralTokens: [Token, Token];
+  vaultToken: VaultToken;
+  annualPercentageRate: number;
 }
 
-export type PairAssetRow = CollateralTokenAssetRow | VaultTokenAssetRow;
+export type PairAssetRow = VaultTokenAssetRow;

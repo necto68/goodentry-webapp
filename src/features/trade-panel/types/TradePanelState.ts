@@ -1,12 +1,12 @@
-import type { TabType } from "./TabType";
+import type { PositionSide } from "./PositionSide";
 import type { TokenInputState } from "../../input-card/types/TokenInputState";
 import type { PairConfig } from "../../pair/types/PairConfig";
 
 export interface TradePanelState {
-  selectedTab: TabType;
-  setSelectedTab: (tab: TabType) => void;
-  selectedPairId: PairConfig["id"];
-  selectedTickerAddress: string | null;
-  setSelectedTickerAddress: (tickerAddress: string | null) => void;
-  tickerTokenInputState: TokenInputState;
+  positionSide: PositionSide;
+  setPositionSide: (positionSide: PositionSide) => void;
+  pairId: PairConfig["id"];
+  quoteTokenInputState: TokenInputState;
+  leverage: number;
+  setLeverage: (leverage: number) => void;
 }

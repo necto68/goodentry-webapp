@@ -6,14 +6,12 @@ import {
   useState,
 } from "react";
 
-import { usePairLendingPool } from "../../ge-wallet/hooks/usePairLendingPool";
 import { defaultTokenInputState } from "../../input-card/constants/defaultTokenInputState";
 import { useTokenInputState } from "../../input-card/hooks/useTokenInputState";
-import { useSelectedPairIdStore } from "../../protected-perps-page/stores/useSelectedPairIdStore";
-import { getTickerAsTokenData } from "../helpers/getTickerAsTokenData";
-import { useFilteredTickersByPrice } from "../hooks/useFilteredTickersByPrice";
-import { useTicker } from "../hooks/useTicker";
-import { TabType } from "../types/TabType";
+import { usePairIdStore } from "../../protected-perps-page/stores/usePairIdStore";
+import { defaultLeverageStep } from "../constants/leverageSteps";
+import { useTradePanelQueries } from "../hooks/useTradePanelQueries";
+import { PositionSide } from "../types/PositionSide";
 
 import type { TradePanelState } from "../types/TradePanelState";
 import type { ReactNode, FC } from "react";
@@ -23,89 +21,68 @@ interface TradePanelStateProviderProps {
 }
 
 export const TradePanelStateContext = createContext<TradePanelState>({
-  selectedTab: TabType.LONG,
-  setSelectedTab: () => undefined,
-  selectedPairId: "",
-  selectedTickerAddress: null,
-  setSelectedTickerAddress: () => undefined,
-  tickerTokenInputState: defaultTokenInputState,
+  positionSide: PositionSide.LONG,
+  setPositionSide: () => undefined,
+  pairId: "",
+  quoteTokenInputState: defaultTokenInputState,
+  leverage: defaultLeverageStep,
+  setLeverage: () => undefined,
 });
 
 export const TradePanelStateProvider: FC<TradePanelStateProviderProps> = ({
   children,
 }) => {
-  const { selectedPairId: storeSelectedPairId } = useSelectedPairIdStore();
+  const { pairId: storePairId } = usePairIdStore();
 
-  const [rawSelectedPairId, setRawSelectedPairId] =
-    useState(storeSelectedPairId);
-  const [rawSelectedTab, setRawSelectedTab] = useState(TabType.LONG);
-  const [rawSelectedTickerAddress, setRawSelectedTickerAddress] = useState<
-    string | null
-  >(null);
+  const [rawPairId, setRawPairId] = useState(storePairId);
+  const [rawPositionSide, setRawPositionSide] = useState(PositionSide.LONG);
+  const [leverage, setLeverage] = useState(defaultLeverageStep);
 
-  const ticker = useTicker(rawSelectedPairId, rawSelectedTickerAddress);
-  const lendingPool = usePairLendingPool(rawSelectedPairId);
-  const tickerToken = getTickerAsTokenData(ticker, lendingPool);
+  const { quoteTokenQuery } = useTradePanelQueries(rawPairId);
+  const quoteTokenData = quoteTokenQuery.data;
 
-  const tickerTokenInputState = useTokenInputState([tickerToken]);
+  const quoteTokenInputState = useTokenInputState([quoteTokenData]);
 
-  const filteredTickers = useFilteredTickersByPrice();
-  const firstTickerAddress = filteredTickers[0]?.address;
+  const pairId = rawPairId;
 
-  const selectedPairId = rawSelectedPairId;
-
-  const selectedTab = rawSelectedTab;
-  const setSelectedTab = useCallback(
-    (nextSelectedTab: TradePanelState["selectedTab"]) => {
-      tickerTokenInputState.resetState();
-      setRawSelectedTab(nextSelectedTab);
+  const positionSide = rawPositionSide;
+  const setPositionSide = useCallback(
+    (nextPositionSide: TradePanelState["positionSide"]) => {
+      quoteTokenInputState.resetState();
+      setLeverage(defaultLeverageStep);
+      setRawPositionSide(nextPositionSide);
     },
-    [tickerTokenInputState, setRawSelectedTab]
-  );
-
-  const selectedTickerAddress = rawSelectedTickerAddress;
-  const setSelectedTickerAddress = useCallback(
-    (nextSelectedTickerAddress: TradePanelState["selectedTickerAddress"]) => {
-      tickerTokenInputState.resetState();
-      setRawSelectedTickerAddress(nextSelectedTickerAddress);
-    },
-    [tickerTokenInputState, setRawSelectedTickerAddress]
+    [quoteTokenInputState, setRawPositionSide]
   );
 
   // TODO: remove this useEffect
-  //  when we have a better way to manage state for selectedPairId
+  //  when we have a better way to manage state for pairId
   useEffect(() => {
-    if (selectedPairId !== storeSelectedPairId) {
-      setRawSelectedPairId(storeSelectedPairId);
-      setRawSelectedTab(TabType.LONG);
-      setRawSelectedTickerAddress(null);
+    if (pairId !== storePairId) {
+      setRawPairId(storePairId);
+      setRawPositionSide(PositionSide.LONG);
 
-      tickerTokenInputState.resetState();
+      quoteTokenInputState.resetState();
+      setLeverage(defaultLeverageStep);
     }
-  }, [selectedPairId, storeSelectedPairId, tickerTokenInputState]);
-
-  useEffect(() => {
-    if (!rawSelectedTickerAddress && firstTickerAddress) {
-      setSelectedTickerAddress(firstTickerAddress);
-    }
-  }, [rawSelectedTickerAddress, firstTickerAddress, setSelectedTickerAddress]);
+  }, [pairId, storePairId, quoteTokenInputState]);
 
   const value = useMemo(
     () => ({
-      selectedTab,
-      setSelectedTab,
-      selectedPairId,
-      selectedTickerAddress,
-      setSelectedTickerAddress,
-      tickerTokenInputState,
+      positionSide,
+      setPositionSide,
+      pairId,
+      quoteTokenInputState,
+      leverage,
+      setLeverage,
     }),
     [
-      selectedTab,
-      setSelectedTab,
-      selectedPairId,
-      selectedTickerAddress,
-      setSelectedTickerAddress,
-      tickerTokenInputState,
+      positionSide,
+      setPositionSide,
+      pairId,
+      quoteTokenInputState,
+      leverage,
+      setLeverage,
     ]
   );
 

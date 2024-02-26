@@ -2,9 +2,8 @@ import { useState } from "react";
 
 import { useLockToken } from "../../lock-page/hooks/useLockToken";
 import { Title, Value } from "../../protected-perps-page/styles/PayoffChart";
-import { loadingPlaceholder } from "../../shared/constants/placeholders";
-import { getFormattedAmount } from "../../shared/helpers/baseFormatters";
 import { toBig } from "../../shared/helpers/bigjs";
+import { getFormattedTokenAmountWithSymbol } from "../../shared/helpers/formatters";
 import { InfoRow } from "../../shared/modal/styles/ModalInfo";
 import { useLockWithdrawModalState } from "../stores/useLockWithdrawModalState";
 import { Container } from "../styles/UnlockChart";
@@ -21,21 +20,14 @@ export const UnlockChart = () => {
   const [selectedChartPoint, setSelectedChartPoint] =
     useState<ChartPoint | null>(null);
 
-  const formattedSelectedUnlockValue = selectedChartPoint
-    ? getFormattedAmount(toBig(selectedChartPoint.y))
-    : null;
+  const unlockValue = selectedChartPoint
+    ? toBig(selectedChartPoint.y)
+    : governanceTokenUnlocked;
 
-  const formattedDefaultUnlockValue = governanceTokenUnlocked
-    ? getFormattedAmount(governanceTokenUnlocked)
-    : null;
-
-  const [formattedSelectedUnlock, formattedDefaultUnlock] = [
-    formattedSelectedUnlockValue,
-    formattedDefaultUnlockValue,
-  ].map((value) => (value && symbol ? `${value} ${symbol}` : null));
-
-  const formattedUnlock =
-    formattedSelectedUnlock ?? formattedDefaultUnlock ?? loadingPlaceholder;
+  const formattedUnlock = getFormattedTokenAmountWithSymbol(
+    unlockValue,
+    symbol
+  );
 
   return (
     <Container>

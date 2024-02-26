@@ -1,9 +1,9 @@
 import { useState } from "react";
 
 import { notAvailablePlaceholder } from "../../shared/constants/placeholders";
-import { getFormattedAPY } from "../../shared/helpers/baseFormatters";
+import { getFormattedProfitAndLossPercentage } from "../../shared/helpers/baseFormatters";
 import { InfoRow } from "../../shared/modal/styles/ModalInfo";
-import { useTicker } from "../../trade-panel/hooks/useTicker";
+import { useTradePanelStrikePrice } from "../../trade-panel/hooks/useTradePanelStrikePrice";
 import { useTradePanelState } from "../../trade-panel/stores/useTradePanelState";
 import { Container, Title, ColorValue, Value } from "../styles/PayoffChart";
 
@@ -13,10 +13,8 @@ import { PayoffInteractiveChart } from "./PayoffInteractiveChart";
 import type { ChartPoint } from "../../interactive-chart/types/ChartPoint";
 
 export const PayoffChart = () => {
-  const { selectedPairId, selectedTickerAddress } = useTradePanelState();
-
-  const { strikePrice } =
-    useTicker(selectedPairId, selectedTickerAddress) ?? {};
+  const { positionSide, pairId } = useTradePanelState();
+  const strikePrice = useTradePanelStrikePrice(positionSide, pairId);
 
   const [selectedChartPoint, setSelectedChartPoint] =
     useState<ChartPoint | null>(null);
@@ -28,11 +26,8 @@ export const PayoffChart = () => {
 
   const formattedProfitAndLossChartValue =
     profitAndLossChartValue !== null
-      ? getFormattedAPY(profitAndLossChartValue)
+      ? getFormattedProfitAndLossPercentage(profitAndLossChartValue)
       : null;
-
-  const profitAndLossChartValuePrefix =
-    profitAndLossChartValue && profitAndLossChartValue > 0 ? "+" : "";
 
   return (
     <Container>
@@ -41,7 +36,7 @@ export const PayoffChart = () => {
         {profitAndLossChartValue !== null &&
         formattedProfitAndLossChartValue !== null ? (
           <ColorValue isPositive={profitAndLossChartValue > 0}>
-            {`${profitAndLossChartValuePrefix}${formattedProfitAndLossChartValue}`}
+            {formattedProfitAndLossChartValue}
           </ColorValue>
         ) : (
           <Value>{notAvailablePlaceholder}</Value>

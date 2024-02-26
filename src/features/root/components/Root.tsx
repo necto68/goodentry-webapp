@@ -6,7 +6,7 @@ import { Header } from "../../header/components/Header";
 import { NotificationBar } from "../../header/components/NotificationBar";
 import { LockPage } from "../../lock-page/components/LockPage";
 import { ProtectedPerpsPage } from "../../protected-perps-page/components/ProtectedPerpsPage";
-import { PublicSalePage } from "../../public-sale-page/components/PublicSalePage";
+import { ReferralsPage } from "../../referral-page/components/ReferralsPage";
 import { Modal } from "../../shared/modal/components/Modal";
 import { VaultDetailsPage } from "../../vault-details-page/components/VaultDetailsPage";
 import { VaultsPage } from "../../vaults-page/components/VaultsPage";
@@ -15,8 +15,6 @@ import { CustomProviderIdentityFlag } from "../../wallet/types/CustomProviderIde
 import { CustomProviderLabel } from "../../wallet/types/CustomProviderLabel";
 import { Container, Content } from "../styles/Root";
 import { RoutePathname } from "../types/RoutePathname";
-
-// Use when notification bar needs to be displayed
 
 export const Root = () => {
   useInjectedWalletAutoConnect(
@@ -62,19 +60,12 @@ export const Root = () => {
           <Route
             element={
               <Content>
-                <PublicSalePage />
-              </Content>
-            }
-            path={RoutePathname.PUBLIC_SALE}
-          />
-          <Route
-            element={
-              <Content>
                 <LockPage />
               </Content>
             }
             path={RoutePathname.LOCK}
           />
+          <Route element={<ReferralsPage />} path={RoutePathname.REFERRALS} />
           <Route
             element={<Navigate to={RoutePathname.PROTECTED_PERPS} />}
             path="*"

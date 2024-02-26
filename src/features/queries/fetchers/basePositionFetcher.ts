@@ -2,75 +2,124 @@ import { fromTokenAmount } from "../../input-card/helpers/tokenAmount";
 import { getPairConfig } from "../../pair/helpers/getPairConfig";
 import { queryClient } from "../../shared/constants/queryClient";
 import { getExp, getZero, toBig } from "../../shared/helpers/bigjs";
-import { getPairQueryOptions } from "../query-options-getters/getPairQueryOptions";
-import { getTickerQueryOptions } from "../query-options-getters/getTickerQueryOptions";
+import { IGoodEntryPositionManager__factory as PositionManagerFactory } from "../../smart-contracts/types";
+import { exerciseFee } from "../../trade-panel/constants/openPosition";
+import { isPositionSideLong } from "../../trade-panel/helpers/isPositionSideLong";
+import { PositionSide } from "../../trade-panel/types/PositionSide";
+import { getProvider } from "../../web3/helpers/getProvider";
 import { getTokenQueryOptions } from "../query-options-getters/getTokenQueryOptions";
-import { PositionSide } from "../types/Position";
 
 import type { Position } from "../types/Position";
-import type { PositionResponseData } from "../types/PositionsResponse";
 
 export const basePositionFetcher = async (
   pairId: string,
-  tickerAddress: string,
-  positionData: PositionResponseData,
-  account: string
+  basePositionPrice: number,
+  positionId: number
 ): Promise<Position> => {
-  const { chainId } = getPairConfig(pairId);
-
   const {
-    amount0: positionAmount0,
-    amount1: positionAmount1,
-    entryUsd,
-    avgEntry,
-  } = positionData;
+    chainId,
+    addresses: {
+      baseToken: baseTokenAddress,
+      quoteToken: quoteTokenAddress,
+      positionManager,
+    },
+  } = getPairConfig(pairId);
 
-  const [{ token0Address, token1Address }, ticker] = await Promise.all([
-    queryClient.ensureQueryData(getPairQueryOptions(pairId)),
-    queryClient.fetchQuery(
-      getTickerQueryOptions(pairId, tickerAddress, account)
+  const provider = getProvider(chainId);
+
+  const positionManagerContract = PositionManagerFactory.connect(
+    positionManager,
+    provider
+  );
+
+  const [baseToken, quoteToken, position, fees] = await Promise.all([
+    queryClient.ensureQueryData(
+      getTokenQueryOptions(chainId, baseTokenAddress)
     ),
+    queryClient.ensureQueryData(
+      getTokenQueryOptions(chainId, quoteTokenAddress)
+    ),
+    positionManagerContract.getPosition(positionId),
+    positionManagerContract.getFeesAccumulatedAndMin(positionId),
   ]);
 
-  const [token0, token1] = await Promise.all([
-    queryClient.fetchQuery(getTokenQueryOptions(chainId, token0Address)),
-    queryClient.fetchQuery(getTokenQueryOptions(chainId, token1Address)),
-  ]);
+  const [feesAccumulated, feesMin] = [fees.feesAccumulated, fees.feesMin].map(
+    (fee) => fromTokenAmount(toBig(fee), quoteToken)
+  );
 
-  const token0Amount = fromTokenAmount(toBig(positionAmount0), token0);
-  const token1Amount = fromTokenAmount(toBig(positionAmount1), token1);
+  const priceDivisor = getExp(8);
 
-  const value0 = token0Amount.mul(token0.price);
-  const value1 = token1Amount.mul(token1.price);
+  const id = positionId;
+  const positionSide = position.isCall ? PositionSide.LONG : PositionSide.SHORT;
+  const isLong = isPositionSideLong(positionSide);
+  const timestamp = toBig(position.startDate).mul(getExp(3)).toNumber();
 
-  const tickerToken0Value = ticker.tokenAmounts.amount0.mul(token0.price);
-  const tickerToken1Value = ticker.tokenAmounts.amount1.mul(token1.price);
+  const entryPrice = toBig(position.strike).div(priceDivisor).toNumber();
 
-  const debtTokenBalance = ticker.debtToken.balance ?? getZero();
+  const collateralAmount = fromTokenAmount(
+    toBig(position.collateralAmount),
+    quoteToken
+  );
 
-  const side = value0.gt(value1) ? PositionSide.LONG : PositionSide.SHORT;
+  const initialCollateral = collateralAmount.sub(exerciseFee);
+  const currentCollateral = initialCollateral.sub(feesAccumulated);
 
-  const size = entryUsd ? toBig(entryUsd).div(getExp(8)) : getZero();
+  const notionalAmount = fromTokenAmount(
+    toBig(position.notionalAmount),
+    isLong ? baseToken : quoteToken
+  );
 
-  const profitAndLossValue = value0
-    .add(value1)
-    .sub(
-      debtTokenBalance
-        .div(ticker.tickerToken.totalSupply)
-        .mul(tickerToken0Value.add(tickerToken1Value))
+  const positionSize = isLong ? notionalAmount.mul(entryPrice) : notionalAmount;
+  const leverage = positionSize.div(initialCollateral).round().toNumber();
+
+  let profitAndLossBig = getZero();
+
+  if (isLong && basePositionPrice > entryPrice) {
+    profitAndLossBig = profitAndLossBig.add(
+      notionalAmount.mul(basePositionPrice - entryPrice)
     );
+  } else if (!isLong && basePositionPrice < entryPrice) {
+    profitAndLossBig = profitAndLossBig.add(
+      notionalAmount.div(entryPrice).mul(entryPrice - basePositionPrice)
+    );
+  } else {
+    profitAndLossBig = getZero();
+  }
 
-  const entryPrice = avgEntry ? toBig(avgEntry).toNumber() : 0;
+  profitAndLossBig = profitAndLossBig.sub(feesAccumulated);
+
+  const profitAndLoss = profitAndLossBig.toNumber();
+
+  const profitAndLossPercentage = initialCollateral.gt(0)
+    ? profitAndLossBig.div(initialCollateral).toNumber()
+    : 0;
+
+  // divide by 10e10 because of scaling
+  // then divide by quoteToken.decimals
+  const fundingRate = toBig(position.data)
+    .div(getExp(10))
+    .div(getExp(quoteToken.decimals));
+
+  const optionHourlyBorrowRate = fundingRate
+    .mul(3600)
+    .div(positionSize)
+    .toNumber();
+  const runwayInSeconds = currentCollateral.div(fundingRate).toNumber();
 
   return {
-    id: ticker.id,
+    id,
     pairId,
-    ticker,
-    side,
-    size,
+    timestamp,
+    positionSide,
     entryPrice,
-    profitAndLossValue,
-    token0Amount,
-    token1Amount,
+    initialCollateral,
+    leverage,
+    positionSize,
+    optionHourlyBorrowRate,
+    runwayInSeconds,
+    profitAndLoss,
+    profitAndLossPercentage,
+    feesAccumulated,
+    feesMin,
   };
 };

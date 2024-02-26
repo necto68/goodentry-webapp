@@ -1,12 +1,16 @@
-import { PositionSide } from "../../queries/types/Position";
 import {
-  getFormattedAmount,
-  getFormattedAPY,
+  getFormattedProfitAndLossPercentage,
   getFormattedFullCurrency,
+  getFormattedProfitAndLoss,
 } from "../../shared/helpers/baseFormatters";
-import { getFormattedTickerTitle } from "../../shared/helpers/formatters";
+import {
+  getFormattedBorrowRate,
+  getFormattedRunway,
+  getFormattedTokenAmount,
+} from "../../shared/helpers/formatters";
 import { Table } from "../../table/components/Table";
-import { TitleCell } from "../../table/components/TitleCell";
+import { getPositionSideTitle } from "../../trade-panel/helpers/getPositionSideTitle";
+import { isPositionSideLong } from "../../trade-panel/helpers/isPositionSideLong";
 import { usePositions } from "../hooks/usePositions";
 import {
   ColorText,
@@ -15,6 +19,7 @@ import {
   ActionsContainer,
 } from "../styles/PositionsTable";
 
+import { AssetCell } from "./AssetCell";
 import { OpenTradeModalButton } from "./OpenTradeModalButton";
 import { PositionActionsButton } from "./PositionActionsButton";
 
@@ -23,43 +28,21 @@ import type { Column } from "../../table/types/Column";
 
 const columns: Column<Position>[] = [
   {
-    key: "id",
-    title: "Instrument",
+    key: "pairId",
+    title: "Asset",
 
-    render: ({ ticker: { symbol, strikePrice } }) => (
-      <TitleCell
-        symbols={[symbol]}
-        title={getFormattedTickerTitle(symbol, strikePrice)}
-      />
-    ),
+    render: ({ pairId }) => <AssetCell pairId={pairId} />,
   },
   {
-    key: "side",
+    key: "positionSide",
     title: "Side",
 
-    render: ({ side }) => {
-      const isPositive = side === PositionSide.LONG;
+    render: ({ positionSide }) => {
+      const isLong = isPositionSideLong(positionSide);
+      const positionSideTitle = getPositionSideTitle(positionSide);
 
-      return (
-        <ColorText isPositive={isPositive}>
-          {isPositive ? "Long" : "Short"}
-        </ColorText>
-      );
+      return <ColorText isPositive={isLong}>{positionSideTitle}</ColorText>;
     },
-  },
-  {
-    key: "size",
-    title: "Size (USDC)",
-    render: ({ size }) => getFormattedAmount(size),
-  },
-  {
-    key: "ticker",
-    title: "Funding / 1h (USDC)",
-
-    render: ({ ticker, size }) =>
-      getFormattedAmount(size.mul(ticker.borrowRatePerHour), {
-        maximumFractionDigits: 4,
-      }),
   },
   {
     key: "entryPrice",
@@ -67,27 +50,71 @@ const columns: Column<Position>[] = [
     render: ({ entryPrice }) => getFormattedFullCurrency(entryPrice),
   },
   {
-    key: "profitAndLossValue",
+    key: "optionHourlyBorrowRate",
+    title: "Funding / 1h",
+
+    render: ({ optionHourlyBorrowRate }) =>
+      getFormattedBorrowRate(optionHourlyBorrowRate),
+  },
+  {
+    key: "runwayInSeconds",
+    title: "Runway",
+    render: ({ runwayInSeconds }) => getFormattedRunway(runwayInSeconds),
+  },
+
+  // {
+  //   key: "initialCollateral",
+  //   title: "Wager (Leverage)",
+  //
+  //   render: ({ initialCollateral, leverage }) => {
+  //     const formattedInitialCollateral =
+  //     getFormattedTokenAmount(initialCollateral);
+  //     const formattedLeverage = getFormattedLeverage(leverage);
+  //
+  //     return (
+  //       <ProfitAndLossRow>
+  //         <ProfitAndLossCell>
+  //           <span>{formattedInitialCollateral}</span>
+  //           <span>{formattedLeverage}</span>
+  //         </ProfitAndLossCell>
+  //       </ProfitAndLossRow>
+  //     );
+  //   },
+  // },
+  {
+    key: "initialCollateral",
+    title: "Wager",
+
+    render: ({ initialCollateral }) =>
+      getFormattedTokenAmount(initialCollateral),
+  },
+  {
+    key: "positionSize",
+    title: "Position Size",
+
+    render: ({ positionSize }) => getFormattedTokenAmount(positionSize),
+  },
+  {
+    key: "profitAndLoss",
     title: "PNL",
 
     render: (position) => {
-      const { size, profitAndLossValue } = position;
-      const isPositive = profitAndLossValue.gt(0);
-      const formattedProfitAndLossValue = getFormattedFullCurrency(
-        profitAndLossValue.toNumber()
-      );
-      const formattedProfitAndLossPercent = getFormattedAPY(
-        size.gt(0) ? profitAndLossValue.div(size).toNumber() : 0
-      );
+      const { profitAndLoss, profitAndLossPercentage } = position;
+
+      const isPositive = profitAndLoss > 0;
+
+      const formattedProfitAndLoss = getFormattedProfitAndLoss(profitAndLoss);
+      const formattedProfitAndLossPercentage =
+        getFormattedProfitAndLossPercentage(profitAndLossPercentage);
 
       return (
         <ProfitAndLossRow>
           <ProfitAndLossCell>
             <ColorText isPositive={isPositive}>
-              {formattedProfitAndLossValue}
+              {formattedProfitAndLoss}
             </ColorText>
             <ColorText isPositive={isPositive}>
-              {formattedProfitAndLossPercent}
+              {formattedProfitAndLossPercentage}
             </ColorText>
           </ProfitAndLossCell>
         </ProfitAndLossRow>
@@ -106,7 +133,7 @@ const columns: Column<Position>[] = [
   },
 ];
 
-const getRowKey = (row: Position) => `${row.id}_${row.size.toString()}`;
+const getRowKey = (row: Position) => `${row.id}_${row.pairId}`;
 
 export const PositionsTable = () => {
   const rows = usePositions();

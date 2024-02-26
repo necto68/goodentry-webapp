@@ -1,54 +1,55 @@
-import { TabType } from "../../trade-panel/types/TabType";
+import { isPositionSideLong } from "../../trade-panel/helpers/isPositionSideLong";
 import { POINTS_AMOUNT } from "../constants/chartPoints";
 
 import type { ChartPoint } from "../../interactive-chart/types/ChartPoint";
+import type { PositionSide } from "../../trade-panel/types/PositionSide";
 
 export const getShift = (
-  selectedTab: TabType,
-  currentPrice: number,
+  positionSide: PositionSide,
+  baseTokenPrice: number,
   strikePrice: number
 ) => {
-  if (selectedTab === TabType.LONG && strikePrice < currentPrice) {
-    return strikePrice - currentPrice;
+  if (isPositionSideLong(positionSide) && strikePrice < baseTokenPrice) {
+    return strikePrice - baseTokenPrice;
   }
 
-  if (selectedTab === TabType.SHORT && strikePrice > currentPrice) {
-    return currentPrice - strikePrice;
+  if (!isPositionSideLong(positionSide) && strikePrice > baseTokenPrice) {
+    return baseTokenPrice - strikePrice;
   }
 
   return 0;
 };
 
 export const getChartPoints = (
-  selectedTab: TabType,
-  currentPrice: number,
+  positionSide: PositionSide,
+  baseTokenPrice: number,
   strikePrice: number
 ): ChartPoint[] => {
-  // minPrice = currentPrice - 20%
-  const minPrice = currentPrice * 0.8;
+  // minPrice = baseTokenPrice - 5%
+  const minPrice = baseTokenPrice * 0.95;
 
-  // maxPrice = currentPrice + 20%
-  const maxPrice = currentPrice * 1.2;
+  // maxPrice = baseTokenPrice + 5%
+  const maxPrice = baseTokenPrice * 1.05;
   const priceInterval = (maxPrice - minPrice) / POINTS_AMOUNT;
 
-  const shift = getShift(selectedTab, currentPrice, strikePrice);
+  const shift = getShift(positionSide, baseTokenPrice, strikePrice);
 
   const data = [];
 
   for (let price = minPrice; price < maxPrice; price += priceInterval) {
-    let profitAndLossValue = shift;
+    let profitAndLoss = shift;
 
-    if (selectedTab === TabType.LONG && price > strikePrice) {
-      profitAndLossValue += price - strikePrice;
-    } else if (selectedTab === TabType.SHORT && price < strikePrice) {
-      profitAndLossValue += strikePrice - price;
+    if (isPositionSideLong(positionSide) && price > strikePrice) {
+      profitAndLoss += price - strikePrice;
+    } else if (!isPositionSideLong(positionSide) && price < strikePrice) {
+      profitAndLoss += strikePrice - price;
     } else {
-      profitAndLossValue = shift;
+      profitAndLoss = shift;
     }
 
     data.push({
       x: price,
-      y: profitAndLossValue,
+      y: profitAndLoss,
     });
   }
 

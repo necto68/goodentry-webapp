@@ -1,6 +1,7 @@
 import { Button } from "@chakra-ui/react";
 import { useCallback } from "react";
 
+import { SuccessfulMainButton } from "../../form-components/components/SuccessfulMainButton";
 import { TransactionErrorMainButton } from "../../form-components/components/TransactionErrorMainButton";
 import { useLockQueries } from "../../lock-page/hooks/useLockQueries";
 import { useLockWithdrawModalState } from "../stores/useLockWithdrawModalState";
@@ -33,8 +34,12 @@ export const LockWithdrawActionButton = () => {
     }
   }, [runTransaction, selectedUnlockSchedule]);
 
-  const { isError, isLoading } = mutation;
+  const { isSuccess, isError, isLoading } = mutation;
   const isDisabled = dependantQueries.some((query) => query.isLoading);
+
+  if (isSuccess) {
+    return <SuccessfulMainButton title="Withdraw Successful" />;
+  }
 
   if (isError) {
     return <TransactionErrorMainButton resetTransaction={resetTransaction} />;

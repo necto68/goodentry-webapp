@@ -5,7 +5,6 @@ export interface VaultModalState {
   selectedTab: TabType;
   setSelectedTab: (tab: TabType) => void;
   vaultId: string;
-  vaultAddress: string;
   depositTokenInputState: TokenInputState;
   withdrawTokenInputState: TokenInputState;
 }

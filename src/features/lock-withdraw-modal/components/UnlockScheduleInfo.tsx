@@ -4,11 +4,11 @@ import { getDurationBetweenTimestamps } from "../../public-sale-page/helpers/get
 import { useCurrentTimestamp } from "../../public-sale-page/hooks/useCurrentTimestamp";
 import { loadingPlaceholder } from "../../shared/constants/placeholders";
 import {
-  getFormattedAmount,
   getFormattedAPY,
   getFormattedDate,
   getFormattedDurationParts,
 } from "../../shared/helpers/baseFormatters";
+import { getFormattedTokenAmountWithSymbol } from "../../shared/helpers/formatters";
 import {
   Container,
   InfoRow,
@@ -56,28 +56,16 @@ export const UnlockScheduleInfo = () => {
 
     formattedDuration = `${formattedDays}:${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
   }
-  const [formattedInitUnlock] = [governanceTokenInitUnlock].map((value) => {
-    if (value && governanceTokenSymbol) {
-      const formattedValue = getFormattedAmount(value);
 
-      return `${formattedValue} ${governanceTokenSymbol}`;
-    }
-
-    return loadingPlaceholder;
-  });
+  const formattedInitUnlock = getFormattedTokenAmountWithSymbol(
+    governanceTokenInitUnlock,
+    governanceTokenSymbol
+  );
 
   const [formattedLocked, formattedUnlocked] = [
     governanceTokenLocked,
     governanceTokenUnlocked,
-  ].map((value) => {
-    if (value && lockTokenSymbol) {
-      const formattedValue = getFormattedAmount(value);
-
-      return `${formattedValue} ${lockTokenSymbol}`;
-    }
-
-    return loadingPlaceholder;
-  });
+  ].map((value) => getFormattedTokenAmountWithSymbol(value, lockTokenSymbol));
 
   const formattedPenalty = penalty
     ? getFormattedAPY(penalty)

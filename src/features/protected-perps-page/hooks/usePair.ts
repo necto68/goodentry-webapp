@@ -1,9 +1,7 @@
 import { usePairQuery } from "../../queries/hooks/usePairQuery";
-import { useSelectedPairIdStore } from "../stores/useSelectedPairIdStore";
 
-export const usePair = (pairId?: string) => {
-  const { selectedPairId } = useSelectedPairIdStore();
-  const pairQuery = usePairQuery(pairId ?? selectedPairId);
+export const usePair = (pairId: string) => {
+  const pairQuery = usePairQuery(pairId);
 
   return pairQuery.data;
 };

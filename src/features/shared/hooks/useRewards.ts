@@ -2,12 +2,11 @@ import { useState } from "react";
 
 import { areAddressesEqual } from "../../web3/helpers/addresses";
 import { toBig } from "../helpers/bigjs";
-
-import { useApi } from "./useApi";
+import { getApi } from "../helpers/getApi";
 
 export const useRewards = (account: string) => {
   const [rewards, setRewards] = useState(0);
-  const { get } = useApi();
+  const { get } = getApi();
   const options = {
     // 5% of 1B supply as airdrop, so 50M / 120d / 24 rounds  = 17361 / round
     goodPerRound: 17_361,

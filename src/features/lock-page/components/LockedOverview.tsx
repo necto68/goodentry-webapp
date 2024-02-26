@@ -5,7 +5,7 @@ import {
   ItemValue,
 } from "../../public-sale-page/styles/SaleDetails";
 import { loadingPlaceholder } from "../../shared/constants/placeholders";
-import { getFormattedAmount } from "../../shared/helpers/baseFormatters";
+import { getFormattedTokenAmount } from "../../shared/helpers/formatters";
 import { useGovernanceToken } from "../hooks/useGovernanceToken";
 import { Container, Content } from "../styles/LockedOverview";
 
@@ -13,9 +13,7 @@ export const LockedOverview = () => {
   const { symbol, balance } = useGovernanceToken() ?? {};
 
   const title = symbol ? `${symbol} Balance` : loadingPlaceholder;
-  const formattedBalance = balance
-    ? getFormattedAmount(balance)
-    : loadingPlaceholder;
+  const formattedBalance = getFormattedTokenAmount(balance);
 
   return (
     <Container>

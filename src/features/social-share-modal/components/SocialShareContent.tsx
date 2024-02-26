@@ -3,12 +3,14 @@ import { forwardRef } from "react";
 
 import { appLogo } from "../../icons/brand";
 import { usePair } from "../../protected-perps-page/hooks/usePair";
-import { PositionSide } from "../../queries/types/Position";
+import { usePairPrices } from "../../protected-perps-page/hooks/usePairPrices";
 import {
-  getFormattedAPY,
+  getFormattedProfitAndLossPercentage,
   getFormattedFullCurrency,
+  getFormattedLeverage,
 } from "../../shared/helpers/baseFormatters";
 import { TitleCell } from "../../table/components/TitleCell";
+import { getPositionSideTitle } from "../../trade-panel/helpers/getPositionSideTitle";
 import { useSocialShareModalState } from "../hooks/useSocialShareModalState";
 import {
   Container,
@@ -26,35 +28,56 @@ import {
 
 const SocialShareContent = forwardRef<HTMLDivElement | null>(
   (props, reference) => {
-    const { position, currentPrice } = useSocialShareModalState();
+    const { position } = useSocialShareModalState();
 
-    const { side, pairId, size, profitAndLossValue, entryPrice } = position;
+    const {
+      positionSide,
+      pairId,
+      entryPrice,
+      leverage,
+      profitAndLoss,
+      profitAndLossPercentage,
+    } = position;
 
-    const { token0Symbol = "", token1Symbol = "" } = usePair(pairId) ?? {};
+    const {
+      title = "",
+      baseTokenSymbol,
+      quoteTokenSymbol,
+    } = usePair(pairId) ?? {};
+    const { baseTokenPrice } = usePairPrices(pairId) ?? {};
 
-    const isLongSide = side === PositionSide.LONG;
+    const symbols: [string, string] | undefined =
+      baseTokenSymbol && quoteTokenSymbol
+        ? [baseTokenSymbol, quoteTokenSymbol]
+        : undefined;
 
-    const isPositive = profitAndLossValue.gt(0);
-    const formattedProfitAndLossPercent = getFormattedAPY(
-      size.gt(0) ? profitAndLossValue.div(size).toNumber() : 0
-    );
+    const positionSideTitle = getPositionSideTitle(positionSide);
 
+    const isPositive = profitAndLoss > 0;
+
+    const formattedLeverage = getFormattedLeverage(leverage);
+    const formattedProfitAndLossPercentage =
+      getFormattedProfitAndLossPercentage(profitAndLossPercentage);
     const formattedEntryPrice = getFormattedFullCurrency(entryPrice);
-    const formattedMarketPrice = getFormattedFullCurrency(currentPrice);
+    const formattedMarketPrice = baseTokenPrice
+      ? getFormattedFullCurrency(baseTokenPrice)
+      : null;
 
     return (
       <Container ref={reference}>
         <Logo src={appLogo} />
         <PairName>
-          <TitleCell symbols={[token0Symbol, token1Symbol]} title={pairId} />
+          <TitleCell symbols={symbols} title={title} />
           <Flex>
-            <SideValue side={side}>{isLongSide ? "Long" : "Short"}</SideValue>
-            <Leverage>10x</Leverage>
+            <SideValue positionSide={positionSide}>
+              {positionSideTitle}
+            </SideValue>
+            <Leverage>{formattedLeverage}</Leverage>
           </Flex>
         </PairName>
         <PositionProfitRow>
           <PnlValue isPositive={isPositive}>
-            {formattedProfitAndLossPercent}
+            {formattedProfitAndLossPercentage}
           </PnlValue>
         </PositionProfitRow>
         <EntryPriceRow>

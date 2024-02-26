@@ -1,6 +1,5 @@
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 
-import { GeWallet } from "../../ge-wallet/components/GeWallet";
 import { TradePanel } from "../../trade-panel/components/TradePanel";
 import { TradePanelStateProvider } from "../../trade-panel/providers/TradePanelStateProvider";
 import { useWallet } from "../../wallet/hooks/useWallet";
@@ -18,14 +17,15 @@ import { Positions } from "./Positions";
 import { PositionsHistory } from "./PositionsHistory";
 
 export const ProtectedPerpsPage = () => {
-  const { account } = useWallet();
+  const { isConnected } = useWallet();
+
   return (
     <Container>
       <Content>
         <LeftContainer>
           <ChartHeader />
           <Chart />
-          {account ? (
+          {isConnected ? (
             <Tabs>
               <TabList>
                 <Tab>Positions</Tab>
@@ -43,7 +43,6 @@ export const ProtectedPerpsPage = () => {
           ) : null}
         </LeftContainer>
         <RightContainer>
-          <GeWallet />
           <TradePanelStateProvider>
             <TradePanel />
             <PayoffChart />

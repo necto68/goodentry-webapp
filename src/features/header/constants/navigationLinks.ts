@@ -4,11 +4,11 @@ import type { NavigationLink } from "../types/NavigationLink";
 
 export const headerNavigationLinks: NavigationLink[] = [
   {
-    name: "Legacy Protected Perps",
+    name: "Protected Perps",
     href: RoutePathname.PROTECTED_PERPS,
   },
   {
-    name: "Legacy ezVaults",
+    name: "ezVaults",
     href: RoutePathname.EZ_VAULTS,
   },
   {
@@ -23,8 +23,8 @@ export const additionalNavigationLinks: NavigationLink[] = [
     href: RoutePathname.DASHBOARD,
   },
   {
-    name: "Fair Sale",
-    href: RoutePathname.PUBLIC_SALE,
+    name: "Referrals",
+    href: RoutePathname.REFERRALS,
   },
   {
     name: "Docs",
@@ -33,7 +33,7 @@ export const additionalNavigationLinks: NavigationLink[] = [
   },
   {
     name: "Dune Dashboard",
-    href: "https://dune.com/good-entry/good-entry-ezvaults-tvl",
+    href: "https://dune.com/good-entry/protected-perpetuals-degen",
     isExternal: true,
   },
   {

@@ -1,11 +1,10 @@
 import { InputCard } from "../../input-card/components/InputCard";
-import { getFormattedAmount } from "../../shared/helpers/baseFormatters";
-import { useTicker } from "../hooks/useTicker";
-import { useTickerTokenInputState } from "../hooks/useTickerTokenInputState";
-import { useTradePanelState } from "../stores/useTradePanelState";
+import { loadingPlaceholder } from "../../shared/constants/placeholders";
+import { getFormattedNumber } from "../../shared/helpers/baseFormatters";
+import { minQuoteTokenAmount } from "../constants/openPosition";
+import { useQuoteTokenInputState } from "../hooks/useQuoteTokenInputState";
 
 export const TradePanelInputCard = () => {
-  const { selectedPairId, selectedTickerAddress } = useTradePanelState();
   const {
     tokenData,
     tokens,
@@ -13,28 +12,21 @@ export const TradePanelInputCard = () => {
     inputValue,
     setInputValue,
     isError,
-  } = useTickerTokenInputState();
+  } = useQuoteTokenInputState();
 
-  const ticker = useTicker(selectedPairId, selectedTickerAddress);
-
-  const formattedAvailableLiquidity = ticker
-    ? getFormattedAmount(ticker.availableLiquidity)
-    : null;
-  const subTitle =
-    formattedAvailableLiquidity && tokenData
-      ? `Available Liquidity: ${formattedAvailableLiquidity} ${tokenData.symbol}`
-      : undefined;
+  const formattedMinQuoteTokenAmount = getFormattedNumber(minQuoteTokenAmount);
+  const subTitle = tokenData
+    ? `Min Wager: ${formattedMinQuoteTokenAmount} ${tokenData.symbol}`
+    : loadingPlaceholder;
 
   return (
     <InputCard
-      balanceTitle="Available Margin"
       inputValue={inputValue}
       isError={isError}
-      isShowSlider
       setInputValue={setInputValue}
       setTokenDataAddress={setTokenDataAddress}
       subTitle={subTitle}
-      title="Size"
+      title="Wager"
       tokenData={tokenData}
       tokens={tokens}
     />

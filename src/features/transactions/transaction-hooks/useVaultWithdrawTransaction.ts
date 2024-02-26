@@ -20,6 +20,7 @@ export const useVaultWithdrawTransaction = (
     vaultAddress,
     getDefaultProvider()
   );
+
   const method = "withdraw";
 
   const { mutation, resetTransaction, transactionHash } = useBaseTransaction(

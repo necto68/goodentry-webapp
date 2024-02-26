@@ -8,6 +8,7 @@ export interface VaultConfig {
 
   addresses: {
     vault: string;
+    rewardTracker?: string;
   };
 
   status: VaultStatus;

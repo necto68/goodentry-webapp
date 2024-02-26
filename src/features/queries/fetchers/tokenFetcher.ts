@@ -1,5 +1,7 @@
-import { basePriceFetcher } from "./basePriceFetcher";
-import { baseTokenFetcher } from "./baseTokenFetcher";
+import { getExp, getZero, toBig } from "../../shared/helpers/bigjs";
+import { IERC20__factory as ERC20Factory } from "../../smart-contracts/types";
+import { getProvider } from "../../web3/helpers/getProvider";
+import { getReplacedTokenSymbol } from "../helpers/getReplacedTokenSymbol";
 
 import type { ChainId } from "../../web3/types/ChainId";
 import type { Token } from "../types/Token";
@@ -10,13 +12,38 @@ export const tokenFetcher = async (
   spenderAddress?: string,
   account?: string
 ): Promise<Token> => {
-  const [baseToken, price] = await Promise.all([
-    baseTokenFetcher(chainId, tokenAddress, spenderAddress, account),
-    basePriceFetcher(chainId, tokenAddress),
-  ]);
+  const provider = getProvider(chainId);
+  const address = tokenAddress;
+
+  const tokenContract = ERC20Factory.connect(address, provider);
+
+  const replacedTokenSymbol = getReplacedTokenSymbol(tokenAddress, chainId);
+
+  const [symbol, name, decimals, rawBalance, rawAllowance, rawTotalSupply] =
+    await Promise.all([
+      replacedTokenSymbol ?? tokenContract.symbol(),
+      tokenContract.name(),
+      tokenContract.decimals(),
+      account ? tokenContract.balanceOf(account).then(toBig) : null,
+      spenderAddress && account
+        ? tokenContract.allowance(account, spenderAddress).then(toBig)
+        : getZero(),
+      tokenContract.totalSupply().then(toBig),
+    ]);
+
+  const divisor = getExp(decimals);
+
+  const balance = rawBalance ? rawBalance.div(divisor) : null;
+  const allowance = rawAllowance.div(divisor);
+  const totalSupply = rawTotalSupply.div(divisor);
 
   return {
-    ...baseToken,
-    price,
+    address,
+    symbol,
+    name,
+    decimals,
+    balance,
+    allowance,
+    totalSupply,
   };
 };

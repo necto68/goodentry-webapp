@@ -11,11 +11,12 @@ export const NotificationBar = () => (
     <Content>
       <InfoIcon color="brand" fontSize={18} />
       <NotificationLink
-        href="https://degen.goodentry.io/"
+        href="https://goodentrylabs.medium.com/good-expansion-on-arbitrum-b1490f19758f"
         isExternal
         rel="nofollow"
       >
-        Trading available in Degen Mode [Open Degen Now]
+        Introducing the new &quot;Welcome Bonus&quot; feature [Click Here to
+        Learn More]
       </NotificationLink>
     </Content>
   </Container>

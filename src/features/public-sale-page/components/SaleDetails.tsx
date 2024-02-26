@@ -1,8 +1,5 @@
 import { loadingPlaceholder } from "../../shared/constants/placeholders";
-import {
-  getFormattedAmount,
-  getFormattedDate,
-} from "../../shared/helpers/baseFormatters";
+import { getFormattedDate } from "../../shared/helpers/baseFormatters";
 import { getFormattedTokenAmount } from "../../shared/helpers/formatters";
 import { usePublicSaleCollateralToken } from "../hooks/usePublicSaleCollateralToken";
 import { usePublicSaleData } from "../hooks/usePublicSaleData";
@@ -37,7 +34,7 @@ export const SaleDetails = () => {
   const [formattedSaleTokenTotalBought, formattedSaleTokenCap] = [
     saleTokenTotalBought,
     saleTokenCap,
-  ].map((value) => (value ? getFormattedAmount(value) : null));
+  ].map((value) => (value ? getFormattedTokenAmount(value) : null));
 
   const [formattedCollateralTokenDeposited, formattedSaleTokenBought] = [
     collateralTokenDeposited,

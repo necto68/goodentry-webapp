@@ -4,5 +4,5 @@ import { ComponentContainer } from "../../protected-perps-page/styles/ProtectedP
 
 export const Container = tw(ComponentContainer)`
   flex-col
-  min-w-[343px]
+  w-[343px]
 `;

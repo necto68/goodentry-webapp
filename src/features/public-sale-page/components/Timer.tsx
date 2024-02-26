@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-
 import { PublicSaleStatus } from "../../queries/types/PublicSaleData";
 import { loadingPlaceholder } from "../../shared/constants/placeholders";
 import { getFormattedDurationParts } from "../../shared/helpers/baseFormatters";
@@ -34,17 +32,6 @@ export const Timer = () => {
 
   const toTimestamp =
     status === PublicSaleStatus.NOT_STARTED ? startTimestamp : endTimestamp;
-
-  // refetch data when public sale changes phases
-  useEffect(() => {
-    if (
-      !isLoading &&
-      status !== PublicSaleStatus.ENDED &&
-      toTimestamp - currentTimestamp <= 0
-    ) {
-      void publicSaleDataQuery.refetch();
-    }
-  }, [isLoading, status, currentTimestamp, toTimestamp, publicSaleDataQuery]);
 
   const { days, hours, minutes, seconds } = getDurationBetweenTimestamps(
     currentTimestamp,

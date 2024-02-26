@@ -1,3 +1,5 @@
+import type React from "react";
+
 export interface ModalContextState<
   ModalType extends string = string,
   ModalState extends object | undefined = { [key: string]: unknown }
@@ -8,5 +10,5 @@ export interface ModalContextState<
   hideModal: () => void;
   modalType?: ModalType;
   modalState?: ModalState;
-  modalComponents: { [key: string]: () => JSX.Element };
+  modalComponents: { [key: string]: () => React.JSX.Element };
 }

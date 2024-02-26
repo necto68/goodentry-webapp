@@ -37,6 +37,18 @@ export const getFormattedFullCurrency = (
   return currencyFormatter.format(Number(value));
 };
 
+export const getFormattedProfitAndLoss = (
+  value: number | string,
+  options?: Partial<Intl.NumberFormatOptions>
+) => {
+  const formatterOptions: Intl.NumberFormatOptions = {
+    ...options,
+    signDisplay: "exceptZero",
+  };
+
+  return getFormattedFullCurrency(value, formatterOptions);
+};
+
 export const getFormattedAPY = (
   value: number,
   options?: Partial<Intl.NumberFormatOptions>
@@ -50,6 +62,18 @@ export const getFormattedAPY = (
   const formattedValue = apyFormatter.format(value);
 
   return formattedValue === "-0%" ? "0%" : formattedValue;
+};
+
+export const getFormattedProfitAndLossPercentage = (
+  value: number,
+  options?: Partial<Intl.NumberFormatOptions>
+) => {
+  const formatterOptions: Intl.NumberFormatOptions = {
+    signDisplay: "exceptZero",
+    ...options,
+  };
+
+  return getFormattedAPY(value, formatterOptions);
 };
 
 export const getFormattedNumber = (
@@ -96,7 +120,7 @@ export const getFormattedAmount = (
     maximumFractionDigits,
   };
 
-  // minValue equals to 0.00000001
+  // minValue equals to 0.0001
   const minValue = getExp(-maximumFractionDigits);
 
   if (value.gt(0) && value.lt(minValue)) {
@@ -109,29 +133,6 @@ export const getFormattedAmount = (
   }
 
   return getFormattedNumber(value.toNumber(), formatterOptions);
-};
-
-export const getFormattedBalance = (
-  value: number,
-  options?: Partial<Intl.NumberFormatOptions>
-) => {
-  let formatterValue = value;
-  let postfix = "";
-
-  if (value > 1_000_000) {
-    formatterValue = value / 1_000_000;
-    postfix = "M";
-  } else if (value > 1000) {
-    formatterValue = value / 1000;
-    postfix = "K";
-  } else {
-    formatterValue = value;
-    postfix = "";
-  }
-
-  const formattedValue = getFormattedNumber(formatterValue, options);
-
-  return `${formattedValue}${postfix}`;
 };
 
 export const getFormattedDate = (
@@ -182,3 +183,9 @@ export const getFormattedDurationParts = (
   [days, hours, minutes, seconds].map((value) =>
     value.toString().padStart(2, "0")
   );
+
+export const getFormattedLeverage = (leverage: number) => {
+  const formattedLeverageValue = getFormattedNumber(leverage);
+
+  return `${formattedLeverageValue}×`;
+};

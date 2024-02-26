@@ -1,13 +1,12 @@
-import { useEffect, useState } from "react";
+import React from "react";
 import { useParams } from "react-router-dom";
 
 import { VaultChart } from "../../asset-chart/components/VaultChart";
 import { loadingPlaceholder } from "../../shared/constants/placeholders";
 import { getFormattedAPY } from "../../shared/helpers/baseFormatters";
 import { getVaultConfig } from "../../vault/helpers/getVaultConfig";
-import { useVaultApiData } from "../../vault/hooks/useVaultsApi";
 import { VaultStatus } from "../../vault/types/VaultStatus";
-import { useVault } from "../hooks/useVault";
+import { useVaultApiData } from "../hooks/useVaultApiData";
 import {
   AccentValue,
   APRRow,
@@ -19,70 +18,48 @@ import {
   Title,
 } from "../styles/VaultPerformance";
 
-import type { VaultHistory } from "../../vault/hooks/useVaultsApi";
-
 export const VaultPerformance = () => {
-  const [apyData, setApyData] = useState<VaultHistory[]>([]);
-
   const { vaultId = "" } = useParams();
 
-  const { id, status } = getVaultConfig(vaultId);
-
-  const isActiveVault = status === VaultStatus.ACTIVE;
+  const { status } = getVaultConfig(vaultId);
 
   const {
-    address = "",
-    supplyRate,
-    feesRate,
-    totalAnnualPercentageYield,
-  } = useVault(id) ?? {};
+    feesAnnualPercentageRate,
+    rewardsAnnualPercentageRate,
+    totalAnnualPercentageRate,
+    annualPercentageRateHistory,
+  } = useVaultApiData(vaultId) ?? {};
 
-  const [
-    formattedSupplyRate,
-    formattedFeesRate,
-    formattedTotalAnnualPercentageYield,
-  ] = [supplyRate, feesRate, totalAnnualPercentageYield].map((value) =>
-    value ? getFormattedAPY(value) : loadingPlaceholder
-  );
+  const [formattedFeesAPR, formattedRewardsAPR, formattedTotalAPR] = [
+    feesAnnualPercentageRate,
+    rewardsAnnualPercentageRate,
+    totalAnnualPercentageRate,
+  ].map((value) => (value ? getFormattedAPY(value) : loadingPlaceholder));
 
-  const { getHistory } = useVaultApiData();
-
-  useEffect(() => {
-    if (apyData.length === 0) {
-      const fetchApyData = async () => {
-        const data = await getHistory();
-
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        setApyData(data[address] ?? []);
-      };
-
-      void fetchApyData();
-    }
-  }, [address, getHistory, setApyData, apyData]);
+  const historyData = annualPercentageRateHistory
+    ? annualPercentageRateHistory.map(({ value }) => value)
+    : null;
 
   return (
     <Container>
       <APRRow>
         <Metric>
           <Title>Total Projected APR</Title>
-          <AccentValue>{formattedTotalAnnualPercentageYield}</AccentValue>
+          <AccentValue>{formattedTotalAPR}</AccentValue>
         </Metric>
       </APRRow>
-      <VaultChart
-        data={apyData.map(
-          (record) =>
-            Number(record.supplyRate) + (isActiveVault ? record.feesRate : 0)
-        )}
-      />
+      {historyData ? <VaultChart data={historyData} /> : null}
       <MetricsRow>
         <Metric>
-          <MetricTitle>V3 Fees (7d Annualized)</MetricTitle>
-          <MetricValue>{formattedFeesRate}</MetricValue>
+          <MetricTitle>Fees APR</MetricTitle>
+          <MetricValue>{formattedFeesAPR}</MetricValue>
         </Metric>
-        <Metric>
-          <MetricTitle>Supply Interest</MetricTitle>
-          <MetricValue>{formattedSupplyRate}</MetricValue>
-        </Metric>
+        {status === VaultStatus.ACTIVE_REWARDS ? (
+          <Metric>
+            <MetricTitle>Rewards APR</MetricTitle>
+            <MetricValue>{formattedRewardsAPR}</MetricValue>
+          </Metric>
+        ) : null}
       </MetricsRow>
     </Container>
   );

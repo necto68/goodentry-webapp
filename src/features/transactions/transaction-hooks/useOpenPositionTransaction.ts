@@ -1,11 +1,7 @@
-import { getDefaultProvider, utils } from "ethers";
+import { getDefaultProvider } from "ethers";
 import { useCallback } from "react";
 
-import { getPairConfig } from "../../pair/helpers/getPairConfig";
-import { useSelectedPairIdStore } from "../../protected-perps-page/stores/useSelectedPairIdStore";
-import { IAaveLendingPool__factory as LendingPoolFactory } from "../../smart-contracts/types";
-import { useWallet } from "../../wallet/hooks/useWallet";
-import { getChainMetadata } from "../../web3/helpers/getChainMetadata";
+import { IGoodEntryPositionManager__factory as PositionManagerFactory } from "../../smart-contracts/types";
 import { useBaseTransaction } from "../hooks/useBaseTransaction";
 
 import type {
@@ -15,26 +11,20 @@ import type {
 } from "../../shared/types/BaseTransaction";
 
 export const useOpenPositionTransaction = (
-  lendingPoolAddress: string,
+  positionManagerAddress: string,
   dependantQueries?: DependantQueries,
   onTransactionSuccess?: OnTransactionSuccess,
   onTransactionError?: OnTransactionError
 ) => {
-  const { account = "" } = useWallet();
-  const { selectedPairId } = useSelectedPairIdStore();
-  const { chainId, poolId } = getPairConfig(selectedPairId);
-  const {
-    addresses: { optionsPositionsManager },
-  } = getChainMetadata(chainId);
-
-  const lendingPoolContract = LendingPoolFactory.connect(
-    lendingPoolAddress,
+  const positionManagerContract = PositionManagerFactory.connect(
+    positionManagerAddress,
     getDefaultProvider()
   );
-  const method = "flashLoan";
+
+  const method = "openStreamingPosition";
 
   const { mutation, resetTransaction, transactionHash } = useBaseTransaction(
-    lendingPoolContract,
+    positionManagerContract,
     method,
     dependantQueries,
     onTransactionSuccess,
@@ -42,23 +32,10 @@ export const useOpenPositionTransaction = (
   );
 
   const runTransaction = useCallback(
-    (swapSourceAddress: string, tickerAddress: string, amount: string) => {
-      const parameters = utils.defaultAbiCoder.encode(
-        ["uint8", "uint", "address", "address[]"],
-        [0, poolId, account, [swapSourceAddress]]
-      );
-
-      mutation.mutate([
-        optionsPositionsManager,
-        [tickerAddress],
-        [amount],
-        [2],
-        account,
-        parameters,
-        0,
-      ]);
+    (isLongTab: boolean, notionalAmount: string, collateralAmount: string) => {
+      mutation.mutate([isLongTab, notionalAmount, collateralAmount]);
     },
-    [poolId, account, mutation, optionsPositionsManager]
+    [mutation]
   );
 
   return {

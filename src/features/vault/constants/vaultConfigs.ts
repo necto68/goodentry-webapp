@@ -4,28 +4,17 @@ import { VaultStatus } from "../types/VaultStatus";
 import type { VaultConfig } from "../types/VaultConfig";
 
 export const vaultConfigs: VaultConfig[] = [
-  // v1 vaults
   {
     id: "ETH-USDC",
     chainId: ChainId.ARBITRUM,
     pairId: "ETH-USDC",
 
     addresses: {
-      vault: "0x41D0ebB0F0Bcf7A06E395D0551Cc695e4318594d",
+      vault: "0xd666156C473Cc9539CAaCc112B3A3590a895C861",
+      rewardTracker: "0x6FE937844dCFd8A001F163eC490241c6f5202d25",
     },
 
-    status: VaultStatus.ACTIVE,
-  },
-  {
-    id: "WBTC-USDC",
-    chainId: ChainId.ARBITRUM,
-    pairId: "WBTC-USDC",
-
-    addresses: {
-      vault: "0x819356bF26D384E7E70Cd26c07fc807e6B354F08",
-    },
-
-    status: VaultStatus.ACTIVE,
+    status: VaultStatus.ACTIVE_REWARDS,
   },
   {
     id: "ARB-USDC",
@@ -33,7 +22,18 @@ export const vaultConfigs: VaultConfig[] = [
     pairId: "ARB-USDC",
 
     addresses: {
-      vault: "0xbB59f5324FeA11E538fC7f46C3C7bFE5Ad36e8b9",
+      vault: "0x419ae989a629Cc71834BDf6E3e8E33c9c3ED3Bb4",
+    },
+
+    status: VaultStatus.ACTIVE_REWARDS,
+  },
+  {
+    id: "WBTC-USDC",
+    chainId: ChainId.ARBITRUM,
+    pairId: "WBTC-USDC",
+
+    addresses: {
+      vault: "0x5f6aB9b043C43FaB8D2A51EA85b70495B5EeFD15",
     },
 
     status: VaultStatus.ACTIVE,
@@ -44,55 +44,9 @@ export const vaultConfigs: VaultConfig[] = [
     pairId: "GMX-USDC",
 
     addresses: {
-      vault: "0x48E455852669ADB747b3D16f2Bd8b541D696B697",
+      vault: "0x21EB68Cc5a5d51b48e0DE743f321151523b7A15D",
     },
 
     status: VaultStatus.ACTIVE,
-  },
-
-  // v0 vaults
-  {
-    id: "ETH-USDC-V0",
-    chainId: ChainId.ARBITRUM,
-    pairId: "ETH-USDC",
-
-    addresses: {
-      vault: "0x0d3cAA624E3a0076A6bc96Ba8D632D37F460Bc74",
-    },
-
-    status: VaultStatus.DEPRECATED,
-  },
-  {
-    id: "WBTC-USDC-V0",
-    chainId: ChainId.ARBITRUM,
-    pairId: "WBTC-USDC",
-
-    addresses: {
-      vault: "0xdcc16DEfe27cd4c455e5520550123B4054D1b432",
-    },
-
-    status: VaultStatus.DEPRECATED,
-  },
-  {
-    id: "ARB-USDC-V0",
-    chainId: ChainId.ARBITRUM,
-    pairId: "ARB-USDC",
-
-    addresses: {
-      vault: "0x14475be7D59895739207a9E5518903f4B94345B7",
-    },
-
-    status: VaultStatus.DEPRECATED,
-  },
-  {
-    id: "GMX-USDC-V0",
-    chainId: ChainId.ARBITRUM,
-    pairId: "GMX-USDC",
-
-    addresses: {
-      vault: "0xa82577af74ae9D450DC04dF62Fc5C14748a0B3Ae",
-    },
-
-    status: VaultStatus.DEPRECATED,
   },
 ];

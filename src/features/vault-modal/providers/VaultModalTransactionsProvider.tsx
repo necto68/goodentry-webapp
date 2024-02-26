@@ -8,6 +8,7 @@ import { useVaultDepositTransaction } from "../../transactions/transaction-hooks
 import { useVaultMigrationTransaction } from "../../transactions/transaction-hooks/useVaultMigrationTransaction";
 import { useVaultWithdrawTransaction } from "../../transactions/transaction-hooks/useVaultWithdrawTransaction";
 import { getVaultConfig } from "../../vault/helpers/getVaultConfig";
+import { useVaultStakeModalQueries } from "../../vault-stake-modal/hooks/useVaultStakeModalQueries";
 import { getChainMetadata } from "../../web3/helpers/getChainMetadata";
 import { useVaultModalQueries } from "../hooks/useVaultModalQueries";
 import { useVaultModalTokenInputState } from "../hooks/useVaultModalTokenInputState";
@@ -34,14 +35,13 @@ export const VaultModalTransactionsProvider: FC<
 > = ({ children }) => {
   const toast = useToast();
 
-  const {
-    vaultId,
-    vaultAddress,
-    depositTokenInputState,
-    withdrawTokenInputState,
-  } = useVaultModalState();
+  const { vaultId, depositTokenInputState, withdrawTokenInputState } =
+    useVaultModalState();
 
-  const { chainId } = getVaultConfig(vaultId);
+  const {
+    chainId,
+    addresses: { vault },
+  } = getVaultConfig(vaultId);
 
   const {
     addresses: { vaultMigrationManager },
@@ -51,9 +51,12 @@ export const VaultModalTransactionsProvider: FC<
     vaultQuery,
     vaultTokenQuery,
     migrationVaultTokenQuery,
-    token0Query,
-    token1Query,
-  } = useVaultModalQueries(vaultId, vaultAddress);
+    baseTokenQuery,
+    quoteTokenQuery,
+  } = useVaultModalQueries(vaultId);
+
+  const { vaultTokenQuery: vaultStakeTokenQuery, rewardTrackerDataQuery } =
+    useVaultStakeModalQueries(vaultId);
 
   const { tokenData } = useVaultModalTokenInputState();
 
@@ -65,12 +68,17 @@ export const VaultModalTransactionsProvider: FC<
   const { address: vaultTokenAddress = "" } = data ?? {};
 
   const tokenApproveDependantQueries = [
-    token0Query,
-    token1Query,
+    baseTokenQuery,
+    quoteTokenQuery,
     vaultTokenQuery,
     migrationVaultTokenQuery,
   ];
-  const vaultDependantQueries = [...tokenApproveDependantQueries, vaultQuery];
+  const vaultDependantQueries = [
+    ...tokenApproveDependantQueries,
+    vaultQuery,
+    vaultStakeTokenQuery,
+    rewardTrackerDataQuery,
+  ];
 
   const onTransactionSuccess = () => {
     depositTokenInputState.resetState();
@@ -166,7 +174,7 @@ export const VaultModalTransactionsProvider: FC<
   );
 
   const depositTransaction = useVaultDepositTransaction(
-    vaultAddress,
+    vault,
     chainId,
     vaultDependantQueries,
     onDepositTransactionSuccess,
@@ -174,7 +182,7 @@ export const VaultModalTransactionsProvider: FC<
   );
 
   const withdrawTransaction = useVaultWithdrawTransaction(
-    vaultAddress,
+    vault,
     vaultDependantQueries,
     onWithdrawTransactionSuccess,
     onWithdrawTransactionError
