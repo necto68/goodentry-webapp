@@ -8,3 +8,6 @@ export { default as arb } from "./arb.svg";
 export { default as gmx } from "./gmx.svg";
 export { default as good } from "./good.svg";
 export { default as esgood } from "./esgood.svg";
+export { default as avax } from "./avax.svg";
+export { default as usdt } from "./usdt.svg";
+export { default as joe } from "./joe.svg";

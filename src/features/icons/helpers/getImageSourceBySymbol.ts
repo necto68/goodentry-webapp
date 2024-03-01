@@ -9,6 +9,9 @@ import {
   gmx,
   good,
   esgood,
+  avax,
+  usdt,
+  joe,
 } from "../coins";
 
 const coinsIcons: { [key: string]: string } = {
@@ -24,6 +27,10 @@ const coinsIcons: { [key: string]: string } = {
   ARB: arb,
   GOOD: good,
   esGOOD: esgood,
+  AVAX: avax,
+  USDT: usdt,
+  USDt: usdt,
+  JOE: joe,
 
   // test tokens
   // eslint-disable-next-line @typescript-eslint/naming-convention

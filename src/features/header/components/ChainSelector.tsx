@@ -1,23 +1,30 @@
 import { Button } from "@chakra-ui/react";
 
-import { arb } from "../../icons/coins";
+import { getImageSourceByChainId } from "../../icons/helpers/getImageSourceByChainId";
 import { useWallet } from "../../wallet/hooks/useWallet";
+import { getChainConfig } from "../../web3/helpers/getChainConfig";
 import { ChainId } from "../../web3/types/ChainId";
 import { Icon } from "../styles/ChainSelector";
 
+const appChain = ChainId.ARBITRUM;
+
 export const ChainSelector = () => {
   const { switchChainId, chainId } = useWallet();
-  const isArbitrum = chainId === ChainId.ARBITRUM;
+
+  const { title } = getChainConfig(appChain);
+  const chainLogo = getImageSourceByChainId(appChain);
+
+  const isAppChain = chainId === appChain;
 
   return (
     <Button
-      leftIcon={isArbitrum ? <Icon src={arb} /> : undefined}
+      leftIcon={isAppChain && chainLogo ? <Icon src={chainLogo} /> : undefined}
       onClick={() => {
-        void switchChainId(ChainId.ARBITRUM);
+        void switchChainId(appChain);
       }}
       variant="border"
     >
-      {isArbitrum ? "Arbitrum" : "Wrong Network"}
+      {isAppChain ? title : "Wrong Network"}
     </Button>
   );
 };
