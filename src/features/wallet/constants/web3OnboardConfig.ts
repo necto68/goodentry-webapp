@@ -2,11 +2,21 @@ import injectedModule, { ProviderLabel } from "@web3-onboard/injected-wallets";
 import { init } from "@web3-onboard/react";
 
 import { favicon, appLogo } from "../../icons/brand";
+import { chainConfigs } from "../../web3/constants/chainConfigs";
 import { CustomProviderLabel } from "../types/CustomProviderLabel";
 import { CustomWalletExternalUrl } from "../types/CustomWalletExternalUrl";
 
 import { oktoWalletModule } from "./oktoWalletModule";
 import { walletConnectModule } from "./walletConnectModule";
+
+const supportedChains = chainConfigs.map(
+  ({ chainId, nativeCurrency, title, providers }) => ({
+    id: chainId,
+    token: nativeCurrency.symbol,
+    label: title,
+    rpcUrl: providers.rpc,
+  })
+);
 
 const supportedWalletsLabels = [
   ProviderLabel.OKXWallet,
@@ -30,14 +40,7 @@ export const web3OnboardConfig = init({
   theme: "dark",
   wallets: [injectedWalletsModule, walletConnectModule],
 
-  chains: [
-    {
-      id: 42_161,
-      token: "ETH",
-      label: "Arbitrum One",
-      rpcUrl: "https://arb1.arbitrum.io/rpc",
-    },
-  ],
+  chains: supportedChains,
 
   connect: {
     iDontHaveAWalletLink: "https://okx.com/web3",
