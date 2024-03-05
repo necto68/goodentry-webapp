@@ -10,11 +10,12 @@ import { useVaultToken } from "../../vault-details-page/hooks/useVaultToken";
 
 import type { FC } from "react";
 
-interface MyShareInfoProps {
+interface BalanceInfoProps {
   readonly vaultId: string;
+  readonly title?: string;
 }
 
-export const MyShareInfo: FC<MyShareInfoProps> = ({ vaultId }) => {
+export const BalanceInfo: FC<BalanceInfoProps> = ({ vaultId, title }) => {
   const vaultToken = useVaultToken(vaultId);
 
   const { symbol = "", balance, price } = vaultToken ?? {};
@@ -24,15 +25,15 @@ export const MyShareInfo: FC<MyShareInfoProps> = ({ vaultId }) => {
   const vaultTokenPrice = balance && price ? balance.mul(price).toNumber() : 0;
   const formattedVaultTokenPrice = getFormattedFullCurrency(vaultTokenPrice);
 
-  const formattedShareInfo = `${formattedBalance} (${formattedVaultTokenPrice})`;
+  const formattedBalanceWithPriceInfo = `${formattedBalance} (${formattedVaultTokenPrice})`;
 
   const isLoading = !vaultToken;
 
   return (
     <InfoRow>
-      <InfoTitle>My Share</InfoTitle>
+      <InfoTitle>{title ?? "Balance"}</InfoTitle>
       <InfoValue>
-        {isLoading ? loadingPlaceholder : formattedShareInfo}
+        {isLoading ? loadingPlaceholder : formattedBalanceWithPriceInfo}
       </InfoValue>
     </InfoRow>
   );

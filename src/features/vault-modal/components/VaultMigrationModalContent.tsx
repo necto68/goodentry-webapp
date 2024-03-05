@@ -1,7 +1,7 @@
 import { useVaultModalState } from "../stores/useVaultModalState";
 import { Container } from "../styles/VaultModal";
 
-import { MyShareInfo } from "./MyShareInfo";
+import { BalanceInfo } from "./BalanceInfo";
 import { VaultMigrationButton } from "./VaultMigrationButton";
 
 export const VaultMigrationModalContent = () => {
@@ -10,7 +10,7 @@ export const VaultMigrationModalContent = () => {
   return (
     <Container>
       <VaultMigrationButton />
-      <MyShareInfo vaultId={vaultId} />
+      <BalanceInfo vaultId={vaultId} />
     </Container>
   );
 };

@@ -14,7 +14,8 @@ import { getVaultConfig } from "../../vault/helpers/getVaultConfig";
 import { VaultStatus } from "../../vault/types/VaultStatus";
 import { useVault } from "../../vault-details-page/hooks/useVault";
 import { useVaultApiData } from "../../vault-details-page/hooks/useVaultApiData";
-import { MyShareInfo } from "../../vault-modal/components/MyShareInfo";
+import { BalanceInfo } from "../../vault-modal/components/BalanceInfo";
+import { StakedBalanceInfo } from "../../vault-modal/components/StakedBalanceInfo";
 import {
   Container,
   InfoDescription,
@@ -72,23 +73,24 @@ export const VaultCard: FC<VaultCardProps> = ({ vaultId }) => {
 
   const path = generatePath(RoutePathname.EZ_VAULT_DETAILS, { vaultId });
 
+  const isARBVault = vaultId === "ARB-USDC";
+  const isActiveRewards = status === VaultStatus.ACTIVE_REWARDS;
+
   const getTooltipContent = useCallback(
     () => (
       <>
         <p>Fees APR: {formattedFeesAPR}</p>
-        {status === VaultStatus.ACTIVE_REWARDS ? (
-          <p>Rewards APR: {formattedRewardsAPR}</p>
-        ) : null}
+        {isActiveRewards ? <p>Rewards APR: {formattedRewardsAPR}</p> : null}
       </>
     ),
-    [status, formattedFeesAPR, formattedRewardsAPR]
+    [formattedFeesAPR, isActiveRewards, formattedRewardsAPR]
   );
 
   return (
     <Link to={path}>
       <Container>
         <TagContainer>
-          {status === VaultStatus.ACTIVE_REWARDS ? <RewardsTag /> : <NoTag />}
+          {isActiveRewards ? <RewardsTag /> : <NoTag />}
         </TagContainer>
         <Tokens>
           <TokenIconLeft
@@ -118,7 +120,10 @@ export const VaultCard: FC<VaultCardProps> = ({ vaultId }) => {
             <InfoValueBold>{formattedTVL}</InfoValueBold>
           </InfoRow>
           <Separator />
-          <MyShareInfo vaultId={vaultId} />
+          <BalanceInfo vaultId={vaultId} />
+          {isActiveRewards && !isARBVault ? (
+            <StakedBalanceInfo vaultId={vaultId} />
+          ) : null}
         </VaultInfo>
       </Container>
     </Link>

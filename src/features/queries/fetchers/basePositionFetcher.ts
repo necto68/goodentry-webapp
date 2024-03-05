@@ -43,7 +43,7 @@ export const basePositionFetcher = async (
     positionManagerContract.getFeesAccumulatedAndMin(positionId),
   ]);
 
-  const [feesAccumulated, feesMin] = [fees.feesAccumulated, fees.feesMin].map(
+  const [accumulatedFee, minFee] = [fees.feesAccumulated, fees.feesMin].map(
     (fee) => fromTokenAmount(toBig(fee), quoteToken)
   );
 
@@ -62,7 +62,7 @@ export const basePositionFetcher = async (
   );
 
   const initialCollateral = collateralAmount.sub(exerciseFee);
-  const currentCollateral = initialCollateral.sub(feesAccumulated);
+  const currentCollateral = initialCollateral.sub(accumulatedFee);
 
   const notionalAmount = fromTokenAmount(
     toBig(position.notionalAmount),
@@ -86,7 +86,7 @@ export const basePositionFetcher = async (
     profitAndLossBig = getZero();
   }
 
-  profitAndLossBig = profitAndLossBig.sub(feesAccumulated);
+  profitAndLossBig = profitAndLossBig.sub(accumulatedFee);
 
   const profitAndLoss = profitAndLossBig.toNumber();
 
@@ -119,7 +119,7 @@ export const basePositionFetcher = async (
     runwayInSeconds,
     profitAndLoss,
     profitAndLossPercentage,
-    feesAccumulated,
-    feesMin,
+    accumulatedFee,
+    minFee,
   };
 };
