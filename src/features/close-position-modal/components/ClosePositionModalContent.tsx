@@ -12,11 +12,13 @@ import { useClosePositionModalState } from "../stores/useClosePositionModalState
 
 import { ClosePositionModalMainButton } from "./ClosePositionModalMainButton";
 import { EntryPriceInfo } from "./EntryPriceInfo";
+import { MinFeeInfo } from "./MinFeeInfo";
 import { PositionInfo } from "./PositionInfo";
 import { ProfitAndLossInfo } from "./ProfitAndLossInfo";
 
 export const ClosePositionModalContent = () => {
-  const { pairId, positionSide } = useClosePositionModalState();
+  const { pairId, positionSide, accumulatedFee, minFee } =
+    useClosePositionModalState();
   const title = useTradeModalTitle(PositionAction.CLOSE, positionSide, pairId);
 
   const isLong = isPositionSideLong(positionSide);
@@ -31,6 +33,7 @@ export const ClosePositionModalContent = () => {
         <EntryPriceInfo />
         <PositionInfo />
         <ProfitAndLossInfo />
+        {accumulatedFee.lt(minFee) ? <MinFeeInfo /> : null}
         <ClosePositionModalMainButton />
       </Content>
     </Container>

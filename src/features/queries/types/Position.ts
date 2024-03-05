@@ -14,6 +14,6 @@ export interface Position {
   runwayInSeconds: number;
   profitAndLoss: number;
   profitAndLossPercentage: number;
-  feesAccumulated: Big;
-  feesMin: Big;
+  accumulatedFee: Big;
+  minFee: Big;
 }
