@@ -1,46 +1,65 @@
-import { loadingPlaceholder } from "../../shared/constants/placeholders";
-import { InfoRow } from "../../shared/modal/styles/ModalInfo";
-import {
-  Container,
-  Content,
-  PairTitle,
-  VaultBrief,
-  Wrapper,
-} from "../../vault-details-page/styles/VaultDetailsPage";
-import {
-  InfoDescription,
-  InfoValueBold,
-  VaultInfo,
-} from "../../vaults-page/styles/VaultCard";
+import React, { useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+
 import { useReferrals } from "../hooks/useReferrals";
-import { Title, TitleAccent } from "../styles/ReferralsPage";
+import { useReferralModalState } from "../stores/useReferralModalState";
+import {
+  Content,
+  GlowContainer,
+  Link,
+  SubTitle,
+  Title,
+} from "../styles/ReferralHeader";
+
+import { SubmitReferrerButton } from "./SubmitReferrerButton";
 
 export const ReferralHeader = () => {
-  const referrals = useReferrals();
-  const { myReferralsCount } = referrals ?? {};
+  const { referrerCode = "" } = useReferrals() ?? {};
+  const [searchParameters, setSearchParameters] = useSearchParams();
+  const referralParameter =
+    searchParameters.get("code") ?? localStorage.getItem("referralParameter");
+
+  const { referralCodeInputState, setReferralCodeInputState } =
+    useReferralModalState();
+
+  useEffect(() => {
+    if (referrerCode || referralParameter) {
+      setReferralCodeInputState(referrerCode || String(referralParameter));
+      if (!referrerCode) {
+        localStorage.setItem("referralParameter", referralParameter ?? "");
+      } else {
+        localStorage.removeItem("referralParameter");
+      }
+      searchParameters.delete("code");
+      setSearchParameters(searchParameters);
+    }
+  }, [
+    referralCodeInputState,
+    referralParameter,
+    referrerCode,
+    searchParameters,
+    setReferralCodeInputState,
+    setSearchParameters,
+  ]);
 
   return (
-    <Wrapper>
-      <Container>
-        <Content>
-          <VaultBrief>
-            <PairTitle>
-              <Title>
-                Good <TitleAccent>Referral Program</TitleAccent>
-              </Title>
-            </PairTitle>
-            <VaultInfo>
-              <InfoRow />
-              <InfoRow>
-                <InfoDescription>Total Referrals:</InfoDescription>
-                <InfoValueBold>
-                  {myReferralsCount ?? loadingPlaceholder}
-                </InfoValueBold>
-              </InfoRow>
-            </VaultInfo>
-          </VaultBrief>
-        </Content>
-      </Container>
-    </Wrapper>
+    <Content>
+      <Title>Referrals</Title>
+      <SubTitle>
+        Earn rewards with Good Entry{" "}
+        <Link href="https://goodentrylabs.medium.com/" target="_blank">
+          Referral Program
+        </Link>
+      </SubTitle>
+      {!referrerCode && referralParameter ? (
+        <GlowContainer>
+          <Title>Activate Your Referral Link</Title>
+          <SubTitle>
+            You 5% rebate for your trades, and your referrer gets 5%
+          </SubTitle>
+          <SubmitReferrerButton />
+        </GlowContainer>
+      ) : null}
+    </Content>
   );
 };

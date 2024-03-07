@@ -14,7 +14,6 @@ import { useReferralModalState } from "../stores/useReferralModalState";
 import { Container, Content } from "../styles/ReferralInputCard";
 
 import { SubmitMyCodeButton } from "./SubmitMyCodeButton";
-import { SubmitReferrerButton } from "./SubmitReferrerButton";
 
 import type { ChangeEvent } from "react";
 
@@ -45,23 +44,16 @@ export const ReferralInputCard = () => {
 
   const handleInputChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
-      setMyReferralCodeInputState(event.target.value);
+      setMyReferralCodeInputState(event.target.value.replace(" ", ""));
     },
     [setMyReferralCodeInputState]
-  );
-
-  const handleReferrerInputChange = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      setReferralCodeInputState(event.target.value);
-    },
-    [setReferralCodeInputState]
   );
 
   return (
     <Container>
       <Content>
         <InputTitleContainer>
-          <InputTitle>My code</InputTitle>
+          <InputTitle>My Code</InputTitle>
         </InputTitleContainer>
         <InputGroupContainer isError={false}>
           <InputGroup>
@@ -69,34 +61,29 @@ export const ReferralInputCard = () => {
               disabled={Boolean(myReferralCode) || isLoading || !account}
               inputMode="text"
               onChange={handleInputChange}
+              placeholder="Start typing to generate your link..."
               type="text"
               value={myReferralCodeInputState}
               variant="filled"
             />
           </InputGroup>
         </InputGroupContainer>
+        <InputTitleContainer>
+          <InputTitle>My Referrer Link</InputTitle>
+        </InputTitleContainer>
+        <InputGroupContainer isError={false}>
+          <Input
+            inputMode="text"
+            type="text"
+            value={`https://app.goodentry.io/referrals?code=${myReferralCodeInputState.replace(
+              " ",
+              ""
+            )}`}
+            variant="filled"
+          />
+        </InputGroupContainer>
         <SubmitMyCodeButton />
       </Content>
-      {referralParameter || referrerCode ? (
-        <Content>
-          <InputTitleContainer>
-            <InputTitle>My Referrer</InputTitle>
-          </InputTitleContainer>
-          <InputGroupContainer isError={false}>
-            <InputGroup>
-              <Input
-                disabled
-                inputMode="text"
-                onChange={handleReferrerInputChange}
-                type="text"
-                value={referralCodeInputState}
-                variant="filled"
-              />
-            </InputGroup>
-          </InputGroupContainer>
-          <SubmitReferrerButton />
-        </Content>
-      ) : null}
     </Container>
   );
 };

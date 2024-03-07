@@ -18,6 +18,7 @@ export const referralFetcher = async (
 ): Promise<ReferralInfo> => {
   const response: ReferralInfo = {
     myReferralsCount: 0,
+    totalRewards: 0,
     myReferralCode: "",
     referrerCode: "",
     referralHistory: [],
@@ -87,6 +88,11 @@ export const referralFetcher = async (
           chainId,
         };
       })
+    );
+
+    response.totalRewards = response.referralHistory.reduce(
+      (accumulator, { reward }) => accumulator + reward.toNumber(),
+      0
     );
   } catch {
     return response;

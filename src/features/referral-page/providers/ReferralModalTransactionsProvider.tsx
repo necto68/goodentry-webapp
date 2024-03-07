@@ -66,7 +66,11 @@ export const ReferralModalTransactionsProvider: FC<
     toast({
       type: ToastType.ERROR,
       title: "Error",
-      description: error.message,
+
+      description:
+        error.message
+          .split('reverted with reason string "')[1]
+          ?.split('"')[0] ?? error.message,
     });
   };
 

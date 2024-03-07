@@ -6,7 +6,6 @@ import {
   HistoryTx,
   Paginator,
 } from "../../protected-perps-page/styles/HistoryTable";
-import { useReferralsQuery } from "../../queries/hooks/useReferralsQuery";
 import { getFormattedDate } from "../../shared/helpers/baseFormatters";
 import { getFormattedTokenAmountWithSymbol } from "../../shared/helpers/formatters";
 import { Table } from "../../table/components/Table";
@@ -14,7 +13,7 @@ import { getTruncatedAddress } from "../../web3/helpers/addresses";
 import { getExplorerLink } from "../../web3/helpers/getExplorerLink";
 import { ExplorerLinkType } from "../../web3/types/ExplorerLinkType";
 import { useReferrals } from "../hooks/useReferrals";
-import { Container } from "../styles/ReferralHistoryTable";
+import { Container, Subtitle } from "../styles/ReferralHistoryTable";
 
 import type { ReferralHistoryItem } from "../../queries/types/ReferralInfo";
 import type { Column } from "../../table/types/Column";
@@ -56,7 +55,6 @@ export const ReferralHistoryTable = () => {
   const [currentPage, setCurrentPage] = useState(0);
 
   const referrals = useReferrals();
-  const { isLoading } = useReferralsQuery();
   const { referralHistory: rows } = referrals ?? {};
 
   const handleNextPage = () => {
@@ -79,9 +77,10 @@ export const ReferralHistoryTable = () => {
     );
   }, [rows, currentPage, limit]);
 
-  return !isLoading && rows?.length ? (
+  return (
     <Container>
       <Table columns={columns} getRowKey={getRowKey} rows={paginatedData} />
+      {!rows?.length ? <Subtitle>No history</Subtitle> : null}
       <Paginator>
         <Button onClick={handlePreviousPage} variant="unstyled">
           <BsChevronLeft color="gray" />
@@ -91,5 +90,5 @@ export const ReferralHistoryTable = () => {
         </Button>
       </Paginator>
     </Container>
-  ) : null;
+  );
 };
