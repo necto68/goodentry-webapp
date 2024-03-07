@@ -9,6 +9,7 @@ export interface ReferralHistoryItem {
   chainId: ChainId;
 }
 export interface ReferralInfo {
+  totalRewards: number;
   myReferralsCount: number;
   myReferralCode: string;
   referrerCode: string;

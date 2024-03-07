@@ -46,7 +46,7 @@ export const SubmitReferrerButton = () => {
 
   return (
     <Button isLoading={isLoading} onClick={handleButtonClick} variant="brand">
-      Activate your referrer
+      Activate Referral
     </Button>
   );
 };

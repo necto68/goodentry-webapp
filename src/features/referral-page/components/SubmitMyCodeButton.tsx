@@ -55,13 +55,18 @@ export const SubmitMyCodeButton = () => {
   if (myReferralCode) {
     return (
       <Button isLoading={isLoading} onClick={handleCopyButtonClick}>
-        Copy your referral link
+        Copy
       </Button>
     );
   }
 
   return (
-    <Button isLoading={isLoading} onClick={handleButtonClick} variant="brand">
+    <Button
+      isDisabled={!myReferralCodeInputState}
+      isLoading={isLoading}
+      onClick={handleButtonClick}
+      variant="brand"
+    >
       Create my referral code
     </Button>
   );
