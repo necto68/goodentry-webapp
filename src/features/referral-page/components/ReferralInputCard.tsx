@@ -52,6 +52,22 @@ export const ReferralInputCard = () => {
   return (
     <Container>
       <Content>
+        {referrerCode ? (
+          <>
+            <InputTitleContainer>
+              <InputTitle>You were referred by</InputTitle>
+            </InputTitleContainer>
+            <InputGroupContainer isError={false}>
+              <Input
+                disabled
+                inputMode="text"
+                type="text"
+                value={referrerCode}
+                variant="filled"
+              />
+            </InputGroupContainer>
+          </>
+        ) : null}
         <InputTitleContainer>
           <InputTitle>My Code</InputTitle>
         </InputTitleContainer>
