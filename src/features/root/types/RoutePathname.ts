@@ -6,4 +6,5 @@ export enum RoutePathname {
   PUBLIC_SALE = "/fair-sale",
   LOCK = "/lock",
   REFERRALS = "/referrals",
+  LEADERBOARD = "/leaderboard",
 }

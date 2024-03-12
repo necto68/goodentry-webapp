@@ -27,6 +27,10 @@ export const additionalNavigationLinks: NavigationLink[] = [
     href: RoutePathname.REFERRALS,
   },
   {
+    name: "Leaderboard",
+    href: RoutePathname.LEADERBOARD,
+  },
+  {
     name: "Docs",
     href: "https://gitbook.goodentry.io/",
     isExternal: true,

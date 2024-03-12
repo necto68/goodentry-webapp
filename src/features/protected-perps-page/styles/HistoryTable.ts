@@ -8,4 +8,6 @@ export const LongText = tw.span`text-brand`;
 
 export const ShortText = tw.span`text-error`;
 
-export const HistoryTx = tw.a``;
+export const HistoryTx = tw.a`
+  underline
+`;
