@@ -4,6 +4,7 @@ import { DashboardPage } from "../../dashboard-page/components/DashboardPage";
 import { Footer } from "../../footer/components/Footer";
 import { Header } from "../../header/components/Header";
 import { NotificationBar } from "../../header/components/NotificationBar";
+import { LeaderboardPage } from "../../leaderboard-page/components/LeaderboardPage";
 import { LockPage } from "../../lock-page/components/LockPage";
 import { ProtectedPerpsPage } from "../../protected-perps-page/components/ProtectedPerpsPage";
 import { ReferralsPage } from "../../referral-page/components/ReferralsPage";
@@ -66,6 +67,14 @@ export const Root = () => {
             path={RoutePathname.LOCK}
           />
           <Route element={<ReferralsPage />} path={RoutePathname.REFERRALS} />
+          <Route
+            element={
+              <Content>
+                <LeaderboardPage />
+              </Content>
+            }
+            path={RoutePathname.LEADERBOARD}
+          />
           <Route
             element={<Navigate to={RoutePathname.PROTECTED_PERPS} />}
             path="*"
