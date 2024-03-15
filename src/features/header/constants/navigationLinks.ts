@@ -15,6 +15,10 @@ export const headerNavigationLinks: NavigationLink[] = [
     name: "Lock",
     href: RoutePathname.LOCK,
   },
+  {
+    name: "Leaderboard",
+    href: RoutePathname.LEADERBOARD,
+  },
 ];
 
 export const additionalNavigationLinks: NavigationLink[] = [
@@ -25,10 +29,6 @@ export const additionalNavigationLinks: NavigationLink[] = [
   {
     name: "Referrals",
     href: RoutePathname.REFERRALS,
-  },
-  {
-    name: "Leaderboard",
-    href: RoutePathname.LEADERBOARD,
   },
   {
     name: "Docs",
