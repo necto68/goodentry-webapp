@@ -14,7 +14,7 @@ export const RewardsInfo = () => {
 
   const { rewardsAnnualPercentageRate } = useVaultApiData(vaultId) ?? {};
 
-  const formattedRewards = "400 ARB / day";
+  const formattedRewards = "1000 ARB / day";
 
   const formattedRewardsAPR = rewardsAnnualPercentageRate
     ? getFormattedAPY(rewardsAnnualPercentageRate)

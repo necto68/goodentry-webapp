@@ -45,8 +45,8 @@ export const vaultApiDataFetcher = async (
 
   // TODO: remove this when we have a better way to calculate this
   const daysPerYear = 365;
-  const arbPrice = 1.67;
-  const arbPerDay = 400;
+  const arbPrice = 1.93;
+  const arbPerDay = 1000;
 
   const rewardsAnnualPercentageRate =
     status === VaultStatus.ACTIVE_REWARDS
