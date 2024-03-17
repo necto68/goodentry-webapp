@@ -1,20 +1,25 @@
 import { Input } from "@chakra-ui/react";
-import { type FC, type ChangeEvent, useCallback } from "react";
+import { type ChangeEvent, useCallback } from "react";
 import { BiSortUp, BiSortDown } from "react-icons/bi";
 
+import { Dropdown } from "../../dropdown/components/Dropdown";
 import { Switcher } from "../../form-components/components/Switcher";
 import { InputGroupContainer } from "../../input-card/styles/InputCard";
-import { Container } from "../styles/LeaderboardTableHeader";
+import { useLeaderboardState } from "../hooks/useLeaderboardState";
+import { Container, RightContent } from "../styles/LeaderboardTableHeader";
 import { TabType } from "../types/TabType";
 
-import type { LeaderboardTableHeaderProps } from "../types/LeaderboardTableHeaderProps";
+export const LeaderboardTableHeader = () => {
+  const {
+    selectedTab,
+    setSelectedTab,
+    selectedWeek,
+    setSelectedWeek,
+    addressFilterValue,
+    setAddressFilterValue,
+    weeks,
+  } = useLeaderboardState();
 
-export const LeaderboardTableHeader: FC<LeaderboardTableHeaderProps> = ({
-  selectedTab,
-  setSelectedTab,
-  filterValue,
-  setFilterValue,
-}) => {
   const isWinnersTab = selectedTab === TabType.WINNERS;
 
   const handleTabClick = (tab: number) => {
@@ -23,10 +28,15 @@ export const LeaderboardTableHeader: FC<LeaderboardTableHeaderProps> = ({
 
   const handleInputChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
-      setFilterValue(event.target.value);
+      setAddressFilterValue(event.target.value);
     },
-    [setFilterValue]
+    [setAddressFilterValue]
   );
+
+  const options = weeks.map((week) => ({
+    label: `Week ${week}`,
+    value: week,
+  }));
 
   return (
     <Container>
@@ -38,14 +48,21 @@ export const LeaderboardTableHeader: FC<LeaderboardTableHeaderProps> = ({
         title0="Biggest Winners"
         title1="Biggest Losers"
       />
-      <InputGroupContainer isError={false}>
-        <Input
-          onChange={handleInputChange}
-          placeholder="Search Account"
-          value={filterValue}
-          variant="filled"
+      <RightContent>
+        <Dropdown
+          onChange={setSelectedWeek}
+          options={options}
+          value={selectedWeek}
         />
-      </InputGroupContainer>
+        <InputGroupContainer isError={false}>
+          <Input
+            onChange={handleInputChange}
+            placeholder="Search Account"
+            value={addressFilterValue}
+            variant="filled"
+          />
+        </InputGroupContainer>
+      </RightContent>
     </Container>
   );
 };

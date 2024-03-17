@@ -13,14 +13,12 @@ import { getTruncatedAddress } from "../../web3/helpers/addresses";
 import { getExplorerLink } from "../../web3/helpers/getExplorerLink";
 import { ChainId } from "../../web3/types/ChainId";
 import { ExplorerLinkType } from "../../web3/types/ExplorerLinkType";
-import { useLeaderboardData } from "../hooks/useLeaderboardData";
+import { useLeaderboardState } from "../hooks/useLeaderboardState";
 import { LeaderboardProfitAndLossRow } from "../styles/LeaderboardTable";
 import { TabType } from "../types/TabType";
 
 import type { LeaderboardRow } from "../../queries/types/LeaderboardData";
 import type { Column } from "../../table/types/Column";
-import type { LeaderboardTableHeaderProps } from "../types/LeaderboardTableHeaderProps";
-import type { FC } from "react";
 
 const columns: Column<LeaderboardRow>[] = [
   {
@@ -30,6 +28,8 @@ const columns: Column<LeaderboardRow>[] = [
   {
     key: "account",
     title: "Account",
+
+    filterBy: ({ account }) => account,
 
     render: ({ account }) => (
       <HistoryTx
@@ -91,32 +91,25 @@ const columns: Column<LeaderboardRow>[] = [
 
 const getRowKey = (row: LeaderboardRow) => row.id;
 
-export type LeaderboardTableProps = Pick<
-  LeaderboardTableHeaderProps,
-  "filterValue" | "selectedTab"
->;
+export const LeaderboardTable = () => {
+  const { selectedTab, addressFilterValue, selectedWeekRows } =
+    useLeaderboardState();
 
-export const LeaderboardTable: FC<LeaderboardTableProps> = ({
-  selectedTab,
-  filterValue,
-}) => {
-  const rows = useLeaderboardData();
-
-  if (!rows) {
+  if (!selectedWeekRows) {
     return null;
   }
 
-  const filteredRows = rows.filter((row) => {
-    const account = row.account.toLowerCase();
-    const filter = filterValue.toLowerCase();
-
-    return account.includes(filter);
-  });
-
   const sortedRows =
     selectedTab === TabType.WINNERS
-      ? filteredRows
-      : filteredRows.slice().reverse();
+      ? selectedWeekRows
+      : Array.from(selectedWeekRows).reverse();
 
-  return <Table columns={columns} getRowKey={getRowKey} rows={sortedRows} />;
+  return (
+    <Table
+      columns={columns}
+      filterInputValue={addressFilterValue}
+      getRowKey={getRowKey}
+      rows={sortedRows}
+    />
+  );
 };

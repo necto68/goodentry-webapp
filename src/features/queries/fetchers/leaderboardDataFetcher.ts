@@ -1,3 +1,5 @@
+import groupBy from "just-group-by";
+
 import {
   duneApiKeyHeaderKey,
   duneApiKeyHeaderValue,
@@ -28,7 +30,7 @@ export const leaderboardDataFetcher = async (): Promise<LeaderboardData> => {
 
   rawRows.sort((a, b) => b.total_pnl - a.total_pnl);
 
-  return rawRows.map((row, index) => {
+  const ungroupedRows = rawRows.map((row) => {
     const {
       user: account,
       total_pnl: weeklyProfitAndLoss,
@@ -41,8 +43,7 @@ export const leaderboardDataFetcher = async (): Promise<LeaderboardData> => {
       weeklyProfitAndLoss / weeklyTotalVolume;
 
     return {
-      id: account,
-      rank: index + 1,
+      id: `${account}_${week}`,
       account,
       week,
       weeklyTradesAmount,
@@ -51,4 +52,15 @@ export const leaderboardDataFetcher = async (): Promise<LeaderboardData> => {
       weeklyProfitAndLossPercentage,
     };
   });
+
+  const groupedRows = groupBy(ungroupedRows, ({ week }) => week);
+
+  const rowsByWeek = Object.entries(groupedRows).map(([week, rows]) => ({
+    week: Number(week),
+    rows: rows.map((row, index) => ({ ...row, rank: index + 1 })),
+  }));
+
+  rowsByWeek.sort((a, b) => a.week - b.week);
+
+  return rowsByWeek;
 };
