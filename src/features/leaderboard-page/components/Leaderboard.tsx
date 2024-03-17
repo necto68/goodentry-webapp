@@ -1,20 +1,15 @@
-import { useState } from "react";
-
 import { Container, Title } from "../../protected-perps-page/styles/Positions";
 import { ComponentContainer } from "../../protected-perps-page/styles/ProtectedPerpsPage";
 import { loadingPlaceholder } from "../../shared/constants/placeholders";
-import { useLeaderboardData } from "../hooks/useLeaderboardData";
-import { TabType } from "../types/TabType";
+import { useLeaderboardState } from "../hooks/useLeaderboardState";
 
 import { LeaderboardTable } from "./LeaderboardTable";
 import { LeaderboardTableHeader } from "./LeaderboardTableHeader";
 
 export const Leaderboard = () => {
-  const rows = useLeaderboardData();
-  const [selectedTab, setSelectedTab] = useState(TabType.WINNERS);
-  const [filterValue, setFilterValue] = useState("");
+  const { selectedWeekRows } = useLeaderboardState();
 
-  if (!rows) {
+  if (!selectedWeekRows) {
     return (
       <ComponentContainer>
         <Title>{loadingPlaceholder}</Title>
@@ -22,7 +17,7 @@ export const Leaderboard = () => {
     );
   }
 
-  if (rows.length === 0) {
+  if (selectedWeekRows.length === 0) {
     return (
       <ComponentContainer>
         <Title>No Leaderboard</Title>
@@ -32,13 +27,8 @@ export const Leaderboard = () => {
 
   return (
     <Container>
-      <LeaderboardTableHeader
-        filterValue={filterValue}
-        selectedTab={selectedTab}
-        setFilterValue={setFilterValue}
-        setSelectedTab={setSelectedTab}
-      />
-      <LeaderboardTable filterValue={filterValue} selectedTab={selectedTab} />
+      <LeaderboardTableHeader />
+      <LeaderboardTable />
     </Container>
   );
 };

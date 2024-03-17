@@ -9,4 +9,9 @@ export interface LeaderboardRow {
   weeklyProfitAndLossPercentage: number;
 }
 
-export type LeaderboardData = LeaderboardRow[] | null;
+export interface LeaderboardWeekData {
+  week: number;
+  rows: LeaderboardRow[];
+}
+
+export type LeaderboardData = LeaderboardWeekData[] | null;

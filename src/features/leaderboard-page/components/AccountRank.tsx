@@ -4,7 +4,7 @@ import {
 } from "../../shared/helpers/baseFormatters";
 import { useWallet } from "../../wallet/hooks/useWallet";
 import { areAddressesEqual } from "../../web3/helpers/addresses";
-import { useLeaderboardData } from "../hooks/useLeaderboardData";
+import { useLeaderboardState } from "../hooks/useLeaderboardState";
 import {
   BrandValue,
   Container,
@@ -15,14 +15,14 @@ import {
 } from "../styles/AccountRank";
 
 export const AccountRank = () => {
-  const { isConnected, account } = useWallet();
-  const rows = useLeaderboardData();
+  const { account } = useWallet();
+  const { selectedWeekRows } = useLeaderboardState();
 
-  const accountRow = rows?.find((row) =>
+  const accountRow = selectedWeekRows?.find((row) =>
     account ? areAddressesEqual(row.account, account) : false
   );
 
-  if (!isConnected || !accountRow) {
+  if (!accountRow) {
     return null;
   }
 
