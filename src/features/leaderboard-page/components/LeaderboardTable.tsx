@@ -109,6 +109,7 @@ export const LeaderboardTable = () => {
       columns={columns}
       filterInputValue={addressFilterValue}
       getRowKey={getRowKey}
+      limit={10}
       rows={sortedRows}
     />
   );

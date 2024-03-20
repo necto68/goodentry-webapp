@@ -9,6 +9,7 @@ import {
 } from "../../input-card/styles/InputCard";
 import { useReferralsQuery } from "../../queries/hooks/useReferralsQuery";
 import { useWallet } from "../../wallet/hooks/useWallet";
+import { getReferralLink } from "../helpers/referralLink";
 import { useReferrals } from "../hooks/useReferrals";
 import { useReferralModalState } from "../stores/useReferralModalState";
 import { Container, Content } from "../styles/ReferralInputCard";
@@ -91,10 +92,7 @@ export const ReferralInputCard = () => {
           <Input
             inputMode="text"
             type="text"
-            value={`https://app.goodentry.io/referrals?code=${myReferralCodeInputState.replace(
-              " ",
-              ""
-            )}`}
+            value={getReferralLink(myReferralCodeInputState)}
             variant="filled"
           />
         </InputGroupContainer>
