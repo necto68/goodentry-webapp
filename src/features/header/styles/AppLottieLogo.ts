@@ -7,8 +7,14 @@ export const Container = tw.div`
    max-h-[40px] w-28
 `;
 
-export const AppLogoIcon = tw(Player)`
+export const AppLogoLottieIcon = tw(Player)`
   w-28 translate-y-[-16px]
+  hidden
+  md:block
+`;
+
+export const AppLogoIcon = tw(BaseIcon)`
+  w-28
   hidden
   md:block
 `;

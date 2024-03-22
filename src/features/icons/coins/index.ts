@@ -11,3 +11,4 @@ export { default as esgood } from "./esgood.svg";
 export { default as avax } from "./avax.svg";
 export { default as usdt } from "./usdt.svg";
 export { default as joe } from "./joe.svg";
+export { default as tao } from "./tao.webp";

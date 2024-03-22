@@ -2,15 +2,15 @@ import { NavLink } from "react-router-dom";
 
 import { appLogo, appLogoLottie } from "../../icons/brand";
 import {
-  AppLogoIcon,
+  AppLogoLottieIcon,
   AppMobileLogoIcon,
   Container,
 } from "../styles/AppLottieLogo";
 
-export const AppLottieLogo = () => (
+export const AppLogo = () => (
   <Container>
     <NavLink to="/">
-      <AppLogoIcon autoplay loop src={appLogoLottie} />
+      <AppLogoLottieIcon autoplay loop src={appLogoLottie} />
       <AppMobileLogoIcon src={appLogo} />
     </NavLink>
   </Container>
