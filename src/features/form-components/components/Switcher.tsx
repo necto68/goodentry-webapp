@@ -17,7 +17,7 @@ export const Switcher: FC<SwitcherProps> = ({
       onClick={() => {
         onTabClick(0);
       }}
-      variant={tab === 0 ? "brand" : "solid"}
+      variant={tab === 0 ? "long" : "solid"}
       w="full"
     >
       {title0}
@@ -27,7 +27,7 @@ export const Switcher: FC<SwitcherProps> = ({
       onClick={() => {
         onTabClick(1);
       }}
-      variant={tab === 1 ? "error" : "solid"}
+      variant={tab === 1 ? "short" : "solid"}
       w="full"
     >
       {title1}

@@ -20,5 +20,5 @@ export const Title = tw.span`
 export const Value = tw(InfoValue)``;
 
 export const ColorValue = styled(Title)<ColorValueProps>`
-  ${({ isPositive }) => (isPositive ? tw`text-brand` : tw`text-error`)}
+  ${({ isPositive }) => (isPositive ? tw`text-long` : tw`text-short`)}
 `;

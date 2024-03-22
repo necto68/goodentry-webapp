@@ -29,18 +29,18 @@ export const Leverage = tw.span`text-sm text-white border border-bg-secondaryDar
 export const Long = tw.span`text-sm text-white bg-interactions-green rounded p-1 ml-4`;
 
 export const SideValue = styled.div<SideValueProps>`
-  ${tw`text-sm text-white rounded p-1 ml-4`}
+  ${tw`text-sm text-black rounded p-1 ml-4`}
 
   ${({ positionSide }) =>
-    isPositionSideLong(positionSide) ? tw`bg-interactions-green` : tw`bg-error`}
+    isPositionSideLong(positionSide) ? tw`bg-long` : tw`bg-short`}
 `;
 
 export const PositionProfitRow = tw.div`flex w-full gap-2 justify-between items-center`;
 
 export const PnlValue = styled.div<PnlValueProps>`
-  ${tw`text-brand text-xl font-bold p-4 flex w-full justify-around items-center border border-brand bg-bg-primary rounded`}
+  ${tw`text-xl font-bold p-4 flex w-full justify-around items-center border border-brand bg-bg-primary rounded`}
 
-  ${({ isPositive }) => (isPositive ? tw`text-brand` : tw`text-error`)}
+  ${({ isPositive }) => (isPositive ? tw`text-long` : tw`text-short`)}
 `;
 
 export const EntryPriceRow = tw.div`flex w-full gap-2 justify-between items-center`;

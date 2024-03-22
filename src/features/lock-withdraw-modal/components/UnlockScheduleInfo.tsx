@@ -14,7 +14,7 @@ import {
   InfoRow,
   InfoTitle,
   InfoValue,
-  InfoErrorValue,
+  InfoColorValue,
 } from "../../shared/modal/styles/ModalInfo";
 import { useLockWithdrawModalState } from "../stores/useLockWithdrawModalState";
 
@@ -100,7 +100,7 @@ export const UnlockScheduleInfo = () => {
       <InfoRow>
         <InfoTitle>Withdraw Penalty</InfoTitle>
         {isPenaltyExist ? (
-          <InfoErrorValue>{formattedPenalty}</InfoErrorValue>
+          <InfoColorValue isPositive={false}>{formattedPenalty}</InfoColorValue>
         ) : (
           <InfoValue>{formattedPenalty}</InfoValue>
         )}

@@ -22,5 +22,5 @@ export const Value = tw.span`
 `;
 
 export const ColorValue = styled(Value)<ColorValueProps>`
-  ${({ isPositive }) => (isPositive ? tw`text-brand` : tw`text-error`)}
+  ${({ isPositive }) => (isPositive ? tw`text-long` : tw`text-short`)}
 `;

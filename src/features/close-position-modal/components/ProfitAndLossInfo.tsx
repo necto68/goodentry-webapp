@@ -4,10 +4,9 @@ import {
 } from "../../shared/helpers/baseFormatters";
 import {
   Container,
-  InfoBrandValue,
-  InfoErrorValue,
   InfoRow,
   InfoTitle,
+  InfoColorValue,
 } from "../../shared/modal/styles/ModalInfo";
 import { useClosePositionModalState } from "../stores/useClosePositionModalState";
 
@@ -28,11 +27,9 @@ export const ProfitAndLossInfo = () => {
     <Container>
       <InfoRow>
         <InfoTitle>PNL</InfoTitle>
-        {isPositive ? (
-          <InfoBrandValue>{formattedValue}</InfoBrandValue>
-        ) : (
-          <InfoErrorValue>{formattedValue}</InfoErrorValue>
-        )}
+        <InfoColorValue isPositive={isPositive}>
+          {formattedValue}
+        </InfoColorValue>
       </InfoRow>
     </Container>
   );

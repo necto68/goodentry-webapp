@@ -6,7 +6,7 @@ export interface ColorTextProps {
 }
 
 export const ColorText = styled.span<ColorTextProps>`
-  ${({ isPositive }) => (isPositive ? tw`text-brand` : tw`text-error`)}
+  ${({ isPositive }) => (isPositive ? tw`text-long` : tw`text-short`)}
 `;
 
 export const ProfitAndLossCell = tw.div`
