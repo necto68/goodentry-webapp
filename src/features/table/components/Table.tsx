@@ -8,13 +8,13 @@ import {
   Td,
   Button,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 
 import { Paginator } from "../../protected-perps-page/styles/HistoryTable";
 import { Subtitle } from "../../referral-page/styles/ReferralHistoryTable";
 import { renderCellContent } from "../helpers/renderCellContent";
 import { useFilteredBy } from "../hooks/useFilterBy";
+import { usePagination } from "../hooks/usePagination";
 import { useSortBy } from "../hooks/useSortBy";
 
 import { Header } from "./Header";
@@ -26,50 +26,14 @@ export const Table = <RowData extends object>({
   rows,
   getRowKey,
   filterInputValue,
-  limit = 0,
+  limit,
 }: TableProps<RowData>) => {
   const { filteredRows } = useFilteredBy(columns, rows, filterInputValue);
   const { sortedRows } = useSortBy(filteredRows);
-
-  const [paginatedData, setPaginatedData] = useState<(RowData | undefined)[]>(
-    []
+  const { paginatedData, handlePageChange } = usePagination(
+    sortedRows,
+    limit ?? 0
   );
-  const [currentPage, setCurrentPage] = useState(0);
-
-  const handleNextPage = () => {
-    if (
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      sortedRows &&
-      currentPage === Math.ceil(sortedRows.length / limit) - 1
-    ) {
-      return;
-    }
-    setCurrentPage((previous) => previous + 1);
-  };
-
-  const handlePreviousPage = () => {
-    if (currentPage === 0) {
-      return;
-    }
-    setCurrentPage((previous) => previous - 1);
-  };
-
-  useEffect(() => {
-    setPaginatedData(
-      sortedRows.slice(currentPage * limit, (currentPage + 1) * limit)
-    );
-  }, [currentPage, limit, sortedRows]);
-
-  // eslint-disable-next-line sonarjs/no-identical-functions
-  useEffect(() => {
-    setPaginatedData(
-      sortedRows.slice(currentPage * limit, (currentPage + 1) * limit)
-    );
-  }, [currentPage, limit, sortedRows]);
-
-  useEffect(() => {
-    setCurrentPage(0);
-  }, [rows]);
 
   return (
     <TableContainer w="full">
@@ -89,7 +53,7 @@ export const Table = <RowData extends object>({
           </Tr>
         </Thead>
         <Tbody>
-          {(limit > 0 ? paginatedData : sortedRows).map((row, rowIndex) => (
+          {(limit ? paginatedData : sortedRows).map((row, rowIndex) => (
             <Tr key={row && getRowKey ? getRowKey(row) : rowIndex}>
               {columns.map((column, columnIndex) => (
                 <Td
@@ -106,16 +70,26 @@ export const Table = <RowData extends object>({
         </Tbody>
       </TableRoot>
       {sortedRows.length === 0 ? <Subtitle>No records</Subtitle> : null}
-      {limit > 0 && (
+      {limit ? (
         <Paginator>
-          <Button onClick={handlePreviousPage} variant="unstyled">
+          <Button
+            onClick={() => {
+              handlePageChange(-1);
+            }}
+            variant="unstyled"
+          >
             <BsChevronLeft color="gray" />
           </Button>
-          <Button onClick={handleNextPage} variant="unstyled">
+          <Button
+            onClick={() => {
+              handlePageChange(1);
+            }}
+            variant="unstyled"
+          >
             <BsChevronRight color="gray" />
           </Button>
         </Paginator>
-      )}
+      ) : null}
     </TableContainer>
   );
 };

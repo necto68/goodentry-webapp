@@ -1,7 +1,3 @@
-import { Button } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
-import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
-
 import {
   getFormattedDate,
   getFormattedFullCurrency,
@@ -13,7 +9,7 @@ import { getTruncatedAddress } from "../../web3/helpers/addresses";
 import { getExplorerLink } from "../../web3/helpers/getExplorerLink";
 import { ExplorerLinkType } from "../../web3/types/ExplorerLinkType";
 import { useHistory } from "../hooks/useHistory";
-import { Container, HistoryTx, Paginator } from "../styles/HistoryTable";
+import { Container, HistoryTx } from "../styles/HistoryTable";
 import { ColorText } from "../styles/PositionsTable";
 
 import type { PositionHistoryItem } from "../../queries/types/PositionHistoryItem";
@@ -85,43 +81,16 @@ const columns: Column<PositionHistoryItem>[] = [
 const getRowKey = ({ transactionHash }: PositionHistoryItem) => transactionHash;
 
 export const HistoryTable = () => {
-  const limit = 5;
-  const [paginatedData, setPaginatedData] = useState<PositionHistoryItem[]>([]);
-  const [currentPage, setCurrentPage] = useState(0);
-
   const rows = useHistory();
-
-  const handleNextPage = () => {
-    if (rows && currentPage === Math.ceil(rows.length / limit) - 1) {
-      return;
-    }
-    setCurrentPage((previous) => previous + 1);
-  };
-
-  const handlePreviousPage = () => {
-    if (currentPage === 0) {
-      return;
-    }
-    setCurrentPage((previous) => previous - 1);
-  };
-
-  useEffect(() => {
-    setPaginatedData(
-      rows?.slice(currentPage * limit, (currentPage + 1) * limit) ?? []
-    );
-  }, [rows, currentPage, limit]);
 
   return (
     <Container>
-      <Table columns={columns} getRowKey={getRowKey} rows={paginatedData} />
-      <Paginator>
-        <Button onClick={handlePreviousPage} variant="unstyled">
-          <BsChevronLeft color="gray" />
-        </Button>
-        <Button onClick={handleNextPage} variant="unstyled">
-          <BsChevronRight color="gray" />
-        </Button>
-      </Paginator>
+      <Table
+        columns={columns}
+        getRowKey={getRowKey}
+        limit={10}
+        rows={rows ?? []}
+      />
     </Container>
   );
 };
