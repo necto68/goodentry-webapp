@@ -1,6 +1,7 @@
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import React, { useEffect, useRef } from "react";
+import { theme } from "twin.macro";
 
 import { Container } from "../styles/VaultChart";
 
@@ -23,6 +24,8 @@ export const VaultChart: React.FC<{ readonly data: number[] }> = ({ data }) => {
       });
     }
   }, [data]);
+
+  const brandColor = theme`colors.brand`;
 
   const options = {
     chart: {
@@ -74,7 +77,7 @@ export const VaultChart: React.FC<{ readonly data: number[] }> = ({ data }) => {
           },
 
           stops: [
-            [0, Highcharts.color("#0FFD6A").get("rgba")],
+            [0, Highcharts.color(brandColor).get("rgba")],
             [1, Highcharts.color("#121418").setOpacity(0).get("rgba")],
           ],
         },
@@ -123,7 +126,7 @@ export const VaultChart: React.FC<{ readonly data: number[] }> = ({ data }) => {
         type: "area",
         name: "Fees APR",
         data,
-        color: "#0FFD6A",
+        color: brandColor,
         lineWidth: 2,
       },
     ],

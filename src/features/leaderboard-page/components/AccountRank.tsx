@@ -6,12 +6,11 @@ import { useWallet } from "../../wallet/hooks/useWallet";
 import { areAddressesEqual } from "../../web3/helpers/addresses";
 import { useLeaderboardState } from "../hooks/useLeaderboardState";
 import {
-  BrandValue,
   Container,
   Content,
-  ErrorValue,
   Title,
   Value,
+  ColorValue,
 } from "../styles/AccountRank";
 
 export const AccountRank = () => {
@@ -48,11 +47,9 @@ export const AccountRank = () => {
       </Content>
       <Content>
         <Title>Weekly PNL (USD)</Title>
-        {weeklyProfitAndLoss > 0 ? (
-          <BrandValue>{formattedProfitAndLoss}</BrandValue>
-        ) : (
-          <ErrorValue>{formattedProfitAndLoss}</ErrorValue>
-        )}
+        <ColorValue isPositive={weeklyProfitAndLoss > 0}>
+          {formattedProfitAndLoss}
+        </ColorValue>
       </Content>
     </Container>
   );

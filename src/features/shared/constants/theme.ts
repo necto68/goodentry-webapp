@@ -11,9 +11,11 @@ const colors = tailwind.theme.colors;
 export const chakraTheme = extendTheme({
   colors: {
     brand: colors.brand.DEFAULT,
+    error: colors.error.DEFAULT,
+    long: colors.long.DEFAULT,
+    short: colors.short.DEFAULT,
     bg: colors.bg.DEFAULT,
     transparent: colors.transparent,
-    error: colors.error.DEFAULT,
   },
 
   components: {
@@ -50,6 +52,40 @@ export const chakraTheme = extendTheme({
 
           _active: {
             background: colors.error.dark,
+          },
+        },
+
+        long: {
+          background: colors.long.DEFAULT,
+          color: colors.black,
+
+          _hover: {
+            background: colors.long.semiDark,
+
+            _disabled: {
+              background: colors.long.DEFAULT,
+            }
+          },
+
+          _active: {
+            background: colors.long.dark,
+          },
+        },
+
+        short: {
+          background: colors.short.DEFAULT,
+          color: colors.black,
+
+          _hover: {
+            background: colors.short.semiDark,
+
+            _disabled: {
+              background: colors.short.DEFAULT,
+            }
+          },
+
+          _active: {
+            background: colors.short.dark,
           },
         },
 

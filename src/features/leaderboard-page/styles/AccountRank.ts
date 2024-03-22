@@ -1,4 +1,9 @@
+import styled from "@emotion/styled";
 import tw from "twin.macro";
+
+export interface ColorTextProps {
+  isPositive: boolean;
+}
 
 export const Container = tw.div`
   flex gap-4
@@ -21,10 +26,6 @@ export const Value = tw.span`
   font-semibold
 `;
 
-export const BrandValue = tw(Value)`
-  text-brand
-`;
-
-export const ErrorValue = tw(Value)`
-  text-error
+export const ColorValue = styled(Value)<ColorTextProps>`
+  ${({ isPositive }) => (isPositive ? tw`text-long` : tw`text-short`)}
 `;

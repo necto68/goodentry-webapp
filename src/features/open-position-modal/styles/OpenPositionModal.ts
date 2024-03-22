@@ -14,11 +14,11 @@ export const Container = tw.div`
 export const HeaderContainer = styled.div<HeaderContainerProps>`
   ${tw`flex justify-center`}
   ${tw`p-1.5 border-b`}
-  ${({ isLong }) => (isLong ? tw`border-b-brand` : tw`border-b-error`)}
+  ${({ isLong }) => (isLong ? tw`border-b-long` : tw`border-b-short`)}
 `;
 
 export const Header = styled(InfoValue)<HeaderContainerProps>`
-  ${({ isLong }) => (isLong ? tw`text-brand` : tw`text-error`)}
+  ${({ isLong }) => (isLong ? tw`text-long` : tw`text-short`)}
 `;
 
 export const Content = tw.div`

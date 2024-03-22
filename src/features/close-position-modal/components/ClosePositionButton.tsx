@@ -34,7 +34,7 @@ export const ClosePositionButton = () => {
       isLoading={isLoading}
       loadingText={loadingTitle}
       onClick={handleButtonClick}
-      variant={isLong ? "brand" : "error"}
+      variant={isLong ? "long" : "short"}
     >
       {title}
     </Button>

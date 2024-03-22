@@ -20,10 +20,21 @@ module.exports = {
           DEFAULT: "#0FFD6A",
           semiDark: "#0BBF50",
           dark: "#009D3C",
-          black: "#0A371B",
         },
 
         error: {
+          DEFAULT: "#DC4446",
+          semiDark: "#BD3A3C",
+          dark: "#8C2B2B",
+        },
+
+        long: {
+          DEFAULT: "#0FFD6A",
+          semiDark: "#0BBF50",
+          dark: "#009D3C",
+        },
+
+        short: {
           DEFAULT: "#DC4446",
           semiDark: "#BD3A3C",
           dark: "#8C2B2B",
@@ -57,11 +68,11 @@ module.exports = {
       },
 
       backgroundImage: {
-        glow: "linear-gradient(270deg, rgba(15, 253, 106, 0.29) 16.28%, #0FFD6A 48.65%, #007C30 95.96%)",
+        glow: "linear-gradient(270deg, #009D3C 16.28%, #0FFD6A 48.65%, #009D3C 95.96%)",
       },
 
       boxShadow: {
-        glow: "0 4px 30px rgba(15, 253, 106, 0.4)",
+        glow: "0 4px 30px #0FFD6A",
       },
     },
   },

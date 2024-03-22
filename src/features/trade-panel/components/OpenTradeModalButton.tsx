@@ -35,7 +35,7 @@ export const OpenTradeModalButton = () => {
   return (
     <Button
       onClick={handleButtonClick}
-      variant={isLong ? "brand" : "error"}
+      variant={isLong ? "long" : "short"}
     >{`${positionSideTitle} ${symbol}`}</Button>
   );
 };

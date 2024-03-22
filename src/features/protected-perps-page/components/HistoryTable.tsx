@@ -8,18 +8,13 @@ import {
 } from "../../shared/helpers/baseFormatters";
 import { Table } from "../../table/components/Table";
 import { getPositionSideTitle } from "../../trade-panel/helpers/getPositionSideTitle";
-import { PositionSide } from "../../trade-panel/types/PositionSide";
+import { isPositionSideLong } from "../../trade-panel/helpers/isPositionSideLong";
 import { getTruncatedAddress } from "../../web3/helpers/addresses";
 import { getExplorerLink } from "../../web3/helpers/getExplorerLink";
 import { ExplorerLinkType } from "../../web3/types/ExplorerLinkType";
 import { useHistory } from "../hooks/useHistory";
-import {
-  Container,
-  HistoryTx,
-  LongText,
-  Paginator,
-  ShortText,
-} from "../styles/HistoryTable";
+import { Container, HistoryTx, Paginator } from "../styles/HistoryTable";
+import { ColorText } from "../styles/PositionsTable";
 
 import type { PositionHistoryItem } from "../../queries/types/PositionHistoryItem";
 import type { Column } from "../../table/types/Column";
@@ -51,14 +46,14 @@ const columns: Column<PositionHistoryItem>[] = [
   },
   {
     key: "positionSide",
-    title: "Direction",
+    title: "Side",
 
-    render: ({ positionSide }) =>
-      positionSide === PositionSide.LONG ? (
-        <LongText>{getPositionSideTitle(positionSide)}</LongText>
-      ) : (
-        <ShortText>{getPositionSideTitle(positionSide)}</ShortText>
-      ),
+    render: ({ positionSide }) => {
+      const isLong = isPositionSideLong(positionSide);
+      const positionSideTitle = getPositionSideTitle(positionSide);
+
+      return <ColorText isPositive={isLong}>{positionSideTitle}</ColorText>;
+    },
   },
   {
     key: "entryPrice",
@@ -76,7 +71,14 @@ const columns: Column<PositionHistoryItem>[] = [
     key: "pnl",
     title: "PNL",
 
-    render: ({ pnl }) => getFormattedFullCurrency(pnl),
+    render: ({ pnl }) => {
+      const isPositive = pnl > 0;
+      const formattedProfitAndLoss = getFormattedFullCurrency(pnl);
+
+      return (
+        <ColorText isPositive={isPositive}>{formattedProfitAndLoss}</ColorText>
+      );
+    },
   },
 ];
 
