@@ -11,7 +11,7 @@ import {
 } from "../styles/Header";
 
 import { AdditionalNavigationButton } from "./AdditionalNavigationButton";
-import { AppLottieLogo } from "./AppLottieLogo";
+import { AppLogo } from "./AppLogo";
 import { AuthHeader } from "./AuthHeader";
 import { ConnectWalletButton } from "./ConnectWalletButton";
 import { MobileNavigation } from "./MobileNavigation";
@@ -25,7 +25,7 @@ export const Header = () => {
     <Wrapper>
       <Container>
         <Content>
-          <AppLottieLogo />
+          <AppLogo />
           <Navigation />
           <MobileNavigation isOpen={isOpen} onClose={onClose} />
         </Content>
