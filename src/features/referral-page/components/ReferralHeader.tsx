@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
+import { useLocalStorage } from "../../shared/hooks/useLocalStorage";
 import { useReferrals } from "../hooks/useReferrals";
 import { useReferralModalState } from "../stores/useReferralModalState";
 import {
@@ -16,8 +17,10 @@ import { SubmitReferrerButton } from "./SubmitReferrerButton";
 export const ReferralHeader = () => {
   const { referrerCode = "" } = useReferrals() ?? {};
   const [searchParameters, setSearchParameters] = useSearchParams();
-  const referralParameter =
-    searchParameters.get("code") ?? localStorage.getItem("referralParameter");
+  const [referralParameter, setReferralParameter] = useLocalStorage(
+    "referralParameter",
+    searchParameters.get("code") ?? ""
+  );
 
   const { referralCodeInputState, setReferralCodeInputState } =
     useReferralModalState();
@@ -25,21 +28,20 @@ export const ReferralHeader = () => {
   useEffect(() => {
     if (referrerCode || referralParameter) {
       setReferralCodeInputState(referrerCode || String(referralParameter));
-      if (!referrerCode) {
-        localStorage.setItem("referralParameter", referralParameter ?? "");
-      } else {
-        localStorage.removeItem("referralParameter");
+      if (referrerCode) {
+        setReferralParameter("");
       }
       searchParameters.delete("code");
       setSearchParameters(searchParameters);
     }
   }, [
     referralCodeInputState,
-    referralParameter,
     referrerCode,
     searchParameters,
+    setReferralParameter,
     setReferralCodeInputState,
     setSearchParameters,
+    referralParameter,
   ]);
 
   return (

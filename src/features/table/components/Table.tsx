@@ -6,10 +6,15 @@ import {
   Tr,
   Th,
   Td,
+  Button,
 } from "@chakra-ui/react";
+import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 
+import { Paginator } from "../../protected-perps-page/styles/HistoryTable";
+import { Subtitle } from "../../referral-page/styles/ReferralHistoryTable";
 import { renderCellContent } from "../helpers/renderCellContent";
 import { useFilteredBy } from "../hooks/useFilterBy";
+import { usePagination } from "../hooks/usePagination";
 import { useSortBy } from "../hooks/useSortBy";
 
 import { Header } from "./Header";
@@ -21,9 +26,14 @@ export const Table = <RowData extends object>({
   rows,
   getRowKey,
   filterInputValue,
+  limit,
 }: TableProps<RowData>) => {
   const { filteredRows } = useFilteredBy(columns, rows, filterInputValue);
   const { sortedRows } = useSortBy(filteredRows);
+  const { paginatedData, handlePageChange } = usePagination(
+    sortedRows,
+    limit ?? 0
+  );
 
   return (
     <TableContainer w="full">
@@ -43,7 +53,7 @@ export const Table = <RowData extends object>({
           </Tr>
         </Thead>
         <Tbody>
-          {sortedRows.map((row, rowIndex) => (
+          {(limit ? paginatedData : sortedRows).map((row, rowIndex) => (
             <Tr key={row && getRowKey ? getRowKey(row) : rowIndex}>
               {columns.map((column, columnIndex) => (
                 <Td
@@ -59,6 +69,27 @@ export const Table = <RowData extends object>({
           ))}
         </Tbody>
       </TableRoot>
+      {sortedRows.length === 0 ? <Subtitle>No records</Subtitle> : null}
+      {limit ? (
+        <Paginator>
+          <Button
+            onClick={() => {
+              handlePageChange(-1);
+            }}
+            variant="unstyled"
+          >
+            <BsChevronLeft color="gray" />
+          </Button>
+          <Button
+            onClick={() => {
+              handlePageChange(1);
+            }}
+            variant="unstyled"
+          >
+            <BsChevronRight color="gray" />
+          </Button>
+        </Paginator>
+      ) : null}
     </TableContainer>
   );
 };
